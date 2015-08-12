@@ -1,9 +1,11 @@
 #import <UIKit/UIKit.h>
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+
 #include <dlfcn.h>
 #include <mach/port.h>
 #include <mach/kern_return.h>
+#include <limits.h>
 
 struct ComposedBatteryData {
     BOOL itemIsEnabled[25];
@@ -45,16 +47,28 @@ struct ComposedBatteryData {
 - (struct ComposedBatteryData *)rawData;
 @end
 
-@interface UIStatusBar ()
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+@interface UIStatusBarItemView : UIView
 @end
 
-@interface UIApplication ()
-- (id)statusBar;
+@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView {
+    NSString *_percentString;
+}
+- (int)textStyle;
+- (int)textAlignment;
+- (BOOL)animatesDataChange;
+- (float)extraRightPadding;
+- (id)contentsImage;
+- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+- (void)dealloc;
 @end
+
+#define SETTINGS_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
+
+static UIStatusBarBatteryPercentItemView *itemView;
+static NSString *percentString;
 
 static inline int GetBatteryTemperature() {
-    int temp = 0;
+    int temp = INT_MAX;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
     if (IOKit) {
@@ -79,36 +93,17 @@ static inline int GetBatteryTemperature() {
     return temp;
 }
 
-BOOL isRefreshing = NO;
-
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    // Refresh the status bar
-    if (!isRefreshing) {
-        isRefreshing = YES;
-        
-        UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-        [statusBar setShowsOnlyCenterItems:YES];
-        [statusBar setShowsOnlyCenterItems:NO];
-        
-        isRefreshing = NO;
-    }
-}
-
-%hook UIStatusBarBatteryPercentItemView
-
-- (BOOL)updateForNewData:(UIStatusBarComposedData *)arg1 actions:(int)arg2 {
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"];
-    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
+static inline NSString *GetTemperatureString() {
+    NSString *formattedString = @"";
+    int rawTemperature = GetBatteryTemperature();
     
-    if (enabled) {
-        char currentString[150];
-        
-        strcpy(currentString, arg1.rawData->batteryDetailString);
-        
-        NSString *formattedString = [NSString stringWithUTF8String:currentString];
-        int rawTemperature = GetBatteryTemperature();
+    if (rawTemperature == INT_MAX) {
+        formattedString = @"N/A";
+    }
+    else {
         float celcius = (float)rawTemperature / 100.0f;
         
+        NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
         int unit = settings[@"unit"] ? [settings[@"unit"] intValue] : 0;
         if (unit == 1) {
             float farenheit = (celcius * (9.0f / 5.0f)) + 32.0f;
@@ -121,8 +116,39 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
         else {
             formattedString = [NSString stringWithFormat:@"%0.1f℃", celcius];
         }
-        
-        strlcpy(arg1.rawData->batteryDetailString, [formattedString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+    }
+    
+    return formattedString;
+}
+
+static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
+    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
+    
+    if (itemView && percentString && enabled) {
+        percentString = GetTemperatureString();
+        [itemView setNeedsDisplay];
+    }
+}
+
+%hook UIStatusBarBatteryPercentItemView
+
+- (BOOL)updateForNewData:(UIStatusBarComposedData *)arg1 actions:(int)arg2 {
+    if (itemView != self) {
+        [itemView release];
+        itemView = [self retain];
+        percentString = MSHookIvar<NSString *>(self, "_percentString");
+        percentVisible = MSHookIvar<BOOL>(self, "_visible");
+    }
+    
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
+    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
+    
+    if (enabled) {
+        char currentString[150];
+        strcpy(currentString, arg1.rawData->batteryDetailString);
+        NSString *tempString = GetTemperatureString();
+        strlcpy(arg1.rawData->batteryDetailString, [tempString UTF8String], sizeof(arg1.rawData->batteryDetailString));
     }
     
     return %orig(arg1, arg2);
