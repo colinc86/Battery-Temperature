@@ -21,8 +21,6 @@
 		556F853E1B775A7A00288568 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
 		556F85401B775A7A00288568 /* PackageVersion.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PackageVersion.plist; sourceTree = "<group>"; };
 		556F85441B775A7A00288568 /* Battery_Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Battery_Temperature.plist; path = Package/Library/PreferenceLoader/Preferences/Battery_Temperature.plist; sourceTree = "<group>"; };
-		556F85451B775A7A00288568 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
-		556F85461B775A7A00288568 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
 		556F85471B775A7A00288568 /* Battery Temperature-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Battery Temperature-Prefix.pch"; sourceTree = "<group>"; };
 		556F85481B775A7A00288568 /* Battery_Temperature.xm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.xm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
@@ -130,8 +128,6 @@
 			isa = PBXGroup;
 			children = (
 				556F85441B775A7A00288568 /* Battery_Temperature.plist */,
-				556F85451B775A7A00288568 /* Battery_TemperatureIcon.png */,
-				556F85461B775A7A00288568 /* Battery_TemperatureIcon@2x.png */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
