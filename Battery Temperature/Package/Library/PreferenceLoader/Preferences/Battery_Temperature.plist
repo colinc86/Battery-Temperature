@@ -18,6 +18,8 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+			<key>footerText</key>
+			<string>Replace the battery percentage text with the battery&apos;s temperature. Make sure Battery Percentage is also set to ON in the Settings app.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -38,6 +40,8 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+			<key>footerText</key>
+			<string>Choose between the Celsius, Fahrenheit, or Kelvin temperature scales.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -47,12 +51,12 @@
 			<key>key</key>
 			<string>unit</string>
 			<key>label</key>
-			<string>Unit</string>
+			<string>Scale</string>
 			<key>detail</key>
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Celcius</string>
+				<string>Celsius</string>
 				<string>Fahrenheit</string>
 				<string>Kelvin</string>
 			</array>

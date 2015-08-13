@@ -1,7 +1,7 @@
 Package: com.cnc.Battery-Temperature
 Name: Battery Temperature
 Version: 1.0-1
-Description: Replaces the battery percentage text with battery temperature.
+Description: Replaces the battery percentage with battery temperature. Select between Fahrenheit, Celsius, and Kelvin.
 Section: System
 Depends: firmware (>= 5.0), mobilesubstrate
 Conflicts: 

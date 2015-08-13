@@ -8,102 +8,73 @@
 #include <mach/kern_return.h>
 #include <limits.h>
 
-#include "SBStatusBarStateAggregator.h"
-#include "ComposedData.h"
+struct ComposedBatteryData {
+    BOOL itemIsEnabled[25];
+    BOOL timeString[64];
+    int gsmSignalStrengthRaw;
+    int gsmSignalStrengthBars;
+    BOOL serviceString[100];
+    BOOL serviceCrossfadeString[100];
+    BOOL serviceImages[2][100];
+    BOOL operatorDirectory[1024];
+    unsigned int serviceContentType;
+    int wifiSignalStrengthRaw;
+    int wifiSignalStrengthBars;
+    unsigned int dataNetworkType;
+    int batteryCapacity;
+    unsigned int batteryState;
+    char batteryDetailString[150];
+    int bluetoothBatteryCapacity;
+    int thermalColor;
+    unsigned int thermalSunlightMode : 1;
+    unsigned int slowActivity : 1;
+    unsigned int syncActivity : 1;
+    BOOL activityDisplayId[256];
+    unsigned int bluetoothConnected : 1;
+    unsigned int displayRawGSMSignal : 1;
+    unsigned int displayRawWifiSignal : 1;
+    unsigned int locationIconType : 1;
+    unsigned int quietModeInactive : 1;
+    unsigned int tetheringConnectionCount;
+    NSString *_doubleHeightStatus;
+    BOOL _itemEnabled[30];
+} ComposedBatteryData;
 
-#define SETTINGS_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
-
-@class UIStatusBarForegroundStyleAttributes, UIStatusBarItem, UIStatusBarLayoutManager, _UILegibilityView;
-
-@interface UIStatusBar ()
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+@interface UIStatusBarComposedData : NSObject <NSCopying> {
+    struct ComposedBatteryData *_rawData;
+}
+@property(readonly) struct ComposedBatteryData *rawData;
+- (struct ComposedBatteryData *)rawData;
 @end
 
-@interface UIApplication ()
-- (void)removeStatusBarItem:(int)arg1;
-- (void)addStatusBarItem:(int)arg1;
-- (id)statusBar;
+@interface SBStatusBarStateAggregator
++ (id)sharedInstance;
+- (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
 @end
 
 @interface UIStatusBarItemView : UIView
-{
-    float _currentOverlap;
-    struct CGContext *_imageContext;
-    float _imageContextScale;
-    _UILegibilityView *_legibilityView;
-    BOOL _visible;
-    BOOL _allowsUpdates;
-    UIStatusBarItem *_item;
-    UIStatusBarLayoutManager *_layoutManager;
-    UIStatusBarForegroundStyleAttributes *_foregroundStyle;
-}
-
-+ (id)createViewForItem:(id)arg1 withData:(id)arg2 actions:(int)arg3 foregroundStyle:(id)arg4;
-@property(nonatomic) BOOL allowsUpdates; 
-@property(nonatomic, getter=isVisible) BOOL visible; 
-@property(readonly, nonatomic) UIStatusBarForegroundStyleAttributes *foregroundStyle; 
-
-@property(readonly, nonatomic) UIStatusBarItem *item; 
-- (id)description;
-- (void)willMoveToWindow:(id)arg1;
-- (void)endDisablingRasterization;
-- (void)beginDisablingRasterization;
-- (id)imageWithShadowNamed:(id)arg1;
-- (id)imageWithText:(id)arg1;
-- (void)endImageContext;
-- (id)imageFromImageContextClippedToWidth:(float)arg1;
-- (void)beginImageContextWithMinimumWidth:(float)arg1;
-- (void)setPersistentAnimationsEnabled:(BOOL)arg1;
-- (void)performPendedActions;
-- (id)contentsImage;
-- (BOOL)animatesDataChange;
-- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
-- (float)maximumOverlap;
-- (float)addContentOverlap:(float)arg1;
-- (float)resetContentOverlap;
-- (float)extraRightPadding;
-- (float)extraLeftPadding;
-- (float)shadowPadding;
-- (float)standardPadding;
-- (int)textAlignment;
-- (id)textFont;
-- (int)textStyle;
-- (void)setContentMode:(int)arg1;
-- (float)updateContentsAndWidth;
-- (float)adjustFrameToNewSize:(float)arg1;
-- (void)setLayerContentsImage:(id)arg1;
-- (float)legibilityStrength;
-- (int)legibilityStyle;
-- (float)setStatusBarData:(id)arg1 actions:(int)arg2;
-- (float)currentRightOverlap;
-- (float)currentLeftOverlap;
-- (float)currentOverlap;
-- (void)setCurrentOverlap:(float)arg1;
-- (void)setVisible:(BOOL)arg1 frame:(struct CGRect)arg2 duration:(double)arg3;
-- (void)dealloc;
-- (id)initWithItem:(id)arg1 data:(id)arg2 actions:(int)arg3 style:(id)arg4;
-- (BOOL)_shouldAnimatePropertyWithKey:(id)arg1;
-
+@property (getter=isVisible, nonatomic) BOOL visible;
 @end
 
-@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView {
-    NSString *_percentString;
-}
-- (int)textStyle;
-- (int)textAlignment;
-- (BOOL)animatesDataChange;
-- (float)extraRightPadding;
-- (id)contentsImage;
+@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
-- (void)dealloc;
 @end
 
-static UIStatusBarBatteryPercentItemView *itemView;
-static NSString *percentString;
-static BOOL percentVisible = false;
+#define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
+#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
-static inline int GetBatteryTemperature() {
-    int temp = INT_MAX;
+static UIStatusBarItemView *itemView;
+static BOOL enabled = false;
+static int unit = 0;
+
+static void loadSettings() {
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    enabled =  !CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME)) ? YES : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME))) boolValue];
+    unit = !CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME)) ? 0 : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME))) intValue];
+}
+
+static inline NSNumber *GetBatteryTemperature() {
+    NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
     if (IOKit) {
@@ -117,90 +88,74 @@ static inline int GetBatteryTemperature() {
             mach_port_t powerSource = IOServiceGetMatchingService(*kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
             
             if (powerSource) {
-                CFTypeRef temperature = IORegistryEntryCreateCFProperty(powerSource, CFSTR("Temperature"), kCFAllocatorDefault, 0);
-                temp = [(__bridge NSNumber *)temperature intValue];
+                CFTypeRef temperatureRef = IORegistryEntryCreateCFProperty(powerSource, CFSTR("Temperature"), kCFAllocatorDefault, 0);
+                temp = [[NSNumber alloc] initWithInt:[(__bridge NSNumber *)temperatureRef intValue]];
+                CFRelease(temperatureRef);
             }
         }
     }
     
     dlclose(IOKit);
     
-    return temp;
+    return [temp autorelease];
 }
 
 static inline NSString *GetTemperatureString() {
     NSString *formattedString = @"";
-    int rawTemperature = GetBatteryTemperature();
+    NSNumber *rawTemperature = GetBatteryTemperature();
     
-    if (rawTemperature == INT_MAX) {
+    if (!rawTemperature) {
         formattedString = @"N/A";
     }
     else {
-        float celcius = (float)rawTemperature / 100.0f;
+        float celsius = [rawTemperature intValue] / 100.0f;
         
-        NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
-        int unit = settings[@"unit"] ? [settings[@"unit"] intValue] : 0;
         if (unit == 1) {
-            float farenheit = (celcius * (9.0f / 5.0f)) + 32.0f;
-            formattedString = [NSString stringWithFormat:@"%0.1f℉", farenheit];
+            float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
+            formattedString = [NSString stringWithFormat:@"%0.1f℉", fahrenheit];
         }
         else if (unit == 2) {
-            float kelvin = celcius + 273.15;
+            float kelvin = celsius + 273.15;
             formattedString = [NSString stringWithFormat:@"%0.1f K", kelvin];
         }
         else {
-            formattedString = [NSString stringWithFormat:@"%0.1f℃", celcius];
+            
+            formattedString = [NSString stringWithFormat:@"%0.1f℃", celsius];
         }
     }
     
     return formattedString;
 }
 
+#include <logos/logos.h>
+#include <substrate.h>
+@class UIStatusBarBatteryPercentItemView; @class SBStatusBarStateAggregator; 
+static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
+#line 129 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    NSLog(@"******************************** PREFERENCES CHANGED");
-    UIApplication *application = (UIApplication *)[UIApplication sharedApplication];
-    [application removeStatusBarItem:8];
-    [application addStatusBarItem:8];
+    loadSettings();
     
-    UIStatusBar *statusBar = (UIStatusBar *)[application statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
-    
-    if (itemView && percentString) {
-        percentString = GetTemperatureString();
-        percentVisible = false;
-        [itemView setNeedsDisplay];
-        percentVisible = true;
-        [itemView setNeedsDisplay];
+    if (itemView.visible) {
+        SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
+        [aggregator _setItem:8 enabled:NO];
+        [aggregator _setItem:8 enabled:YES];
     }
 }
 
-#include <logos/logos.h>
-#include <substrate.h>
-@class UIStatusBarBatteryPercentItemView; 
-static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
-
-#line 177 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
     if (itemView != self) {
         [itemView release];
         itemView = [self retain];
-        percentString = MSHookIvar<NSString *>(self, "_percentString");
-        percentVisible = MSHookIvar<BOOL>(self, "_visible");
     }
-    
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
-    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
     
     if (enabled) {
         char currentString[150];
         strcpy(currentString, arg1.rawData->batteryDetailString);
         NSString *tempString = GetTemperatureString();
         strlcpy(arg1.rawData->batteryDetailString, [tempString UTF8String], sizeof(arg1.rawData->batteryDetailString));
-        
-        NSLog(@"******************************** AUTO UPDATE %@", tempString);
     }
     
     return _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(self, _cmd, arg1, arg2);
@@ -208,9 +163,10 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_b961750b() {
+static __attribute__((constructor)) void _logosLocalCtor_1aadaca9() {
     {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);}
     
-    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-    CFNotificationCenterAddObserver(center, NULL, &preferencesChanged, CFSTR("com.cnc.Battery-Temperature-preferencesChanged"), NULL, 0);
+    loadSettings();
+    
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }

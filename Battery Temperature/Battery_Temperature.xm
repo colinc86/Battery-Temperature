@@ -42,33 +42,38 @@ struct ComposedBatteryData {
 @interface UIStatusBarComposedData : NSObject <NSCopying> {
     struct ComposedBatteryData *_rawData;
 }
-
 @property(readonly) struct ComposedBatteryData *rawData;
 - (struct ComposedBatteryData *)rawData;
 @end
 
+@interface SBStatusBarStateAggregator
++ (id)sharedInstance;
+- (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
+@end
+
 @interface UIStatusBarItemView : UIView
+@property (getter=isVisible, nonatomic) BOOL visible;
 @end
 
-@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView {
-    NSString *_percentString;
-}
-- (int)textStyle;
-- (int)textAlignment;
-- (BOOL)animatesDataChange;
-- (float)extraRightPadding;
-- (id)contentsImage;
+@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
-- (void)dealloc;
 @end
 
-#define SETTINGS_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
+#define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
+#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
-static UIStatusBarBatteryPercentItemView *itemView;
-static NSString *percentString;
+static UIStatusBarItemView *itemView;
+static BOOL enabled = false;
+static int unit = 0;
 
-static inline int GetBatteryTemperature() {
-    int temp = INT_MAX;
+static void loadSettings() {
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    enabled =  !CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME)) ? YES : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME))) boolValue];
+    unit = !CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME)) ? 0 : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME))) intValue];
+}
+
+static inline NSNumber *GetBatteryTemperature() {
+    NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
     if (IOKit) {
@@ -82,39 +87,39 @@ static inline int GetBatteryTemperature() {
             mach_port_t powerSource = IOServiceGetMatchingService(*kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
             
             if (powerSource) {
-                CFTypeRef temperature = IORegistryEntryCreateCFProperty(powerSource, CFSTR("Temperature"), kCFAllocatorDefault, 0);
-                temp = [(__bridge NSNumber *)temperature intValue];
+                CFTypeRef temperatureRef = IORegistryEntryCreateCFProperty(powerSource, CFSTR("Temperature"), kCFAllocatorDefault, 0);
+                temp = [[NSNumber alloc] initWithInt:[(__bridge NSNumber *)temperatureRef intValue]];
+                CFRelease(temperatureRef);
             }
         }
     }
     
     dlclose(IOKit);
     
-    return temp;
+    return [temp autorelease];
 }
 
 static inline NSString *GetTemperatureString() {
     NSString *formattedString = @"";
-    int rawTemperature = GetBatteryTemperature();
+    NSNumber *rawTemperature = GetBatteryTemperature();
     
-    if (rawTemperature == INT_MAX) {
+    if (!rawTemperature) {
         formattedString = @"N/A";
     }
     else {
-        float celcius = (float)rawTemperature / 100.0f;
+        float celsius = [rawTemperature intValue] / 100.0f;
         
-        NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
-        int unit = settings[@"unit"] ? [settings[@"unit"] intValue] : 0;
         if (unit == 1) {
-            float farenheit = (celcius * (9.0f / 5.0f)) + 32.0f;
-            formattedString = [NSString stringWithFormat:@"%0.1f℉", farenheit];
+            float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
+            formattedString = [NSString stringWithFormat:@"%0.1f℉", fahrenheit];
         }
         else if (unit == 2) {
-            float kelvin = celcius + 273.15;
+            float kelvin = celsius + 273.15;
             formattedString = [NSString stringWithFormat:@"%0.1f K", kelvin];
         }
         else {
-            formattedString = [NSString stringWithFormat:@"%0.1f℃", celcius];
+            // Default to Celsius
+            formattedString = [NSString stringWithFormat:@"%0.1f℃", celsius];
         }
     }
     
@@ -122,12 +127,12 @@ static inline NSString *GetTemperatureString() {
 }
 
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
-    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
+    loadSettings();
     
-    if (itemView && percentString && enabled) {
-        percentString = GetTemperatureString();
-        [itemView setNeedsDisplay];
+    if (itemView.visible) {
+        SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
+        [aggregator _setItem:8 enabled:NO];
+        [aggregator _setItem:8 enabled:YES];
     }
 }
 
@@ -137,12 +142,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
     if (itemView != self) {
         [itemView release];
         itemView = [self retain];
-        percentString = MSHookIvar<NSString *>(self, "_percentString");
-        percentVisible = MSHookIvar<BOOL>(self, "_visible");
     }
-    
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:SETTINGS_PATH];
-    BOOL enabled = settings[@"enabled"] ? [settings[@"enabled"] boolValue] : NO;
     
     if (enabled) {
         char currentString[150];
@@ -159,6 +159,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 %ctor {
     %init;
     
-    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-    CFNotificationCenterAddObserver(center, NULL, &preferencesChanged, CFSTR("com.cnc.Battery-Temperature-preferencesChanged"), NULL, 0);
+    loadSettings();
+    
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
