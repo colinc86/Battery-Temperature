@@ -1,4 +1,3 @@
-#import <UIKit/UIKit.h>
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
 
@@ -46,23 +45,21 @@ struct ComposedBatteryData {
 - (struct ComposedBatteryData *)rawData;
 @end
 
-@interface SBStatusBarStateAggregator
-+ (id)sharedInstance;
-- (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
-@end
-
-@interface UIStatusBarItemView : UIView
-@property (getter=isVisible, nonatomic) BOOL visible;
-@end
-
-@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
+@interface UIStatusBarBatteryPercentItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+@end
+
+@interface UIStatusBar ()
+- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+@end
+
+@interface UIApplication ()
+- (id)statusBar;
 @end
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
-static UIStatusBarItemView *itemView;
 static BOOL enabled = false;
 static int unit = 0;
 
@@ -129,22 +126,17 @@ static inline NSString *GetTemperatureString() {
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadSettings();
     
-    if (itemView.visible) {
-        SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
-        [aggregator _setItem:8 enabled:NO];
-        [aggregator _setItem:8 enabled:YES];
-    }
+    // Refresh the status bar
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
 }
 
 %hook UIStatusBarBatteryPercentItemView
 
 - (BOOL)updateForNewData:(UIStatusBarComposedData *)arg1 actions:(int)arg2 {
-    if (itemView != self) {
-        [itemView release];
-        itemView = [self retain];
-    }
-    
     if (enabled) {
+        // Copy the temperature string
         char currentString[150];
         strcpy(currentString, arg1.rawData->batteryDetailString);
         NSString *tempString = GetTemperatureString();

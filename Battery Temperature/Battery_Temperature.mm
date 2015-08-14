@@ -1,5 +1,4 @@
 #line 1 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
-#import <UIKit/UIKit.h>
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
 
@@ -47,23 +46,21 @@ struct ComposedBatteryData {
 - (struct ComposedBatteryData *)rawData;
 @end
 
-@interface SBStatusBarStateAggregator
-+ (id)sharedInstance;
-- (_Bool)_setItem:(int)arg1 enabled:(_Bool)arg2;
-@end
-
-@interface UIStatusBarItemView : UIView
-@property (getter=isVisible, nonatomic) BOOL visible;
-@end
-
-@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
+@interface UIStatusBarBatteryPercentItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+@end
+
+@interface UIStatusBar ()
+- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+@end
+
+@interface UIApplication ()
+- (id)statusBar;
 @end
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
-static UIStatusBarItemView *itemView;
 static BOOL enabled = false;
 static int unit = 0;
 
@@ -127,30 +124,23 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
-#include <logos/logos.h>
-#include <substrate.h>
-@class UIStatusBarBatteryPercentItemView; @class SBStatusBarStateAggregator; 
-static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
-#line 129 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadSettings();
     
-    if (itemView.visible) {
-        SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
-        [aggregator _setItem:8 enabled:NO];
-        [aggregator _setItem:8 enabled:YES];
-    }
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
 }
 
+#include <logos/logos.h>
+#include <substrate.h>
+@class UIStatusBarBatteryPercentItemView; 
+static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
+
+#line 134 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
-    if (itemView != self) {
-        [itemView release];
-        itemView = [self retain];
-    }
-    
     if (enabled) {
         char currentString[150];
         strcpy(currentString, arg1.rawData->batteryDetailString);
@@ -163,7 +153,7 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_1aadaca9() {
+static __attribute__((constructor)) void _logosLocalCtor_b2f9ced8() {
     {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);}
     
     loadSettings();

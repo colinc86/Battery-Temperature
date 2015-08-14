@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5530E7881B787A6600BE1944 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5530E7861B77749500BE1944 /* UIKit.framework */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
+		558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5530E7861B77749500BE1944 /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5530E7881B787A6600BE1944 /* UIKit.framework in Frameworks */,
+				558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */,
 				556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */,
 				556F85391B775A7A00288568 /* Foundation.framework in Frameworks */,
 			);
