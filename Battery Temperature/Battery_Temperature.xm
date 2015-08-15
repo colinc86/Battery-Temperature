@@ -4,7 +4,6 @@
 #include <dlfcn.h>
 #include <mach/port.h>
 #include <mach/kern_return.h>
-#include <limits.h>
 
 struct ComposedBatteryData {
     BOOL itemIsEnabled[25];
