@@ -59,6 +59,7 @@ struct ComposedBatteryData {
 @end
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
+#define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
 static BOOL enabled = false;
@@ -66,8 +67,20 @@ static int unit = 0;
 
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    enabled =  !CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME)) ? YES : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME))) boolValue];
-    unit = !CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME)) ? 0 : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME))) intValue];
+    CFPropertyListRef enabledNumber = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
+    CFPropertyListRef unitNumber = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
+    
+    if (enabledNumber && unitNumber) {
+        enabled =  [(id)CFBridgingRelease(enabledNumber) boolValue];
+        unit = [(id)CFBridgingRelease(unitNumber) intValue];
+    }
+    else {
+        NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
+        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : NO;
+        unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : NO;
+        
+        [preferences release];
+    }
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -127,6 +140,7 @@ static inline NSString *GetTemperatureString() {
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadSettings();
     
+    
     UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
     [statusBar setShowsOnlyCenterItems:YES];
     [statusBar setShowsOnlyCenterItems:NO];
@@ -137,11 +151,12 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 @class UIStatusBarBatteryPercentItemView; 
 static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
 
-#line 134 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 148 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
     if (enabled) {
+        
         char currentString[150];
         strcpy(currentString, arg1.rawData->batteryDetailString);
         NSString *tempString = GetTemperatureString();
@@ -153,10 +168,10 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_b2f9ced8() {
+static __attribute__((constructor)) void _logosLocalCtor_a72702ea() {
     {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);}
-    
+
     loadSettings();
-    
+
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }

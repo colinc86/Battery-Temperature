@@ -58,6 +58,7 @@ struct ComposedBatteryData {
 @end
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
+#define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
 static BOOL enabled = false;
@@ -65,8 +66,20 @@ static int unit = 0;
 
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    enabled =  !CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME)) ? YES : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME))) boolValue];
-    unit = !CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME)) ? 0 : [(id)CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME))) intValue];
+    CFPropertyListRef enabledNumber = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
+    CFPropertyListRef unitNumber = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
+    
+    if (enabledNumber && unitNumber) {
+        enabled =  [(id)CFBridgingRelease(enabledNumber) boolValue];
+        unit = [(id)CFBridgingRelease(unitNumber) intValue];
+    }
+    else {
+        NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
+        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : NO;
+        unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : NO;
+        
+        [preferences release];
+    }
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -150,8 +163,8 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 
 %ctor {
     %init;
-    
+
     loadSettings();
-    
+
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }

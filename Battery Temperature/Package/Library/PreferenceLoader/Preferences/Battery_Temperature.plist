@@ -19,7 +19,7 @@
 			<key>isStaticText</key>
 			<true/>
 			<key>footerText</key>
-			<string>Replace the battery percentage text with the battery&apos;s temperature. Make sure Battery Percentage is also set to ON in the Settings app.</string>
+			<string>Replaces the status bar&apos;s battery percentage text with that of the battery&apos;s temperature. Battery Percentage must also be set to ON in the Settings app.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -41,7 +41,7 @@
 			<key>isStaticText</key>
 			<true/>
 			<key>footerText</key>
-			<string>Choose between the Celsius, Fahrenheit, or Kelvin temperature scales.</string>
+			<string>Choose between the Celsius, Fahrenheit, and Kelvin temperature scales.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
