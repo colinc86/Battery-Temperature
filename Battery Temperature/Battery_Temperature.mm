@@ -64,15 +64,7 @@ struct ComposedBatteryData {
 
 static BOOL enabled = false;
 static BOOL autoHide = false;
-static BOOL highAlert = false;
-static BOOL lowAlert = false;
-static BOOL didShowHighAlert = false;
-static BOOL didShowLowAlert = false;
-
 static float autoHideCutoff = 0.0f;
-static float highAlertLimit = 35.0f;
-static float lowAlertLimit = 0.0f;
-
 static int unit = 0;
 
 static void loadSettings() {
@@ -81,31 +73,20 @@ static void loadSettings() {
     CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
     CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
     CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef showHighAlertRef = CFPreferencesCopyAppValue(CFSTR("showHighAlert"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef highTempLimitRef = CFPreferencesCopyAppValue(CFSTR("highTempLimit"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef showLowAlertRef = CFPreferencesCopyAppValue(CFSTR("showLowAlert"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef lowTempLimitRef = CFPreferencesCopyAppValue(CFSTR("lowTempLimit"), CFSTR(PREFERENCES_FILE_NAME));
     
-    if (enabledRef && unitRef && shouldAutoHideRef && showHighAlertRef && highTempLimitRef && showLowAlertRef && lowTempLimitRef) {
+    if (enabledRef && unitRef && shouldAutoHideRef && autoHideCutoff) {
         enabled =  [(id)CFBridgingRelease(enabledRef) boolValue];
         unit = [(id)CFBridgingRelease(unitRef) intValue];
         autoHide = [(id)CFBridgingRelease(shouldAutoHideRef) boolValue];
         autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
-        highAlert = [(id)CFBridgingRelease(showHighAlertRef) boolValue];
-        highAlertLimit = [(id)CFBridgingRelease(highTempLimitRef) floatValue];
-        lowAlert = [(id)CFBridgingRelease(showLowAlertRef) boolValue];
-        lowAlertLimit = [(id)CFBridgingRelease(lowTempLimitRef) floatValue];
     }
     else {
+        
         NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
         enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : NO;
         unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : 0;
         autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
         autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
-        highAlert = [preferences objectForKey:@"showHighAlert"] ? [[preferences objectForKey:@"showHighAlert"] boolValue] : NO;
-        highAlertLimit = [preferences objectForKey:@"highTempLimit"] ? [[preferences objectForKey:@"highTempLimit"] floatValue] : 0.0f;
-        lowAlert = [preferences objectForKey:@"showLowAlert"] ? [[preferences objectForKey:@"showLowAlert"] boolValue] : NO;
-        lowAlertLimit = [preferences objectForKey:@"lowTempLimit"] ? [[preferences objectForKey:@"lowTempLimit"] floatValue] : 0.0f;
         
         [preferences release];
     }
@@ -176,11 +157,12 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 @class UIStatusBarBatteryPercentItemView; 
 static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
 
-#line 173 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 154 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
     if (enabled) {
+        
         char currentString[150];
         strcpy(currentString, arg1.rawData->batteryDetailString);
         
@@ -193,46 +175,12 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
         NSNumber *number = [formatter numberFromString:sansPercentSignString];
         [formatter release];
         
-        
         float currentChargePercent = number ? [number floatValue] : 0.0f;
         
         
-        NSNumber *temperature = GetBatteryTemperature();
-        if (temperature) {
-            if ([temperature floatValue] >= highAlertLimit * 100.0f) {
-                didShowLowAlert = false;
-                
-                if (highAlert && !didShowHighAlert) {
-                    UIAlertView *highTempAlert = [[UIAlertView alloc] initWithTitle:@"High Battery Temperature" message:[NSString stringWithFormat:@"The battery temperature has reached %@.", GetTemperatureString()] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                    [highTempAlert show];
-                    [highTempAlert release];
-                    
-                    didShowHighAlert = true;
-                }
-            }
-            else if ([temperature floatValue] <= lowAlertLimit * 100.0f) {
-                didShowHighAlert = false;
-                
-                if (lowAlert && !didShowLowAlert) {
-                    UIAlertView *lowTempAlert = [[UIAlertView alloc] initWithTitle:@"Low Battery Temperature" message:[NSString stringWithFormat:@"The battery temperature has reached %@.", GetTemperatureString()] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                    [lowTempAlert show];
-                    [lowTempAlert release];
-                    
-                    didShowLowAlert = true;
-                }
-            }
-            else {
-                didShowHighAlert = false;
-                didShowLowAlert = false;
-            }
-        }
-        
-        
-        BOOL shouldHide = autoHide && (currentChargePercent <= autoHideCutoff);
-        
-        
-        if (!shouldHide) {
-            strlcpy(arg1.rawData->batteryDetailString, [GetTemperatureString() UTF8String], sizeof(arg1.rawData->batteryDetailString));
+        if (!autoHide || (currentChargePercent > autoHideCutoff)) {
+            NSString *temperatureString = GetTemperatureString();
+            strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
         }
     }
     
@@ -241,7 +189,7 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_d1105d9c() {
+static __attribute__((constructor)) void _logosLocalCtor_c1291b47() {
     {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);}
 
     loadSettings();
