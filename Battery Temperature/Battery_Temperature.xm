@@ -1,5 +1,6 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+#import <libactivator/libactivator.h>
 
 #include <dlfcn.h>
 #include <mach/port.h>
@@ -169,11 +170,22 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
         
         float currentChargePercent = number ? [number floatValue] : 0.0f;
         
-        // Copy the temperature string if we shouldn't hide it
-        if (!autoHide || (currentChargePercent > autoHideCutoff)) {
+        // Only determine if the percent should be hidden if the charge percent has a value greater than 0.0
+        // We can assume the value should always be greater than 0.0 because this program would have no power to run otherwise.
+        if (currentChargePercent > 0.0)) {
+            // Copy the temperature string if we shouldn't hide it
+            if (!autoHide || (currentChargePercent > autoHideCutoff)) {
+                NSString *temperatureString = GetTemperatureString();
+                strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+            }
+        }
+        else {
             NSString *temperatureString = GetTemperatureString();
             strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
         }
+        
+        
+        
     }
     
     return %orig(arg1, arg2);
