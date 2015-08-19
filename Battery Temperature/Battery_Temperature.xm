@@ -340,8 +340,6 @@ static inline NSString *GetTemperatureString() {
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
-    //arg1->thermalColor = 2;
-    
     // Get the battery detail string
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
@@ -367,7 +365,7 @@ static inline NSString *GetTemperatureString() {
 
         // Only show the temperature string if we aren't auto-hiding the temperature or if the current charge is above the auto cutoff value.
         // We can assume currentChargePercent should always have a value greater than 0.0 because this program would have no power to run otherwise.
-        bool printTemp =(currentChargePercent <= 0.0) || !autoHide || (currentChargePercent > autoHideCutoff);
+        bool printTemp = (currentChargePercent <= 0.0) || !autoHide || (currentChargePercent > autoHideCutoff);
         
         if (printTemp) {
             NSString *temperatureString = GetTemperatureString();

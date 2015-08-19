@@ -1,7 +1,7 @@
 Package: com.cnc.Battery-Temperature
 Name: Battery Temperature
 Version: 1.1-1
-Description: Add the battery's temperature to the status bar. Choose between the Celsius, Fahrenheit, and Kelvin temperature scales.
+Description: Adds the battery's temperature to the status bar. Choose between the Celsius, Fahrenheit, and Kelvin temperature scales.
 Section: System
 Depends: firmware (>= 5.0), mobilesubstrate
 Conflicts: libactivator (<< 1.8.3)
