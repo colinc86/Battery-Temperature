@@ -20,11 +20,17 @@ static BOOL enabled = false;
 static BOOL autoHide = false;
 static BOOL showPercent = false;
 static BOOL showAbbreviation = false;
+static BOOL highTempAlerts = false;
+static BOOL lowTempAlerts = false;
 static float autoHideCutoff = 0.0f;
 static int unit = 0;
 
 
 static BOOL forcedUpdate = false;
+static BOOL didShowH1A = false;
+static BOOL didShowH2A = false;
+static BOOL didShowL1A = false;
+static BOOL didShowL2A = false;
 static NSString *lastBatteryDetailString = @"";
 
 
@@ -130,6 +136,20 @@ static void loadSettings() {
     
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
     showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
+    
+    CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    highTempAlerts = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
+    if (!highTempAlerts) {
+        didShowH1A = false;
+        didShowH2A = false;
+    }
+    
+    CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    lowTempAlerts = lowTempAlertsRef ? [(id)CFBridgingRelease(lowTempAlertsRef) boolValue] : NO;
+    if (!lowTempAlerts) {
+        didShowL1A = false;
+        didShowL2A = false;
+    }
 }
 
 static void checkDefaultSettings() {
@@ -181,6 +201,22 @@ static void checkDefaultSettings() {
     }
     else {
         CFRelease(showAbbreviationRef);
+    }
+    
+    CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!highTempAlertsRef) {
+        CFPreferencesSetAppValue(CFSTR("highTempAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(highTempAlertsRef);
+    }
+    
+    CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!lowTempAlertsRef) {
+        CFPreferencesSetAppValue(CFSTR("lowTempAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(lowTempAlertsRef);
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
@@ -251,6 +287,58 @@ static inline NSString *GetTemperatureString() {
     }
     
     return formattedString;
+}
+
+static inline void CheckAndPostAlerts() {
+    NSNumber *rawTemperature = GetBatteryTemperature();
+    if (rawTemperature) {
+        bool showAlert = false;
+        float celsius = [rawTemperature intValue] / 100.0f;
+        NSString *message = @"";
+        
+        
+        if (celsius >= 45.0f) {
+            if (!didShowH2A && highTempAlerts) {
+                didShowH2A = true;
+                showAlert = true;
+                message = @"Battery temperature has reached 45℃ (113℉)!";
+            }
+        }
+        else if (celsius >= 35.0f) {
+            if (!didShowH1A && highTempAlerts) {
+                didShowH1A = true;
+                showAlert = true;
+                message = @"Battery temperature has reached 35℃ (95℉).";
+            }
+        }
+        else if (celsius <= -20.0f) {
+            if (!didShowL2A && lowTempAlerts) {
+                didShowL2A = true;
+                showAlert = true;
+                message = @"Battery temperature has dropped to -20℃ (-4℉)!";
+            }
+        }
+        else if (celsius <= 0.0f) {
+            if (!didShowL1A && lowTempAlerts) {
+                didShowL2A = false;
+                didShowL1A = true;
+                showAlert = true;
+                message = @"Battery temperature has dropped to -20℃ (-4℉)!";
+            }
+        }
+        else if ((celsius > 0.0f) && (celsius < 35.0f)) {
+            didShowL2A = false;
+            didShowL1A = false;
+            didShowH2A = false;
+            didShowH1A = false;
+        }
+        
+        if (showAlert) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            [alert show];
+            [alert release];
+        }
+    }
 }
 
 
@@ -340,10 +428,10 @@ static inline NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarServer; 
+@class UIStatusBarServer; @class SpringBoard; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 340 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 428 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
@@ -361,6 +449,9 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
     }
     
     if (enabled) {
+        
+        CheckAndPostAlerts();
+        
         
         NSString *sansPercentSignString = [batteryDetailString stringByReplacingOccurrencesOfString:@"%" withString:@""];
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -396,7 +487,7 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_84c5b47c() {
+static __attribute__((constructor)) void _logosLocalCtor_59e4e9e3() {
     if (_logos_static_class_lookup$SpringBoard()) {
         @autoreleasepool {
             checkDefaultSettings();

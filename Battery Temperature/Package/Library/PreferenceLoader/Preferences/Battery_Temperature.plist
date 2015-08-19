@@ -148,6 +148,39 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+			<key>label</key>
+			<string>Alerts</string>
+			<key>footerText</key>
+			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
+Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>highTempAlerts</string>
+			<key>label</key>
+			<string>High Temperature</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>lowTempAlerts</string>
+			<key>label</key>
+			<string>Low Temperature</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -204,6 +237,12 @@
 			<string>LibActivator</string>
 			<key>activatorListener</key>
 			<string>com.cnc.Battery-Temperature.activator.abbreviation</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>
