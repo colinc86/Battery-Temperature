@@ -340,7 +340,7 @@ static inline NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIStatusBarServer; @class SpringBoard; 
+@class SpringBoard; @class UIStatusBarServer; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 340 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
@@ -407,10 +407,21 @@ static __attribute__((constructor)) void _logosLocalCtor_84c5b47c() {
             dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
             Class la = objc_getClass("LAActivator");
             if (la) {
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+                BatteryTemperatureListener *enabledListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
+                [[la sharedInstance] registerListener:enabledListener forName:ACTIVATOR_LISTENER_ENABLED];
+                [enabledListener release];
+                
+                BatteryTemperatureListener *chargeListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE];
+                [[la sharedInstance] registerListener:chargeListener forName:ACTIVATOR_LISTENER_CHARGE];
+                [chargeListener release];
+                
+                BatteryTemperatureListener *unitListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT];
+                [[la sharedInstance] registerListener:unitListener forName:ACTIVATOR_LISTENER_UNIT];
+                [unitListener release];
+                
+                BatteryTemperatureListener *abbreviationListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION];
+                [[la sharedInstance] registerListener:abbreviationListener forName:ACTIVATOR_LISTENER_ABBREVIATION];
+                [abbreviationListener release];
             }
         }
     }

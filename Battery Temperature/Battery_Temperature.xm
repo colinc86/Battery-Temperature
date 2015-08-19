@@ -400,10 +400,21 @@ static inline NSString *GetTemperatureString() {
             dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
             Class la = objc_getClass("LAActivator");
             if (la) {
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
-                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+                BatteryTemperatureListener *enabledListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
+                [[la sharedInstance] registerListener:enabledListener forName:ACTIVATOR_LISTENER_ENABLED];
+                [enabledListener release];
+                
+                BatteryTemperatureListener *chargeListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE];
+                [[la sharedInstance] registerListener:chargeListener forName:ACTIVATOR_LISTENER_CHARGE];
+                [chargeListener release];
+                
+                BatteryTemperatureListener *unitListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT];
+                [[la sharedInstance] registerListener:unitListener forName:ACTIVATOR_LISTENER_UNIT];
+                [unitListener release];
+                
+                BatteryTemperatureListener *abbreviationListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION];
+                [[la sharedInstance] registerListener:abbreviationListener forName:ACTIVATOR_LISTENER_ABBREVIATION];
+                [abbreviationListener release];
             }
         }
     }
