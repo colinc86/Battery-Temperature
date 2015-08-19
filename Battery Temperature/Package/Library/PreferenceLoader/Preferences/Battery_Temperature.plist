@@ -70,9 +70,9 @@
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Celsius</string>
-				<string>Fahrenheit</string>
-				<string>Kelvin</string>
+				<string>Celsius (℃)</string>
+				<string>Fahrenheit (℉)</string>
+				<string>Kelvin (K)</string>
 			</array>
 			<key>validValues</key>
 			<array>
