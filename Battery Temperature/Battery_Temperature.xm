@@ -1,6 +1,5 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
-#import <libactivator/libactivator.h>
 
 #include <dlfcn.h>
 #include <mach/port.h>
@@ -58,7 +57,35 @@ typedef struct {
     unsigned int tetheringConnectionCount;
 } CDStruct_4ec3be00;
 
+
+
+
 // Classes
+
+// LibActivator
+@class LAEvent;
+@protocol LAListener;
+
+@interface LAActivator
++ (id)sharedInstance;
+- (id)registerListener:(id)arg1 forName:(NSString *)arg2;
+@end
+
+@protocol LAListener <NSObject>
+@optional
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedDescriptionForListenerName:(NSString *)listenerName;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName;
+- (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName;
+@end
+
+// Activator listener class
+@interface BatteryTemperatureListener : NSObject<LAListener>
+@property (nonatomic, copy) NSString *activatorListenerName;
+@end
+
+// Status bar classes
 @class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
@@ -73,11 +100,11 @@ typedef struct {
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
 
-@interface BatteryTemperatureListener : NSObject<LAListener>
-@property (nonatomic, copy) NSString *activatorListenerName;
-@end
+
+
 
 // Static functions
+
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     
@@ -203,7 +230,11 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
+
+
+
 // Activator listener
+
 @implementation BatteryTemperatureListener
 
 - (id)initWithListenerName:(NSString *)name {
@@ -279,6 +310,11 @@ static inline NSString *GetTemperatureString() {
 
 @end
 
+
+
+
+// Hook methods
+
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
@@ -339,10 +375,14 @@ static inline NSString *GetTemperatureString() {
             
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+            dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+            Class la = objc_getClass("LAActivator");
+            if (la) {
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+            }
         }
     }
     

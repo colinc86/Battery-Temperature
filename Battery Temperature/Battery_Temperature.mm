@@ -1,7 +1,7 @@
 #line 1 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
-#import <libactivator/libactivator.h>
+
 
 #include <dlfcn.h>
 #include <mach/port.h>
@@ -59,6 +59,22 @@ typedef struct {
     unsigned int tetheringConnectionCount;
 } CDStruct_4ec3be00;
 
+
+@class LAEvent;
+@protocol LAListener;
+@interface LAActivator
++ (id)sharedInstance;
+- (id)registerListener:(id)arg1 forName:(NSString *)arg2;
+@end
+
+@protocol LAListener <NSObject>
+@optional
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedDescriptionForListenerName:(NSString *)listenerName;
+- (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName;
+- (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName;
+@end
 
 @class UIStatusBarItem;
 
@@ -224,13 +240,13 @@ static inline NSString *GetTemperatureString() {
         title = @"Toggle Enabled";
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_CHARGE]) {
-        title = @"Toggle Battery Charge";
+        title = @"Toggle Show Battery Charge";
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
         title = @"Change Temperature Scale";
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        title = @"Toggle Show Abbreviation";
+        title = @"Toggle Show Unit Abbreviation";
     }
     return title;
 }
@@ -285,7 +301,7 @@ static inline NSString *GetTemperatureString() {
 @class SpringBoard; @class UIStatusBarServer; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 282 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 298 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
@@ -338,7 +354,7 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_59a68cba() {
+static __attribute__((constructor)) void _logosLocalCtor_d88f7dd7() {
     if (_logos_static_class_lookup$SpringBoard()) {
         @autoreleasepool {
             checkDefaultSettings();
@@ -346,10 +362,14 @@ static __attribute__((constructor)) void _logosLocalCtor_59a68cba() {
             
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
-            [[LAActivator sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+            dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+            Class la = objc_getClass("LAActivator");
+            if (la) {
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED] forName:ACTIVATOR_LISTENER_ENABLED];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE] forName:ACTIVATOR_LISTENER_CHARGE];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT] forName:ACTIVATOR_LISTENER_UNIT];
+                [[la sharedInstance] registerListener:[[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION] forName:ACTIVATOR_LISTENER_ABBREVIATION];
+            }
         }
     }
     

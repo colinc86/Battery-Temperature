@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		554F9F511B80292F002FEFAC /* libactivator.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 554F9F501B80292F002FEFAC /* libactivator.dylib */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
@@ -37,7 +36,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				554F9F511B80292F002FEFAC /* libactivator.dylib in Frameworks */,
 				558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */,
 				556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */,
 				556F85391B775A7A00288568 /* Foundation.framework in Frameworks */,
