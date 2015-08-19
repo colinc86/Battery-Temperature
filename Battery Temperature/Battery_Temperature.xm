@@ -41,32 +41,6 @@ typedef struct {
     unsigned int tetheringConnectionCount;
 } CDStruct_4ec3be00;
 
-typedef struct {
-    BOOL x1[24];
-    unsigned int x2 : 1;
-    unsigned int x3 : 1;
-    unsigned int x4 : 1;
-    unsigned int x5 : 1;
-    unsigned int x6 : 2;
-    unsigned int x7 : 1;
-    unsigned int x8 : 1;
-    unsigned int x9 : 1;
-    unsigned int x10 : 1;
-    unsigned int x11 : 1;
-    unsigned int x12 : 1;
-    unsigned int x13 : 1;
-    unsigned int x14 : 1;
-    unsigned int x15 : 1;
-    unsigned int x16 : 1;
-    unsigned int x17 : 1;
-    unsigned int x18 : 1;
-    unsigned int x19 : 1;
-    unsigned int x20 : 1;
-    unsigned int x21 : 1;
-    unsigned int x22 : 1;
-    CDStruct_4ec3be00 x23;
-} RAWDATA;
-
 @class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
@@ -79,8 +53,6 @@ typedef struct {
 @interface UIStatusBarServer : NSObject
 + (CDStruct_4ec3be00 *)getStatusBarData;
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
-+ (RAWDATA *)getStatusBarOverrideData;
-+ (void)postStatusBarOverrideData:(RAWDATA *)arg1;
 @end
 
 
@@ -95,7 +67,8 @@ typedef struct {
 // Preferences variables
 static BOOL enabled = false;
 static BOOL autoHide = false;
-static BOOL hidePercent = false;
+static BOOL showPercent = false;
+static BOOL showAbbreviation = false;
 static float autoHideCutoff = 0.0f;
 static int unit = 0;
 
@@ -118,8 +91,57 @@ static void loadSettings() {
     CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
     autoHideCutoff = autoHideCutoffRef ? [(id)CFBridgingRelease(autoHideCutoffRef) floatValue] : 0.0f;
     
-    CFPropertyListRef hidePercentRef = CFPreferencesCopyAppValue(CFSTR("hidePercent"), CFSTR(PREFERENCES_FILE_NAME));
-    hidePercent = hidePercentRef ? [(id)CFBridgingRelease(hidePercentRef) boolValue] : NO;
+    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR("showPercent"), CFSTR(PREFERENCES_FILE_NAME));
+    showPercent = showPercentRef ? [(id)CFBridgingRelease(showPercentRef) boolValue] : NO;
+    
+    CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
+    showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
+}
+
+static void checkDefaultSettings() {
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    
+    CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!enabledRef) {
+        CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!unitRef) {
+        CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:0], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!shouldAutoHideRef) {
+        CFPreferencesSetAppValue(CFSTR("shouldAutoHide"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!autoHideCutoffRef) {
+        CFPreferencesSetAppValue(CFSTR("autoHideCutoff"), (CFNumberRef)[NSNumber numberWithFloat:20.0], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR("showPercent"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!showPercentRef) {
+        CFPreferencesSetAppValue(CFSTR("showPercent"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!showAbbreviationRef) {
+        CFPreferencesSetAppValue(CFSTR("showAbbreviation"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+}
+
+static void refreshStatusBarData() {
+    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+}
+
+static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    forcedUpdate = true;
+    loadSettings();
+    refreshStatusBarData();
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -154,33 +176,29 @@ static inline NSString *GetTemperatureString() {
     NSNumber *rawTemperature = GetBatteryTemperature();
     
     if (rawTemperature) {
+        NSString *abbreviationString = @"";
         float celsius = [rawTemperature intValue] / 100.0f;
         
         if (unit == 1) {
+            if (showAbbreviation) abbreviationString = @"℉";
+            
             float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
-            formattedString = [NSString stringWithFormat:@"%0.1f℉", fahrenheit];
+            formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
         }
         else if (unit == 2) {
+            if (showAbbreviation) abbreviationString = @" K";
+            
             float kelvin = celsius + 273.15;
-            formattedString = [NSString stringWithFormat:@"%0.1f K", kelvin];
+            formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
         }
         else {
             // Default to Celsius
-            formattedString = [NSString stringWithFormat:@"%0.1f℃", celsius];
+            if (showAbbreviation) abbreviationString = @"℃";
+            formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
         }
     }
     
     return formattedString;
-}
-
-static void refreshStatusBarData() {
-    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
-}
-
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    forcedUpdate = true;
-    loadSettings();
-    refreshStatusBarData();
 }
 
 
@@ -221,7 +239,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
         if (printTemp) {
             NSString *temperatureString = GetTemperatureString();
             
-            if (!hidePercent) {
+            if (showPercent) {
                 // Append the battery detail string if we're showing the percent
                 temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
             }
@@ -267,6 +285,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 %end
 
 %ctor {
+    checkDefaultSettings();
     loadSettings();
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
