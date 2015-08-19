@@ -7,15 +7,15 @@
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
-struct ComposedBatteryData {
-    BOOL itemIsEnabled[25];
-    BOOL timeString[64];
+typedef struct {
+    char itemIsEnabled[25];
+    char timeString[64];
     int gsmSignalStrengthRaw;
     int gsmSignalStrengthBars;
-    BOOL serviceString[100];
-    BOOL serviceCrossfadeString[100];
-    BOOL serviceImages[2][100];
-    BOOL operatorDirectory[1024];
+    char serviceString[100];
+    char serviceCrossfadeString[100];
+    char serviceImages[2][100];
+    char operatorDirectory[1024];
     unsigned int serviceContentType;
     int wifiSignalStrengthRaw;
     int wifiSignalStrengthBars;
@@ -25,43 +25,39 @@ struct ComposedBatteryData {
     char batteryDetailString[150];
     int bluetoothBatteryCapacity;
     int thermalColor;
-    unsigned int thermalSunlightMode : 1;
-    unsigned int slowActivity : 1;
-    unsigned int syncActivity : 1;
-    BOOL activityDisplayId[256];
-    unsigned int bluetoothConnected : 1;
-    unsigned int displayRawGSMSignal : 1;
-    unsigned int displayRawWifiSignal : 1;
-    unsigned int locationIconType : 1;
-    unsigned int quietModeInactive : 1;
+    unsigned int thermalSunlightMode:1;
+    unsigned int slowActivity:1;
+    unsigned int syncActivity:1;
+    char activityDisplayId[256];
+    unsigned int bluetoothConnected:1;
+    unsigned int displayRawGSMSignal:1;
+    unsigned int displayRawWifiSignal:1;
+    unsigned int locationIconType:1;
+    unsigned int quietModeInactive:1;
     unsigned int tetheringConnectionCount;
-    NSString *_doubleHeightStatus;
-    BOOL _itemEnabled[30];
-} ComposedBatteryData;
+} CDStruct_4ec3be00;
 
-@interface UIStatusBarComposedData : NSObject <NSCopying> {
-    struct ComposedBatteryData *_rawData;
-}
-@property(readonly) struct ComposedBatteryData *rawData;
-- (struct ComposedBatteryData *)rawData;
-@end
+@class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
 @end
 
 @interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
-- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style;
 @end
 
-@interface UIStatusBar ()
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+
+@interface UIStatusBarServer : NSObject
++ (const CDStruct_4ec3be00 *)getStatusBarData;
++ (void)postStatusBarData:(const CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
 
-@interface UIApplication ()
-- (id)statusBar;
-@end
 
-@class UIStatusBarItem;
+
+
+
+
+
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
@@ -162,35 +158,35 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
+static void refreshStatusBarData() {
+    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+}
+
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadSettings();
-    
-    
-    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
+    refreshStatusBarData();
 }
+
+
+
+
+
+
+
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIApplicationDelegate; @class UIStatusBarBatteryPercentItemView; 
-static id (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static void (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$)(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); static void (*_logos_orig$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$)(UIApplicationDelegate*, SEL, UIApplication *); static void _logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$(UIApplicationDelegate*, SEL, UIApplication *); 
+@class UIStatusBarBatteryPercentItemView; @class UIStatusBarServer; 
+static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static id (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static void (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$)(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); 
 
-#line 173 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 176 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
-static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarItem * item, void * data, NSInteger actions, NSInteger style) {
-    if ((self = _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(self, _cmd, item, data, actions, style))) {
-        self.userInteractionEnabled = YES;
-    }
-    return self;
-}
-
-static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
+static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
     if (enabled) {
         
         char currentString[150];
-        strcpy(currentString, arg1.rawData->batteryDetailString);
+        strcpy(currentString, arg1->batteryDetailString);
         
         NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
         NSString *sansPercentSignString = [batteryDetailString stringByReplacingOccurrencesOfString:@"%" withString:@""];
@@ -209,16 +205,27 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
             
             if (!autoHide || (currentChargePercent > autoHideCutoff)) {
                 NSString *temperatureString = GetTemperatureString();
-                strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+                strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
             }
         }
         else {
             NSString *temperatureString = GetTemperatureString();
-            strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+            strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
         }
     }
     
-    return _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(self, _cmd, arg1, arg2);
+    _logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(self, _cmd, arg1, arg2);
+}
+
+
+
+
+
+static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarItem * item, void * data, NSInteger actions, NSInteger style) {
+    if ((self = _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(self, _cmd, item, data, actions, style))) {
+        self.userInteractionEnabled = YES;
+    }
+    return self;
 }
 
 
@@ -227,18 +234,15 @@ static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEn
     
     CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    CFPreferencesSynchronize (CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+
     
-    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:PREFERENCES_FILE_PATH];
-    [preferences setObject:[NSNumber numberWithInt:unit] forKey:@"unit"];
-    [preferences writeToFile:PREFERENCES_FILE_PATH atomically:YES];
+
+
+
     
     CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, false);
     
-    
-    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
+    refreshStatusBarData();
     
     _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(self, _cmd, touches, event);
 }
@@ -247,18 +251,18 @@ static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEn
 
 
 
-static void _logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$(UIApplicationDelegate* self, SEL _cmd, UIApplication * application) {
-    UIStatusBar *statusBar = [application statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
-}
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_e6aabc04() {
+
+
+
+
+
+static __attribute__((constructor)) void _logosLocalCtor_2b58030d() {
     loadSettings();
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     
-    {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(initWithItem:data:actions:style:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$);MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(touchesEnded:withEvent:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$);Class _logos_class$_ungrouped$UIApplicationDelegate = objc_getClass("UIApplicationDelegate"); MSHookMessageEx(_logos_class$_ungrouped$UIApplicationDelegate, @selector(applicationDidBecomeActive:), (IMP)&_logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$, (IMP*)&_logos_orig$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$);}
+    {Class _logos_class$_ungrouped$UIStatusBarServer = objc_getClass("UIStatusBarServer"); Class _logos_metaclass$_ungrouped$UIStatusBarServer = object_getClass(_logos_class$_ungrouped$UIStatusBarServer); MSHookMessageEx(_logos_metaclass$_ungrouped$UIStatusBarServer, @selector(postStatusBarData:withActions:), (IMP)&_logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$, (IMP*)&_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$);Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(initWithItem:data:actions:style:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$);MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(touchesEnded:withEvent:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$);}
 }

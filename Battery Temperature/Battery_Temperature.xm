@@ -6,15 +6,20 @@
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
-struct ComposedBatteryData {
-    BOOL itemIsEnabled[25];
-    BOOL timeString[64];
+
+
+
+
+
+typedef struct {
+    char itemIsEnabled[25];
+    char timeString[64];
     int gsmSignalStrengthRaw;
     int gsmSignalStrengthBars;
-    BOOL serviceString[100];
-    BOOL serviceCrossfadeString[100];
-    BOOL serviceImages[2][100];
-    BOOL operatorDirectory[1024];
+    char serviceString[100];
+    char serviceCrossfadeString[100];
+    char serviceImages[2][100];
+    char operatorDirectory[1024];
     unsigned int serviceContentType;
     int wifiSignalStrengthRaw;
     int wifiSignalStrengthBars;
@@ -24,43 +29,36 @@ struct ComposedBatteryData {
     char batteryDetailString[150];
     int bluetoothBatteryCapacity;
     int thermalColor;
-    unsigned int thermalSunlightMode : 1;
-    unsigned int slowActivity : 1;
-    unsigned int syncActivity : 1;
-    BOOL activityDisplayId[256];
-    unsigned int bluetoothConnected : 1;
-    unsigned int displayRawGSMSignal : 1;
-    unsigned int displayRawWifiSignal : 1;
-    unsigned int locationIconType : 1;
-    unsigned int quietModeInactive : 1;
+    unsigned int thermalSunlightMode:1;
+    unsigned int slowActivity:1;
+    unsigned int syncActivity:1;
+    char activityDisplayId[256];
+    unsigned int bluetoothConnected:1;
+    unsigned int displayRawGSMSignal:1;
+    unsigned int displayRawWifiSignal:1;
+    unsigned int locationIconType:1;
+    unsigned int quietModeInactive:1;
     unsigned int tetheringConnectionCount;
-    NSString *_doubleHeightStatus;
-    BOOL _itemEnabled[30];
-} ComposedBatteryData;
+} CDStruct_4ec3be00;
 
-@interface UIStatusBarComposedData : NSObject <NSCopying> {
-    struct ComposedBatteryData *_rawData;
-}
-@property(readonly) struct ComposedBatteryData *rawData;
-- (struct ComposedBatteryData *)rawData;
-@end
+@class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
 @end
 
 @interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
-- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style;
 @end
 
-@interface UIStatusBar ()
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
+@interface UIStatusBarServer : NSObject
++ (const CDStruct_4ec3be00 *)getStatusBarData;
++ (void)postStatusBarData:(const CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
 
-@interface UIApplication ()
-- (id)statusBar;
-@end
 
-@class UIStatusBarItem;
+
+
+
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
@@ -161,29 +159,27 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
+static void refreshStatusBarData() {
+    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+}
+
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadSettings();
-    
-    // Refresh the status bar
-    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
+    refreshStatusBarData();
 }
 
-%hook UIStatusBarBatteryPercentItemView
 
-- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style {
-    if ((self = %orig)) {
-        self.userInteractionEnabled = YES;
-    }
-    return self;
-}
 
-- (BOOL)updateForNewData:(UIStatusBarComposedData *)arg1 actions:(int)arg2 {
+
+
+
+%hook UIStatusBarServer
+
++ (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
     if (enabled) {
         // Get the battery's current charge percent
         char currentString[150];
-        strcpy(currentString, arg1.rawData->batteryDetailString);
+        strcpy(currentString, arg1->batteryDetailString);
         
         NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
         NSString *sansPercentSignString = [batteryDetailString stringByReplacingOccurrencesOfString:@"%" withString:@""];
@@ -202,16 +198,27 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
             // Copy the temperature string if we shouldn't hide it
             if (!autoHide || (currentChargePercent > autoHideCutoff)) {
                 NSString *temperatureString = GetTemperatureString();
-                strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+                strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
             }
         }
         else {
             NSString *temperatureString = GetTemperatureString();
-            strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+            strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
         }
     }
     
-    return %orig(arg1, arg2);
+    %orig(arg1, arg2);
+}
+
+%end
+
+%hook UIStatusBarBatteryPercentItemView
+
+- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style {
+    if ((self = %orig)) {
+        self.userInteractionEnabled = YES;
+    }
+    return self;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -220,30 +227,11 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
     
     CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    CFPreferencesSynchronize (CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
-    
-    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:PREFERENCES_FILE_PATH];
-    [preferences setObject:[NSNumber numberWithInt:unit] forKey:@"unit"];
-    [preferences writeToFile:PREFERENCES_FILE_PATH atomically:YES];
-    
     CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, false);
     
-    // Refresh the status bar
-    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
+    refreshStatusBarData();
     
     %orig;
-}
-
-%end
-
-%hook UIApplicationDelegate
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    UIStatusBar *statusBar = [application statusBar];
-    [statusBar setShowsOnlyCenterItems:YES];
-    [statusBar setShowsOnlyCenterItems:NO];
 }
 
 %end
