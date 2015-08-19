@@ -2,7 +2,6 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
 
-
 #include <dlfcn.h>
 #include <mach/port.h>
 #include <mach/kern_return.h>
@@ -60,8 +59,14 @@ typedef struct {
 } CDStruct_4ec3be00;
 
 
+
+
+
+
+
 @class LAEvent;
 @protocol LAListener;
+
 @interface LAActivator
 + (id)sharedInstance;
 - (id)registerListener:(id)arg1 forName:(NSString *)arg2;
@@ -76,6 +81,12 @@ typedef struct {
 - (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName;
 @end
 
+
+@interface BatteryTemperatureListener : NSObject<LAListener>
+@property (nonatomic, copy) NSString *activatorListenerName;
+@end
+
+
 @class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
@@ -85,14 +96,18 @@ typedef struct {
 - (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style;
 @end
 
+@interface UIStatusBarBatteryItemView : UIStatusBarItemView
+- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+@end
+
 @interface UIStatusBarServer : NSObject
 + (CDStruct_4ec3be00 *)getStatusBarData;
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
 
-@interface BatteryTemperatureListener : NSObject<LAListener>
-@property (nonatomic, copy) NSString *activatorListenerName;
-@end
+
+
+
 
 
 static void loadSettings() {
@@ -221,6 +236,10 @@ static inline NSString *GetTemperatureString() {
 }
 
 
+
+
+
+
 @implementation BatteryTemperatureListener
 
 - (id)initWithListenerName:(NSString *)name {
@@ -296,15 +315,22 @@ static inline NSString *GetTemperatureString() {
 
 @end
 
+
+
+
+
+
 #include <logos/logos.h>
 #include <substrate.h>
 @class SpringBoard; @class UIStatusBarServer; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 298 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 322 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
+    arg1->thermalColor = 2;
+    
     
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
@@ -354,7 +380,7 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_d88f7dd7() {
+static __attribute__((constructor)) void _logosLocalCtor_edc640a8() {
     if (_logos_static_class_lookup$SpringBoard()) {
         @autoreleasepool {
             checkDefaultSettings();

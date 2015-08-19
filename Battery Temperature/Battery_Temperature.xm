@@ -95,6 +95,10 @@ typedef struct {
 - (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style;
 @end
 
+@interface UIStatusBarBatteryItemView : UIStatusBarItemView
+- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
+@end
+
 @interface UIStatusBarServer : NSObject
 + (CDStruct_4ec3be00 *)getStatusBarData;
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
@@ -134,30 +138,48 @@ static void checkDefaultSettings() {
     if (!enabledRef) {
         CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
     }
+    else {
+        CFRelease(enabledRef);
+    }
     
     CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
     if (!unitRef) {
         CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:0], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(unitRef);
     }
     
     CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
     if (!shouldAutoHideRef) {
         CFPreferencesSetAppValue(CFSTR("shouldAutoHide"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
     }
+    else {
+        CFRelease(shouldAutoHideRef);
+    }
     
     CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
     if (!autoHideCutoffRef) {
         CFPreferencesSetAppValue(CFSTR("autoHideCutoff"), (CFNumberRef)[NSNumber numberWithFloat:20.0], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(autoHideCutoffRef);
     }
     
     CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR("showPercent"), CFSTR(PREFERENCES_FILE_NAME));
     if (!showPercentRef) {
         CFPreferencesSetAppValue(CFSTR("showPercent"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
     }
+    else {
+        CFRelease(showPercentRef);
+    }
     
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
     if (!showAbbreviationRef) {
         CFPreferencesSetAppValue(CFSTR("showAbbreviation"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(showAbbreviationRef);
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
@@ -318,6 +340,8 @@ static inline NSString *GetTemperatureString() {
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
+    //arg1->thermalColor = 2;
+    
     // Get the battery detail string
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);

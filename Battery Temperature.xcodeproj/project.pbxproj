@@ -16,6 +16,7 @@
 /* Begin PBXFileReference section */
 		55167A741B7D5675005F24E5 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
 		55167A751B7D5675005F24E5 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
+		5521C9571B84576F00B34E66 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		5530E7861B77749500BE1944 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		554F9F501B80292F002FEFAC /* libactivator.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libactivator.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libactivator.dylib; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +66,7 @@
 		556F85371B775A7A00288568 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5521C9571B84576F00B34E66 /* CoreGraphics.framework */,
 				554F9F501B80292F002FEFAC /* libactivator.dylib */,
 				5530E7861B77749500BE1944 /* UIKit.framework */,
 				556F85531B775A9400288568 /* libsubstrate.dylib */,
