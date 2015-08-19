@@ -19,7 +19,7 @@
 			<key>isStaticText</key>
 			<true/>
 			<key>footerText</key>
-			<string>Replaces the status bar&apos;s battery percentage text with that of the battery&apos;s temperature. Battery Percentage must also be set to ON in the Settings app.</string>
+			<string>Show the battery&apos;s temperature in the status bar. Battery Percentage must also be set to ON in the Settings app.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -32,6 +32,20 @@
 			<string>enabled</string>
 			<key>label</key>
 			<string>Enabled</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>hidePercent</string>
+			<key>label</key>
+			<string>Hide Battery Charge</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>

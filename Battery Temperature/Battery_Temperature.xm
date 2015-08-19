@@ -41,6 +41,32 @@ typedef struct {
     unsigned int tetheringConnectionCount;
 } CDStruct_4ec3be00;
 
+typedef struct {
+    BOOL x1[24];
+    unsigned int x2 : 1;
+    unsigned int x3 : 1;
+    unsigned int x4 : 1;
+    unsigned int x5 : 1;
+    unsigned int x6 : 2;
+    unsigned int x7 : 1;
+    unsigned int x8 : 1;
+    unsigned int x9 : 1;
+    unsigned int x10 : 1;
+    unsigned int x11 : 1;
+    unsigned int x12 : 1;
+    unsigned int x13 : 1;
+    unsigned int x14 : 1;
+    unsigned int x15 : 1;
+    unsigned int x16 : 1;
+    unsigned int x17 : 1;
+    unsigned int x18 : 1;
+    unsigned int x19 : 1;
+    unsigned int x20 : 1;
+    unsigned int x21 : 1;
+    unsigned int x22 : 1;
+    CDStruct_4ec3be00 x23;
+} RAWDATA;
+
 @class UIStatusBarItem;
 
 @interface UIStatusBarItemView : UIView
@@ -51,8 +77,10 @@ typedef struct {
 @end
 
 @interface UIStatusBarServer : NSObject
-+ (const CDStruct_4ec3be00 *)getStatusBarData;
-+ (void)postStatusBarData:(const CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
++ (CDStruct_4ec3be00 *)getStatusBarData;
++ (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
++ (RAWDATA *)getStatusBarOverrideData;
++ (void)postStatusBarOverrideData:(RAWDATA *)arg1;
 @end
 
 
@@ -64,48 +92,34 @@ typedef struct {
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
+// Preferences variables
 static BOOL enabled = false;
 static BOOL autoHide = false;
+static BOOL hidePercent = false;
 static float autoHideCutoff = 0.0f;
 static int unit = 0;
 
+// Local variables
+static BOOL forcedUpdate = false;
+static NSString *lastBatteryDetailString = @"";
+
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    CFPreferencesSynchronize(CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
-    NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
     
-    Boolean exists = false;
-    Boolean enabledRef = CFPreferencesGetAppBooleanValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME), &exists);
-    if (exists) {
-        enabled = enabledRef;
-    } else {
-        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : YES;
-    }
+    CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
+    enabled = enabledRef ? [(id)CFBridgingRelease(enabledRef) boolValue] : YES;
     
-    exists = false;
-    NSInteger unitRef = CFPreferencesGetAppIntegerValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME), &exists);
-    if (exists) {
-        unit = (int)unitRef;
-    } else {
-        unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : 0;
-    }
+    CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
+    unit = unitRef ? [(id)CFBridgingRelease(unitRef) intValue] : 0;
     
-    exists = false;
-    Boolean shouldAutoHideRef = CFPreferencesGetAppBooleanValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME), &exists);
-    if (exists) {
-        autoHide = shouldAutoHideRef;
-    } else {
-        autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
-    }
+    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
+    autoHide = shouldAutoHideRef ? [(id)CFBridgingRelease(shouldAutoHideRef) boolValue] : NO;
     
     CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
-    if (autoHideCutoffRef) {
-        autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
-    } else {
-        autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
-    }
+    autoHideCutoff = autoHideCutoffRef ? [(id)CFBridgingRelease(autoHideCutoffRef) floatValue] : 0.0f;
     
-    [preferences release];
+    CFPropertyListRef hidePercentRef = CFPreferencesCopyAppValue(CFSTR("hidePercent"), CFSTR(PREFERENCES_FILE_NAME));
+    hidePercent = hidePercentRef ? [(id)CFBridgingRelease(hidePercentRef) boolValue] : NO;
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -164,6 +178,7 @@ static void refreshStatusBarData() {
 }
 
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    forcedUpdate = true;
     loadSettings();
     refreshStatusBarData();
 }
@@ -176,36 +191,50 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
+    // Get the battery detail string
+    char currentString[150];
+    strcpy(currentString, arg1->batteryDetailString);
+    NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
+    
+    // If this is a system update, then cache the percent string
+    if (!forcedUpdate) {
+        if (lastBatteryDetailString != nil) {
+            [lastBatteryDetailString release];
+        }
+        lastBatteryDetailString = [batteryDetailString retain];
+    }
+    
     if (enabled) {
         // Get the battery's current charge percent
-        char currentString[150];
-        strcpy(currentString, arg1->batteryDetailString);
-        
-        NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
         NSString *sansPercentSignString = [batteryDetailString stringByReplacingOccurrencesOfString:@"%" withString:@""];
-        
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
-        
         NSNumber *number = [formatter numberFromString:sansPercentSignString];
         [formatter release];
         
         float currentChargePercent = number ? [number floatValue] : 0.0f;
+
+        // Only show the temperature string if we aren't auto-hiding the temperature or if the current charge is above the auto cutoff value.
+        // We can assume currentChargePercent should always have a value greater than 0.0 because this program would have no power to run otherwise.
+        bool printTemp =(currentChargePercent <= 0.0) || !autoHide || (currentChargePercent > autoHideCutoff);
         
-        // Only determine if the percent should be hidden if the charge percent has a value greater than 0.0
-        // We can assume the value should always be greater than 0.0 because this program would have no power to run otherwise.
-        if (currentChargePercent > 0.0) {
-            // Copy the temperature string if we shouldn't hide it
-            if (!autoHide || (currentChargePercent > autoHideCutoff)) {
-                NSString *temperatureString = GetTemperatureString();
-                strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
-            }
-        }
-        else {
+        if (printTemp) {
             NSString *temperatureString = GetTemperatureString();
+            
+            if (!hidePercent) {
+                // Append the battery detail string if we're showing the percent
+                temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
+            }
+            
             strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
         }
+    } else if (forcedUpdate) {
+        // If we manually disabled the tweak then copy in the last updated detain string
+        strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
     }
+    
+    // Reset the forced update flag
+    forcedUpdate = false;
     
     %orig(arg1, arg2);
 }
@@ -229,6 +258,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, false);
     
+    forcedUpdate = true;
     refreshStatusBarData();
     
     %orig;
