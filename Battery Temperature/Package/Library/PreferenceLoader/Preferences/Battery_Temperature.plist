@@ -19,7 +19,7 @@
 			<key>isStaticText</key>
 			<true/>
 			<key>footerText</key>
-			<string>Show the battery&apos;s temperature in the status bar. Battery Percentage must also be set to ON in the Settings app.</string>
+			<string>Battery Percentage must also be set to ON in the Settings app.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -148,6 +148,62 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+			<key>label</key>
+			<string>Activator Methods</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Enabled</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Show Battery Charge</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.charge</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Change Temperature Scale</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.unit</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Show Unit Abbreviation</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.abbreviation</string>
 		</dict>
 		<dict>
 			<key>cell</key>

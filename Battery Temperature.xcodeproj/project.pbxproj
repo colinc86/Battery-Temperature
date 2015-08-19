@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		554F9F511B80292F002FEFAC /* libactivator.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 554F9F501B80292F002FEFAC /* libactivator.dylib */; };
-		554F9F5C1B803EF2002FEFAC /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 554F9F581B803D0D002FEFAC /* icon-small.png */; };
-		554F9F5D1B803EF2002FEFAC /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 554F9F591B803D0D002FEFAC /* icon-small@2x.png */; };
-		554F9F5E1B803EF2002FEFAC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 554F9F5A1B803D0D002FEFAC /* Info.plist */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
@@ -22,9 +19,6 @@
 		55167A751B7D5675005F24E5 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
 		5530E7861B77749500BE1944 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		554F9F501B80292F002FEFAC /* libactivator.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libactivator.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libactivator.dylib; sourceTree = "<group>"; };
-		554F9F581B803D0D002FEFAC /* icon-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-small.png"; path = "Package/Library/Activator/Listeners/com.cnc.Battery-Temperature/icon-small.png"; sourceTree = "<group>"; };
-		554F9F591B803D0D002FEFAC /* icon-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-small@2x.png"; path = "Package/Library/Activator/Listeners/com.cnc.Battery-Temperature/icon-small@2x.png"; sourceTree = "<group>"; };
-		554F9F5A1B803D0D002FEFAC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Package/Library/Activator/Listeners/com.cnc.Battery-Temperature/Info.plist"; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		556F853D1B775A7A00288568 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -53,32 +47,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		554F9F531B8037F4002FEFAC /* Activator */ = {
-			isa = PBXGroup;
-			children = (
-				554F9F541B803802002FEFAC /* Listeners */,
-			);
-			name = Activator;
-			sourceTree = "<group>";
-		};
-		554F9F541B803802002FEFAC /* Listeners */ = {
-			isa = PBXGroup;
-			children = (
-				554F9F551B80382A002FEFAC /* com.cnc.Batter-Temperature */,
-			);
-			name = Listeners;
-			sourceTree = "<group>";
-		};
-		554F9F551B80382A002FEFAC /* com.cnc.Batter-Temperature */ = {
-			isa = PBXGroup;
-			children = (
-				554F9F581B803D0D002FEFAC /* icon-small.png */,
-				554F9F591B803D0D002FEFAC /* icon-small@2x.png */,
-				554F9F5A1B803D0D002FEFAC /* Info.plist */,
-			);
-			name = "com.cnc.Batter-Temperature";
-			sourceTree = "<group>";
-		};
 		556F852A1B775A7A00288568 = {
 			isa = PBXGroup;
 			children = (
@@ -150,7 +118,6 @@
 			children = (
 				556F85421B775A7A00288568 /* PreferenceLoader */,
 				556F854B1B775A7A00288568 /* MobileSubstrate */,
-				554F9F531B8037F4002FEFAC /* Activator */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -257,9 +224,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				554F9F5C1B803EF2002FEFAC /* icon-small.png in Resources */,
-				554F9F5D1B803EF2002FEFAC /* icon-small@2x.png in Resources */,
-				554F9F5E1B803EF2002FEFAC /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
