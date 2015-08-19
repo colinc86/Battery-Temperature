@@ -45,7 +45,10 @@ struct ComposedBatteryData {
 - (struct ComposedBatteryData *)rawData;
 @end
 
-@interface UIStatusBarBatteryPercentItemView
+@interface UIStatusBarItemView : UIView
+@end
+
+@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
 @end
 
@@ -56,6 +59,8 @@ struct ComposedBatteryData {
 @interface UIApplication ()
 - (id)statusBar;
 @end
+
+@class UIStatusBarItem;
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
@@ -68,27 +73,41 @@ static int unit = 0;
 
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesSynchronize(CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+    NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
     
-    if (enabledRef && unitRef && shouldAutoHideRef && autoHideCutoff) {
-        enabled =  [(id)CFBridgingRelease(enabledRef) boolValue];
-        unit = [(id)CFBridgingRelease(unitRef) intValue];
-        autoHide = [(id)CFBridgingRelease(shouldAutoHideRef) boolValue];
-        autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
+    Boolean exists = false;
+    Boolean enabledRef = CFPreferencesGetAppBooleanValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        enabled = enabledRef;
+    } else {
+        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : YES;
     }
-    else {
-        // If we can't copy app values, attempt to load the preferences file directly
-        NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
-        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : NO;
+    
+    exists = false;
+    NSInteger unitRef = CFPreferencesGetAppIntegerValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        unit = (int)unitRef;
+    } else {
         unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : 0;
-        autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
-        autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
-        
-        [preferences release];
     }
+    
+    exists = false;
+    Boolean shouldAutoHideRef = CFPreferencesGetAppBooleanValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        autoHide = shouldAutoHideRef;
+    } else {
+        autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
+    }
+    
+    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
+    if (autoHideCutoffRef) {
+        autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
+    } else {
+        autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
+    }
+    
+    [preferences release];
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -153,6 +172,13 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 
 %hook UIStatusBarBatteryPercentItemView
 
+- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style {
+    if ((self = %orig)) {
+        self.userInteractionEnabled = YES;
+    }
+    return self;
+}
+
 - (BOOL)updateForNewData:(UIStatusBarComposedData *)arg1 actions:(int)arg2 {
     if (enabled) {
         // Get the battery's current charge percent
@@ -172,7 +198,7 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
         
         // Only determine if the percent should be hidden if the charge percent has a value greater than 0.0
         // We can assume the value should always be greater than 0.0 because this program would have no power to run otherwise.
-        if (currentChargePercent > 0.0)) {
+        if (currentChargePercent > 0.0) {
             // Copy the temperature string if we shouldn't hide it
             if (!autoHide || (currentChargePercent > autoHideCutoff)) {
                 NSString *temperatureString = GetTemperatureString();
@@ -183,20 +209,49 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
             NSString *temperatureString = GetTemperatureString();
             strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
         }
-        
-        
-        
     }
     
     return %orig(arg1, arg2);
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    unit = (unit + 1) % 3;
+    
+    CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesSynchronize (CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+    
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:PREFERENCES_FILE_PATH];
+    [preferences setObject:[NSNumber numberWithInt:unit] forKey:@"unit"];
+    [preferences writeToFile:PREFERENCES_FILE_PATH atomically:YES];
+    
+    CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, false);
+    
+    // Refresh the status bar
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
+    
+    %orig;
+}
+
+%end
+
+%hook UIApplicationDelegate
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    UIStatusBar *statusBar = [application statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
+}
+
 %end
 
 %ctor {
-    %init;
-
     loadSettings();
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    %init;
 }

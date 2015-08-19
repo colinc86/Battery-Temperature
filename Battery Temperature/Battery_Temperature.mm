@@ -46,7 +46,10 @@ struct ComposedBatteryData {
 - (struct ComposedBatteryData *)rawData;
 @end
 
-@interface UIStatusBarBatteryPercentItemView
+@interface UIStatusBarItemView : UIView
+@end
+
+@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
 - (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
 @end
 
@@ -57,6 +60,8 @@ struct ComposedBatteryData {
 @interface UIApplication ()
 - (id)statusBar;
 @end
+
+@class UIStatusBarItem;
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
@@ -69,27 +74,41 @@ static int unit = 0;
 
 static void loadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
-    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesSynchronize(CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+    NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
     
-    if (enabledRef && unitRef && shouldAutoHideRef && autoHideCutoff) {
-        enabled =  [(id)CFBridgingRelease(enabledRef) boolValue];
-        unit = [(id)CFBridgingRelease(unitRef) intValue];
-        autoHide = [(id)CFBridgingRelease(shouldAutoHideRef) boolValue];
-        autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
+    Boolean exists = false;
+    Boolean enabledRef = CFPreferencesGetAppBooleanValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        enabled = enabledRef;
+    } else {
+        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : YES;
     }
-    else {
-        
-        NSDictionary *preferences = [[NSDictionary alloc] initWithContentsOfFile:PREFERENCES_FILE_PATH];
-        enabled = [preferences objectForKey:@"enabled"] ? [[preferences objectForKey:@"enabled"] boolValue] : NO;
+    
+    exists = false;
+    NSInteger unitRef = CFPreferencesGetAppIntegerValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        unit = (int)unitRef;
+    } else {
         unit = [preferences objectForKey:@"unit"] ? [[preferences objectForKey:@"unit"] intValue] : 0;
-        autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
-        autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
-        
-        [preferences release];
     }
+    
+    exists = false;
+    Boolean shouldAutoHideRef = CFPreferencesGetAppBooleanValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME), &exists);
+    if (exists) {
+        autoHide = shouldAutoHideRef;
+    } else {
+        autoHide = [preferences objectForKey:@"shouldAutoHide"] ? [[preferences objectForKey:@"shouldAutoHide"] boolValue] : NO;
+    }
+    
+    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
+    if (autoHideCutoffRef) {
+        autoHideCutoff = [(id)CFBridgingRelease(autoHideCutoffRef) floatValue];
+    } else {
+        autoHideCutoff = [preferences objectForKey:@"autoHideCutoff"] ? [[preferences objectForKey:@"autoHideCutoff"] floatValue] : 0.0f;
+    }
+    
+    [preferences release];
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -154,11 +173,18 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIStatusBarBatteryPercentItemView; 
-static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); 
+@class UIApplicationDelegate; @class UIStatusBarBatteryPercentItemView; 
+static id (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarItem *, void *, NSInteger, NSInteger); static BOOL (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$)(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView*, SEL, UIStatusBarComposedData *, int); static void (*_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$)(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(UIStatusBarBatteryPercentItemView*, SEL, NSSet *, UIEvent *); static void (*_logos_orig$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$)(UIApplicationDelegate*, SEL, UIApplication *); static void _logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$(UIApplicationDelegate*, SEL, UIApplication *); 
 
-#line 154 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 173 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery Temperature/Battery Temperature/Battery_Temperature.xm"
 
+
+static id _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarItem * item, void * data, NSInteger actions, NSInteger style) {
+    if ((self = _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$(self, _cmd, item, data, actions, style))) {
+        self.userInteractionEnabled = YES;
+    }
+    return self;
+}
 
 static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, UIStatusBarComposedData * arg1, int arg2) {
     if (enabled) {
@@ -178,7 +204,15 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
         float currentChargePercent = number ? [number floatValue] : 0.0f;
         
         
-        if (!autoHide || (currentChargePercent > autoHideCutoff)) {
+        
+        if (currentChargePercent > 0.0) {
+            
+            if (!autoHide || (currentChargePercent > autoHideCutoff)) {
+                NSString *temperatureString = GetTemperatureString();
+                strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
+            }
+        }
+        else {
             NSString *temperatureString = GetTemperatureString();
             strlcpy(arg1.rawData->batteryDetailString, [temperatureString UTF8String], sizeof(arg1.rawData->batteryDetailString));
         }
@@ -188,11 +222,43 @@ static BOOL _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateFor
 }
 
 
+static void _logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(UIStatusBarBatteryPercentItemView* self, SEL _cmd, NSSet * touches, UIEvent * event) {
+    unit = (unit + 1) % 3;
+    
+    CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    CFPreferencesSynchronize (CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+    
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:PREFERENCES_FILE_PATH];
+    [preferences setObject:[NSNumber numberWithInt:unit] forKey:@"unit"];
+    [preferences writeToFile:PREFERENCES_FILE_PATH atomically:YES];
+    
+    CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, false);
+    
+    
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
+    
+    _logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$(self, _cmd, touches, event);
+}
 
-static __attribute__((constructor)) void _logosLocalCtor_c1291b47() {
-    {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);}
 
+
+
+
+static void _logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$(UIApplicationDelegate* self, SEL _cmd, UIApplication * application) {
+    UIStatusBar *statusBar = [application statusBar];
+    [statusBar setShowsOnlyCenterItems:YES];
+    [statusBar setShowsOnlyCenterItems:NO];
+}
+
+
+
+static __attribute__((constructor)) void _logosLocalCtor_e6aabc04() {
     loadSettings();
 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    {Class _logos_class$_ungrouped$UIStatusBarBatteryPercentItemView = objc_getClass("UIStatusBarBatteryPercentItemView"); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(initWithItem:data:actions:style:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$initWithItem$data$actions$style$);MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(updateForNewData:actions:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$updateForNewData$actions$);MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryPercentItemView, @selector(touchesEnded:withEvent:), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryPercentItemView$touchesEnded$withEvent$);Class _logos_class$_ungrouped$UIApplicationDelegate = objc_getClass("UIApplicationDelegate"); MSHookMessageEx(_logos_class$_ungrouped$UIApplicationDelegate, @selector(applicationDidBecomeActive:), (IMP)&_logos_method$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$, (IMP*)&_logos_orig$_ungrouped$UIApplicationDelegate$applicationDidBecomeActive$);}
 }
