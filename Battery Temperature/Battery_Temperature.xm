@@ -1,27 +1,30 @@
+#import <UIKit/UIKit.h>
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+#import <libactivator/libactivator.h>
 
 #include <dlfcn.h>
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
+#define SPRINGBOARD_FILE_NAME "com.apple.springboard"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
-#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
+#define SPRINGBOARD_FILE_PATH @"/var/mobile/Library/Preferences/com.apple.springboard.plist"
 
 #define ACTIVATOR_LISTENER_ENABLED @"com.cnc.Battery-Temperature.activator.enabled"
-#define ACTIVATOR_LISTENER_CHARGE @"com.cnc.Battery-Temperature.activator.charge"
 #define ACTIVATOR_LISTENER_UNIT @"com.cnc.Battery-Temperature.activator.unit"
 #define ACTIVATOR_LISTENER_ABBREVIATION @"com.cnc.Battery-Temperature.activator.abbreviation"
 
+#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
+#define SPRINGBOARD_BATTERY_PERCENT_KEY "SBShowBatteryPercentage"
+
 // Preferences variables
 static BOOL enabled = false;
-static BOOL autoHide = false;
 static BOOL showPercent = false;
 static BOOL showAbbreviation = false;
 static BOOL highTempAlerts = false;
 static BOOL lowTempAlerts = false;
-static float autoHideCutoff = 0.0f;
 static int unit = 0;
 
 // Local variables
@@ -68,54 +71,42 @@ typedef struct {
 
 // Classes
 
-// LibActivator
-@class LAEvent;
-@protocol LAListener;
-
-@interface LAActivator
-+ (id)sharedInstance;
-- (id)registerListener:(id)arg1 forName:(NSString *)arg2;
-@end
-
-@protocol LAListener <NSObject>
-@optional
-- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName;
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedDescriptionForListenerName:(NSString *)listenerName;
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName;
-- (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName;
-@end
-
-// Activator listener class
-@interface BatteryTemperatureListener : NSObject<LAListener>
+// Activator listener
+@interface BTActivatorListener : NSObject<LAListener>
+- (id)initWithListenerName:(NSString *)name;
 @property (nonatomic, copy) NSString *activatorListenerName;
 @end
 
 // Status bar classes
-@class UIStatusBarItem;
-
-@interface UIStatusBarItemView : UIView
-@end
-
-@interface UIStatusBarBatteryPercentItemView : UIStatusBarItemView
-- (id)initWithItem:(UIStatusBarItem *)item data:(void *)data actions:(NSInteger)actions style:(NSInteger)style;
-@end
-
-@interface UIStatusBarBatteryItemView : UIStatusBarItemView
-- (BOOL)updateForNewData:(id)arg1 actions:(int)arg2;
-@end
-
 @interface UIStatusBarServer : NSObject
++ (void)addStatusBarItem:(int)arg1;
 + (CDStruct_4ec3be00 *)getStatusBarData;
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
+
+@interface SBStatusBarStateAggregator
++ (id)sharedInstance;
+- (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
+@end
+
+
 
 
 
 
 // Static functions
 
+static void loadSpringBoardSettings() {
+    // SpringBoard battery percent enabled
+    CFPreferencesAppSynchronize(CFSTR(SPRINGBOARD_FILE_NAME));
+    CFPreferencesSynchronize(CFSTR(SPRINGBOARD_FILE_NAME), kCFPreferencesAnyUser, kCFPreferencesAnyHost);
+    
+    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR(SPRINGBOARD_BATTERY_PERCENT_KEY), CFSTR(SPRINGBOARD_FILE_NAME));
+    showPercent = showPercentRef ? [(id)CFBridgingRelease(showPercentRef) boolValue] : NO;
+}
+
 static void loadSettings() {
+    // Battery Temperature
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
@@ -123,15 +114,6 @@ static void loadSettings() {
     
     CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
     unit = unitRef ? [(id)CFBridgingRelease(unitRef) intValue] : 0;
-    
-    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
-    autoHide = shouldAutoHideRef ? [(id)CFBridgingRelease(shouldAutoHideRef) boolValue] : NO;
-    
-    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
-    autoHideCutoff = autoHideCutoffRef ? [(id)CFBridgingRelease(autoHideCutoffRef) floatValue] : 0.0f;
-    
-    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR("showPercent"), CFSTR(PREFERENCES_FILE_NAME));
-    showPercent = showPercentRef ? [(id)CFBridgingRelease(showPercentRef) boolValue] : NO;
     
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
     showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
@@ -149,6 +131,8 @@ static void loadSettings() {
         didShowL1A = false;
         didShowL2A = false;
     }
+    
+    loadSpringBoardSettings();
 }
 
 static void checkDefaultSettings() {
@@ -168,30 +152,6 @@ static void checkDefaultSettings() {
     }
     else {
         CFRelease(unitRef);
-    }
-    
-    CFPropertyListRef shouldAutoHideRef = CFPreferencesCopyAppValue(CFSTR("shouldAutoHide"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!shouldAutoHideRef) {
-        CFPreferencesSetAppValue(CFSTR("shouldAutoHide"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(shouldAutoHideRef);
-    }
-    
-    CFPropertyListRef autoHideCutoffRef = CFPreferencesCopyAppValue(CFSTR("autoHideCutoff"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!autoHideCutoffRef) {
-        CFPreferencesSetAppValue(CFSTR("autoHideCutoff"), (CFNumberRef)[NSNumber numberWithFloat:20.0], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(autoHideCutoffRef);
-    }
-    
-    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR("showPercent"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!showPercentRef) {
-        CFPreferencesSetAppValue(CFSTR("showPercent"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(showPercentRef);
     }
     
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
@@ -222,6 +182,12 @@ static void checkDefaultSettings() {
 }
 
 static void refreshStatusBarData() {
+    SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
+    [aggregator _setItem:8 enabled:NO];
+    if (showPercent || enabled) {
+        [aggregator _setItem:8 enabled:YES];
+    }
+    
     forcedUpdate = true;
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
@@ -314,7 +280,7 @@ static inline void CheckAndPostAlerts() {
             if (!didShowL2A && lowTempAlerts) {
                 didShowL2A = true;
                 showAlert = true;
-                message = @"Battery temperature has dropped to -20℃ (-4℉)!";
+                message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
         else if (celsius <= 0.0f) {
@@ -343,9 +309,11 @@ static inline void CheckAndPostAlerts() {
 
 
 
-// Activator listener
+// Activator class
 
-@implementation BatteryTemperatureListener
+@implementation BTActivatorListener
+
+@synthesize activatorListenerName = _activatorListenerName;
 
 - (id)initWithListenerName:(NSString *)name {
     if (self = [super init]) {
@@ -363,9 +331,6 @@ static inline void CheckAndPostAlerts() {
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
         title = @"Toggle Enabled";
     }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_CHARGE]) {
-        title = @"Toggle Show Battery Charge";
-    }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
         title = @"Change Temperature Scale";
     }
@@ -379,9 +344,6 @@ static inline void CheckAndPostAlerts() {
     NSString *title = @"";
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
         title = @"Enable/disable battery temperature in the status bar.";
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_CHARGE]) {
-        title = @"Show/hide the battery charge percent.";
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
         title = @"Change the temperature scale from Celsius to Fahrenheit, Fahrenheit to Kelvin, and Kelvin to Celsius.";
@@ -397,13 +359,11 @@ static inline void CheckAndPostAlerts() {
 }
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
         enabled = !enabled;
         CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:enabled], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_CHARGE]) {
-        showPercent = !showPercent;
-        CFPreferencesSetAppValue(CFSTR("showPercent"), (CFNumberRef)[NSNumber numberWithBool:showPercent], CFSTR(PREFERENCES_FILE_NAME));
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
         unit = (unit + 1) % 3;
@@ -415,7 +375,7 @@ static inline void CheckAndPostAlerts() {
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    refreshStatusBarData();
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, true);
 }
 
 @end
@@ -425,9 +385,25 @@ static inline void CheckAndPostAlerts() {
 
 // Hook methods
 
+%hook SBStatusBarStateAggregator
+
+- (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2 {
+    if (arg1 == 8) {
+        showPercent = enabled;
+    }
+    
+    refreshStatusBarData();
+    
+    return %orig(arg1, ((arg1 == 8) && enabled) ? YES : arg2);
+}
+
+%end
+
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
+    loadSpringBoardSettings();
+    
     // Get the battery detail string
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
@@ -444,33 +420,25 @@ static inline void CheckAndPostAlerts() {
     if (enabled) {
         // Check for any alerts and post them if necessary
         CheckAndPostAlerts();
-        
-        // Get the battery's current charge percent
-        NSString *sansPercentSignString = [batteryDetailString stringByReplacingOccurrencesOfString:@"%" withString:@""];
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        formatter.numberStyle = NSNumberFormatterDecimalStyle;
-        NSNumber *number = [formatter numberFromString:sansPercentSignString];
-        [formatter release];
-        
-        float currentChargePercent = number ? [number floatValue] : 0.0f;
 
-        // Only show the temperature string if we aren't auto-hiding the temperature or if the current charge is above the auto cutoff value.
-        // We can assume currentChargePercent should always have a value greater than 0.0 because this program would have no power to run otherwise.
-        bool printTemp = (currentChargePercent <= 0.0) || !autoHide || (currentChargePercent > autoHideCutoff);
+        // Add the temperature string
+        NSString *temperatureString = GetTemperatureString();
         
-        if (printTemp) {
-            NSString *temperatureString = GetTemperatureString();
-            
-            if (showPercent) {
-                // Append the battery detail string if we're showing the percent
-                temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
-            }
-            
-            strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
+        if (showPercent) {
+            // Append the battery detail string if we're showing the percent
+            temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
         }
+        
+        strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
     } else if (forcedUpdate) {
-        // If we manually disabled the tweak then copy in the last updated detail string
-        strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
+        // If we manually disabled the tweak then copy in the last updated detail string if showing the battery detail string is enabled
+        if (showPercent) {
+            strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
+        }
+        else {
+            NSString *blankString = @"";
+            strlcpy(arg1->batteryDetailString, [blankString UTF8String], sizeof(arg1->batteryDetailString));
+        }
     }
     
     forcedUpdate = false;
@@ -491,19 +459,15 @@ static inline void CheckAndPostAlerts() {
             dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
             Class la = objc_getClass("LAActivator");
             if (la) {
-                BatteryTemperatureListener *enabledListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
+                BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
                 [[la sharedInstance] registerListener:enabledListener forName:ACTIVATOR_LISTENER_ENABLED];
                 [enabledListener release];
                 
-                BatteryTemperatureListener *chargeListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_CHARGE];
-                [[la sharedInstance] registerListener:chargeListener forName:ACTIVATOR_LISTENER_CHARGE];
-                [chargeListener release];
-                
-                BatteryTemperatureListener *unitListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT];
+                BTActivatorListener *unitListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_UNIT];
                 [[la sharedInstance] registerListener:unitListener forName:ACTIVATOR_LISTENER_UNIT];
                 [unitListener release];
                 
-                BatteryTemperatureListener *abbreviationListener = [[BatteryTemperatureListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION];
+                BTActivatorListener *abbreviationListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION];
                 [[la sharedInstance] registerListener:abbreviationListener forName:ACTIVATOR_LISTENER_ABBREVIATION];
                 [abbreviationListener release];
             }

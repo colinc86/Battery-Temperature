@@ -18,8 +18,6 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
-			<key>footerText</key>
-			<string>Battery Percentage must also be set to ON in the Settings app.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -37,25 +35,9 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.cnc.Battery-Temperature</string>
-			<key>key</key>
-			<string>showPercent</string>
-			<key>label</key>
-			<string>Show Battery Charge</string>
-			<key>PostNotification</key>
-			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-		</dict>
-		<dict>
-			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
-			<key>footerText</key>
-			<string>Choose between the Celsius, Fahrenheit, and Kelvin temperature scales.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -98,50 +80,6 @@
 			<string>Show Unit Abbreviation</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>isStaticText</key>
-			<true/>
-			<key>footerText</key>
-			<string>Automatically hide the battery temperature when the battery&apos;s charge is at or below the selected percentage.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.cnc.Battery-Temperature</string>
-			<key>key</key>
-			<string>shouldAutoHide</string>
-			<key>label</key>
-			<string>Auto-hide</string>
-			<key>PostNotification</key>
-			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<integer>20</integer>
-			<key>defaults</key>
-			<string>com.cnc.Battery-Temperature</string>
-			<key>key</key>
-			<string>autoHideCutoff</string>
-			<key>label</key>
-			<string>%</string>
-			<key>PostNotification</key>
-			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-			<key>min</key>
-			<integer>0</integer>
-			<key>max</key>
-			<string>100</string>
-			<key>showValue</key>
-			<true/>
-			<key>isContinuous</key>
-			<false/>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -201,18 +139,6 @@ Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).</string>
 			<string>LibActivator</string>
 			<key>activatorListener</key>
 			<string>com.cnc.Battery-Temperature.activator.enabled</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>label</key>
-			<string>Toggle Show Battery Charge</string>
-			<key>isController</key>
-			<true/>
-			<key>bundle</key>
-			<string>LibActivator</string>
-			<key>activatorListener</key>
-			<string>com.cnc.Battery-Temperature.activator.charge</string>
 		</dict>
 		<dict>
 			<key>cell</key>
