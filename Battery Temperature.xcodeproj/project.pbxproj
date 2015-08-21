@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		552507021B85F39C009F459B /* BTActivatorListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 552507001B85F39C009F459B /* BTActivatorListener.h */; };
-		552507031B85F39C009F459B /* BTActivatorListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 552507011B85F39C009F459B /* BTActivatorListener.m */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
@@ -18,9 +16,6 @@
 /* Begin PBXFileReference section */
 		55167A741B7D5675005F24E5 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
 		55167A751B7D5675005F24E5 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
-		552507001B85F39C009F459B /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
-		552507011B85F39C009F459B /* BTActivatorListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTActivatorListener.m; sourceTree = "<group>"; };
-		552507041B85F4AC009F459B /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		5530E7861B77749500BE1944 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -81,9 +76,6 @@
 			children = (
 				556F85481B775A7A00288568 /* Battery_Temperature.xm */,
 				556F85491B775A7A00288568 /* Battery_Temperature.mm */,
-				552507001B85F39C009F459B /* BTActivatorListener.h */,
-				552507011B85F39C009F459B /* BTActivatorListener.m */,
-				552507041B85F4AC009F459B /* Globals.h */,
 				556F853B1B775A7A00288568 /* Package */,
 				556F853F1B775A7A00288568 /* Supporting Files */,
 			);
@@ -167,7 +159,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				552507021B85F39C009F459B /* BTActivatorListener.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +260,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */,
-				552507031B85F39C009F459B /* BTActivatorListener.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
