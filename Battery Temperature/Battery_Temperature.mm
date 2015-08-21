@@ -25,6 +25,7 @@ static BOOL showPercent = false;
 static BOOL showAbbreviation = false;
 static BOOL highTempAlerts = false;
 static BOOL lowTempAlerts = false;
+static BOOL showDecimal = false;
 static int unit = 0;
 
 
@@ -114,6 +115,9 @@ static void loadSettings() {
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
     showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
     
+    CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
+    showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
+    
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     highTempAlerts = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
     if (!highTempAlerts) {
@@ -156,6 +160,14 @@ static void checkDefaultSettings() {
         CFRelease(showAbbreviationRef);
     }
     
+    CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!showDecimalRef) {
+        CFPreferencesSetAppValue(CFSTR("showDecimal"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(showDecimalRef);
+    }
+    
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     if (!highTempAlertsRef) {
         CFPreferencesSetAppValue(CFSTR("highTempAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
@@ -177,10 +189,10 @@ static void checkDefaultSettings() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarServer; @class SBStatusBarStateAggregator; 
+@class SpringBoard; @class SBStatusBarStateAggregator; @class UIStatusBarServer; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 177 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
+#line 189 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 static void refreshStatusBarData(bool usingAggregator) {
     if (usingAggregator) {
         SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
@@ -238,18 +250,36 @@ static inline NSString *GetTemperatureString() {
             if (showAbbreviation) abbreviationString = @"℉";
             
             float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", fahrenheit, abbreviationString];
+            }
         }
         else if (unit == 2) {
             if (showAbbreviation) abbreviationString = @" K";
             
             float kelvin = celsius + 273.15;
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", kelvin, abbreviationString];
+            }
         }
         else {
             
             if (showAbbreviation) abbreviationString = @"℃";
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", celsius, abbreviationString];
+            }
         }
     }
     
@@ -449,7 +479,7 @@ static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_01d48f60() {
+static __attribute__((constructor)) void _logosLocalCtor_a0a3106f() {
     if (_logos_static_class_lookup$SpringBoard()) {
         checkDefaultSettings();
         loadSettings();

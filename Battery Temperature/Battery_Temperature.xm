@@ -19,9 +19,10 @@
 #define ACTIVATOR_LISTENER_ABBREVIATION @"com.cnc.Battery-Temperature.activator.abbreviation"
 
 // Preferences variables
-static BOOL enabled = false;
+static BOOL enabled = true;
 static BOOL showPercent = false;
-static BOOL showAbbreviation = false;
+static BOOL showAbbreviation = true;
+static BOOL showDecimal = true;
 static BOOL highTempAlerts = false;
 static BOOL lowTempAlerts = false;
 static int unit = 0;
@@ -113,6 +114,9 @@ static void loadSettings() {
     CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
     showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
     
+    CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
+    showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
+    
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     highTempAlerts = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
     if (!highTempAlerts) {
@@ -153,6 +157,14 @@ static void checkDefaultSettings() {
     }
     else {
         CFRelease(showAbbreviationRef);
+    }
+    
+    CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!showDecimalRef) {
+        CFPreferencesSetAppValue(CFSTR("showDecimal"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(showDecimalRef);
     }
     
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
@@ -231,18 +243,36 @@ static inline NSString *GetTemperatureString() {
             if (showAbbreviation) abbreviationString = @"℉";
             
             float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", fahrenheit, abbreviationString];
+            }
         }
         else if (unit == 2) {
             if (showAbbreviation) abbreviationString = @" K";
             
             float kelvin = celsius + 273.15;
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", kelvin, abbreviationString];
+            }
         }
         else {
             // Default to Celsius
             if (showAbbreviation) abbreviationString = @"℃";
-            formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
+            
+            if (showDecimal) {
+                formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
+            }
+            else {
+                formattedString = [NSString stringWithFormat:@"%0.f%@", celsius, abbreviationString];
+            }
         }
     }
     

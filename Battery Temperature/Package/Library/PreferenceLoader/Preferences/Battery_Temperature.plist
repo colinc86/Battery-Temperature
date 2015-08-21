@@ -103,9 +103,9 @@
 			<key>label</key>
 			<string>Alerts</string>
 			<key>footerText</key>
-			<string>Alerts can be enabled even if battery temperature in the status bar is disabled.
-High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
-Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).</string>
+			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
+Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).
+Alerts can be enabled even if battery temperature in the status bar is disabled.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
