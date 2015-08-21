@@ -72,10 +72,13 @@ typedef struct {
 // Classes
 
 // Activator listener class
+
 @interface BTActivatorListener : NSObject<LAListener>
 @property (nonatomic, copy) NSString *activatorListenerName;
 - (id)initWithListenerName:(NSString *)name;
 @end
+
+// Status bar classes
 
 @interface UIStatusBarServer : NSObject
 + (CDStruct_4ec3be00 *)getStatusBarData;
