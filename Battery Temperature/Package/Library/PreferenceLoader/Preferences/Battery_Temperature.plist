@@ -181,6 +181,18 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Show Decimal</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.decimal</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>

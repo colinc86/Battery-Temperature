@@ -11,6 +11,9 @@
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
 		558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5530E7861B77749500BE1944 /* UIKit.framework */; };
+		55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA27EA1B881D740015A8ED /* BTActivatorListener.h */; };
+		55CA27ED1B881D740015A8ED /* BTActivatorListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA27EB1B881D740015A8ED /* BTActivatorListener.m */; };
+		55CA27FE1B883C6B0015A8ED /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,10 @@
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
 		556F854D1B775A7A00288568 /* Battery_Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Battery_Temperature.plist; path = Package/Library/MobileSubstrate/DynamicLibraries/Battery_Temperature.plist; sourceTree = "<group>"; };
 		556F85531B775A9400288568 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
+		55CA27E91B881CD00015A8ED /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		55CA27EA1B881D740015A8ED /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
+		55CA27EB1B881D740015A8ED /* BTActivatorListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTActivatorListener.m; sourceTree = "<group>"; };
+		55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55CA27FE1B883C6B0015A8ED /* CoreGraphics.framework in Frameworks */,
 				558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */,
 				556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */,
 				556F85391B775A7A00288568 /* Foundation.framework in Frameworks */,
@@ -64,6 +72,7 @@
 		556F85371B775A7A00288568 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */,
 				5530E7861B77749500BE1944 /* UIKit.framework */,
 				556F85531B775A9400288568 /* libsubstrate.dylib */,
 				556F85381B775A7A00288568 /* Foundation.framework */,
@@ -76,6 +85,9 @@
 			children = (
 				556F85481B775A7A00288568 /* Battery_Temperature.xm */,
 				556F85491B775A7A00288568 /* Battery_Temperature.mm */,
+				55CA27EA1B881D740015A8ED /* BTActivatorListener.h */,
+				55CA27EB1B881D740015A8ED /* BTActivatorListener.m */,
+				55CA27E91B881CD00015A8ED /* Globals.h */,
 				556F853B1B775A7A00288568 /* Package */,
 				556F853F1B775A7A00288568 /* Supporting Files */,
 			);
@@ -159,6 +171,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,7 +187,7 @@
 				556F85311B775A7A00288568 /* Frameworks */,
 				554F9F5B1B803EE4002FEFAC /* Resources */,
 				556F85321B775A7A00288568 /* Headers */,
-				556F85331B775A7A00288568 /* ShellScript */,
+				556F85331B775A7A00288568 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -239,13 +252,14 @@
 			shellPath = /bin/sh;
 			shellScript = "/opt/iOSOpenDev/bin/iosod --xcbp-logos";
 		};
-		556F85331B775A7A00288568 /* ShellScript */ = {
+		556F85331B775A7A00288568 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */,
+				55CA27ED1B881D740015A8ED /* BTActivatorListener.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

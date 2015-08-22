@@ -1,22 +1,13 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
-#import <libactivator/libactivator.h>
+#import "BTActivatorListener.h"
+#import "Globals.h"
 
 #include <dlfcn.h>
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
-#define SPRINGBOARD_FILE_NAME "com.apple.springboard"
-#define SPRINGBOARD_FILE_PATH @"/var/mobile/Library/Preferences/com.apple.springboard.plist"
-#define SPRINGBOARD_BATTERY_PERCENT_KEY "SBShowBatteryPercentage"
 
-#define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
-#define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
-#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
-
-#define ACTIVATOR_LISTENER_ENABLED @"com.cnc.Battery-Temperature.activator.enabled"
-#define ACTIVATOR_LISTENER_UNIT @"com.cnc.Battery-Temperature.activator.unit"
-#define ACTIVATOR_LISTENER_ABBREVIATION @"com.cnc.Battery-Temperature.activator.abbreviation"
 
 // Preferences variables
 static BOOL enabled = true;
@@ -35,48 +26,8 @@ static BOOL didShowL1A = false;
 static BOOL didShowL2A = false;
 static NSString *lastBatteryDetailString = nil;
 
-// Data types
-typedef struct {
-    char itemIsEnabled[25];
-    char timeString[64];
-    int gsmSignalStrengthRaw;
-    int gsmSignalStrengthBars;
-    char serviceString[100];
-    char serviceCrossfadeString[100];
-    char serviceImages[2][100];
-    char operatorDirectory[1024];
-    unsigned int serviceContentType;
-    int wifiSignalStrengthRaw;
-    int wifiSignalStrengthBars;
-    unsigned int dataNetworkType;
-    int batteryCapacity;
-    unsigned int batteryState;
-    char batteryDetailString[150];
-    int bluetoothBatteryCapacity;
-    int thermalColor;
-    unsigned int thermalSunlightMode:1;
-    unsigned int slowActivity:1;
-    unsigned int syncActivity:1;
-    char activityDisplayId[256];
-    unsigned int bluetoothConnected:1;
-    unsigned int displayRawGSMSignal:1;
-    unsigned int displayRawWifiSignal:1;
-    unsigned int locationIconType:1;
-    unsigned int quietModeInactive:1;
-    unsigned int tetheringConnectionCount;
-} CDStruct_4ec3be00;
 
 
-
-
-// Classes
-
-// Activator listener class
-
-@interface BTActivatorListener : NSObject<LAListener>
-@property (nonatomic, copy) NSString *activatorListenerName;
-- (id)initWithListenerName:(NSString *)name;
-@end
 
 // Status bar classes
 
@@ -308,7 +259,7 @@ static inline void CheckAndPostAlerts() {
             if (!didShowL2A && lowTempAlerts) {
                 didShowL2A = true;
                 showAlert = true;
-                message = @"Battery temperature has dropped to -20℃ (-4℉)!";
+                message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
         else if (celsius <= 0.0f) {
@@ -333,78 +284,6 @@ static inline void CheckAndPostAlerts() {
         }
     }
 }
-
-
-
-
-// Activator listener
-
-@implementation BTActivatorListener
-
-- (id)initWithListenerName:(NSString *)name {
-    if (self = [super init]) {
-        _activatorListenerName = name;
-    }
-    return self;
-}
-
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName {
-    return @"Battery Temperature";
-}
-
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName {
-    NSString *title = @"";
-    if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
-        title = @"Toggle Enabled";
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
-        title = @"Change Temperature Scale";
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        title = @"Toggle Show Unit Abbreviation";
-    }
-    return title;
-}
-
-- (NSString *)activator:(LAActivator *)activator requiresLocalizedDescriptionForListenerName:(NSString *)listenerName {
-    NSString *title = @"";
-    if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
-        title = @"Enable/disable battery temperature in the status bar.";
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
-        title = @"Change the temperature scale from Celsius to Fahrenheit, Fahrenheit to Kelvin, and Kelvin to Celsius.";
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        title = @"Show/hide the temperature unit abbreviation.";
-    }
-    return title;
-}
-
-- (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName {
-    return [NSArray arrayWithObjects:@"springboard", @"lockscreen", @"application", nil];
-}
-
--(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
-    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    
-    if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
-        enabled = !enabled;
-        CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:enabled], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
-        unit = (unit + 1) % 3;
-        CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        showAbbreviation = !showAbbreviation;
-        CFPreferencesSetAppValue(CFSTR("showAbbreviation"), (CFNumberRef)[NSNumber numberWithBool:showAbbreviation], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    
-    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-    refreshStatusBarData(true);
-}
-
-@end
 
 
 
@@ -497,6 +376,10 @@ static inline void CheckAndPostAlerts() {
             BTActivatorListener *abbreviationListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ABBREVIATION];
             [[la sharedInstance] registerListener:abbreviationListener forName:ACTIVATOR_LISTENER_ABBREVIATION];
             [abbreviationListener release];
+            
+            BTActivatorListener *decimalListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_DECIMAL];
+            [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
+            [decimalListener release];
         }
         
         dlclose(LibActivator);
