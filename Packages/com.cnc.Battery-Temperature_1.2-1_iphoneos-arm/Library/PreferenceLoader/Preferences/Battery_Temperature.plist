@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>icon</key>
+		<string>Battery_TemperatureIcon.png</string>
+		<key>label</key>
+		<string>Battery Temperature</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>enabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>unit</string>
+			<key>label</key>
+			<string>Scale</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>validTitles</key>
+			<array>
+				<string>Celsius (℃)</string>
+				<string>Fahrenheit (℉)</string>
+				<string>Kelvin (K)</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>default</key>
+			<integer>0</integer>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>showAbbreviation</string>
+			<key>label</key>
+			<string>Show Unit Abbreviation</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>showDecimal</string>
+			<key>label</key>
+			<string>Show Decimal</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+			<key>label</key>
+			<string>Alerts</string>
+			<key>footerText</key>
+			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
+Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).
+Alerts can be enabled even if battery temperature in the status bar is disabled.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>highTempAlerts</string>
+			<key>label</key>
+			<string>High Temperature</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>lowTempAlerts</string>
+			<key>label</key>
+			<string>Low Temperature</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+			<key>label</key>
+			<string>Activator Methods</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Enabled</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Change Temperature Scale</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.unit</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Toggle Show Unit Abbreviation</string>
+			<key>isController</key>
+			<true/>
+			<key>bundle</key>
+			<string>LibActivator</string>
+			<key>activatorListener</key>
+			<string>com.cnc.Battery-Temperature.activator.abbreviation</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>isStaticText</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>© 2015 Colin Campbell</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Battery Temperature</string>
+</dict>
+</plist>
