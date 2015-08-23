@@ -39,7 +39,6 @@ static NSString *lastBatteryDetailString = nil;
 
 @interface SBStatusBarStateAggregator
 - (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
-- (void)_updateBatteryItems;
 @end
 
 
@@ -47,7 +46,7 @@ static NSString *lastBatteryDetailString = nil;
 
 
 
-static void loadSpringBoardSettings() {
+static void LoadSpringBoardSettings() {
     CFPreferencesAppSynchronize(CFSTR(SPRINGBOARD_FILE_NAME));
     
     CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR(SPRINGBOARD_BATTERY_PERCENT_KEY), CFSTR(SPRINGBOARD_FILE_NAME));
@@ -55,7 +54,7 @@ static void loadSpringBoardSettings() {
 }
 
 
-static void loadSettings() {
+static void LoadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
@@ -85,7 +84,7 @@ static void loadSettings() {
     }
 }
 
-static void checkDefaultSettings() {
+static void CheckDefaultSettings() {
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
     if (!enabledRef) {
         CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
@@ -139,11 +138,11 @@ static void checkDefaultSettings() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarServer; @class SBStatusBarStateAggregator; 
+@class SBStatusBarStateAggregator; @class UIStatusBarServer; @class SpringBoard; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 139 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
-static void refreshStatusBarData() {
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
+#line 138 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+static void RefreshStatusBarData() {
     SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
     [aggregator _setItem:8 enabled:NO];
     if (showPercent || enabled) {
@@ -154,17 +153,17 @@ static void refreshStatusBarData() {
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
 
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSettings();
-    refreshStatusBarData();
+static void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    LoadSettings();
+    RefreshStatusBarData();
 }
 
-static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSpringBoardSettings();
-    refreshStatusBarData();
+static void SpringBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    LoadSpringBoardSettings();
+    RefreshStatusBarData();
 }
 
-static inline NSNumber *GetBatteryTemperature() {
+static NSNumber *GetBatteryTemperature() {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
@@ -191,7 +190,7 @@ static inline NSNumber *GetBatteryTemperature() {
     return [temp autorelease];
 }
 
-static inline NSString *GetTemperatureString() {
+static NSString *GetTemperatureString() {
     NSString *formattedString = @"N/A";
     NSNumber *rawTemperature = GetBatteryTemperature();
     
@@ -239,7 +238,7 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
-static inline void CheckAndPostAlerts() {
+static void CheckAndPostAlerts() {
     NSNumber *rawTemperature = GetBatteryTemperature();
     if (rawTemperature) {
         bool showAlert = false;
@@ -299,7 +298,12 @@ static inline void CheckAndPostAlerts() {
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
-    loadSpringBoardSettings();
+    
+    LoadSpringBoardSettings();
+    LoadSettings();
+    
+    
+    CheckAndPostAlerts();
     
     
     char currentString[150];
@@ -314,9 +318,6 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
         }
         lastBatteryDetailString = [batteryDetailString retain];
     }
-    
-    
-    CheckAndPostAlerts();
     
     if (enabled) {
         
@@ -348,25 +349,30 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator* self, SEL _cmd, int arg1, BOOL arg2) {
+    BOOL itemEnabled = arg2;
+    
     if (arg1 == 8) {
         showPercent = enabled;
+        
+        if (enabled) {
+            itemEnabled = YES;
+        }
     }
     
-    return _logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(self, _cmd, arg1, ((arg1 == 8) && enabled) ? YES : arg2);
+    return _logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(self, _cmd, arg1, itemEnabled);
 }
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_f15d1557() {
+static __attribute__((constructor)) void _logosLocalCtor_c52c334a() {
     if (_logos_static_class_lookup$SpringBoard()) {
-        checkDefaultSettings();
-        loadSettings();
+        CheckDefaultSettings();
+        LoadSettings();
         
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, springBoardPreferencesChanged, CFSTR(SPRINGBOARD_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, SpringBoardPreferencesChanged, CFSTR(SPRINGBOARD_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
         void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
-        
         Class la = objc_getClass("LAActivator");
         if (la) {
             BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
@@ -385,7 +391,6 @@ static __attribute__((constructor)) void _logosLocalCtor_f15d1557() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
-        
         dlclose(LibActivator);
     }
     

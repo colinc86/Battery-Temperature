@@ -45,7 +45,7 @@ static NSString *lastBatteryDetailString = nil;
 
 // Static functions
 
-static void loadSpringBoardSettings() {
+static void LoadSpringBoardSettings() {
     CFPreferencesAppSynchronize(CFSTR(SPRINGBOARD_FILE_NAME));
     
     CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR(SPRINGBOARD_BATTERY_PERCENT_KEY), CFSTR(SPRINGBOARD_FILE_NAME));
@@ -53,7 +53,7 @@ static void loadSpringBoardSettings() {
 }
 
 
-static void loadSettings() {
+static void LoadSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
@@ -83,7 +83,7 @@ static void loadSettings() {
     }
 }
 
-static void checkDefaultSettings() {
+static void CheckDefaultSettings() {
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
     if (!enabledRef) {
         CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
@@ -135,7 +135,7 @@ static void checkDefaultSettings() {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
 }
 
-static void refreshStatusBarData() {
+static void RefreshStatusBarData() {
     SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
     [aggregator _setItem:8 enabled:NO];
     if (showPercent || enabled) {
@@ -146,17 +146,17 @@ static void refreshStatusBarData() {
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
 
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSettings();
-    refreshStatusBarData();
+static void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    LoadSettings();
+    RefreshStatusBarData();
 }
 
-static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSpringBoardSettings();
-    refreshStatusBarData();
+static void SpringBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    LoadSpringBoardSettings();
+    RefreshStatusBarData();
 }
 
-static inline NSNumber *GetBatteryTemperature() {
+static NSNumber *GetBatteryTemperature() {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
@@ -183,7 +183,7 @@ static inline NSNumber *GetBatteryTemperature() {
     return [temp autorelease];
 }
 
-static inline NSString *GetTemperatureString() {
+static NSString *GetTemperatureString() {
     NSString *formattedString = @"N/A";
     NSNumber *rawTemperature = GetBatteryTemperature();
     
@@ -231,7 +231,7 @@ static inline NSString *GetTemperatureString() {
     return formattedString;
 }
 
-static inline void CheckAndPostAlerts() {
+static void CheckAndPostAlerts() {
     NSNumber *rawTemperature = GetBatteryTemperature();
     if (rawTemperature) {
         bool showAlert = false;
@@ -291,6 +291,12 @@ static inline void CheckAndPostAlerts() {
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
+    // Force the settings to load
+    LoadSpringBoardSettings();
+    LoadSettings();
+    
+    // Check for any alerts and post them if necessary
+    CheckAndPostAlerts();
     
     // Get the battery detail string
     char currentString[150];
@@ -305,9 +311,6 @@ static inline void CheckAndPostAlerts() {
         }
         lastBatteryDetailString = [batteryDetailString retain];
     }
-    
-    // Check for any alerts and post them if necessary
-    CheckAndPostAlerts();
     
     if (enabled) {
         // Get the temperature string
@@ -339,25 +342,30 @@ static inline void CheckAndPostAlerts() {
 %hook SBStatusBarStateAggregator
 
 - (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2 {
+    BOOL itemEnabled = arg2;
+    
     if (arg1 == 8) {
         showPercent = enabled;
+        
+        if (enabled) {
+            itemEnabled = YES;
+        }
     }
     
-    return %orig(arg1, ((arg1 == 8) && enabled) ? YES : arg2);
+    return %orig(arg1, itemEnabled);
 }
 
 %end
 
 %ctor {
     if (%c(SpringBoard)) {
-        checkDefaultSettings();
-        loadSettings();
+        CheckDefaultSettings();
+        LoadSettings();
         
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, springBoardPreferencesChanged, CFSTR(SPRINGBOARD_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, SpringBoardPreferencesChanged, CFSTR(SPRINGBOARD_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
         void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
-        
         Class la = objc_getClass("LAActivator");
         if (la) {
             BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
@@ -376,7 +384,6 @@ static inline void CheckAndPostAlerts() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
-        
         dlclose(LibActivator);
     }
     
