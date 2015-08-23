@@ -12,6 +12,7 @@
 #define SPRINGBOARD_FILE_NAME "com.apple.springboard"
 #define SPRINGBOARD_FILE_PATH @"/var/mobile/Library/Preferences/com.apple.springboard.plist"
 #define SPRINGBOARD_BATTERY_PERCENT_KEY "SBShowBatteryPercentage"
+#define SPRINGBOARD_NOTIFICATION_NAME "SBPreferencesChangedNotification"
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
