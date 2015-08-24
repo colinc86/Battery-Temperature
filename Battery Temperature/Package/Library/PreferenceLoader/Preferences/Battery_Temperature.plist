@@ -38,6 +38,8 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+			<key>label</key>
+			<string>General</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -129,9 +131,37 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
+			<string>highTempIcon</string>
+			<key>label</key>
+			<string>High Temperature Icon</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
 			<string>lowTempAlerts</string>
 			<key>label</key>
 			<string>Low Temperature</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>lowTempIcon</string>
+			<key>label</key>
+			<string>Low Temperature Icon</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>

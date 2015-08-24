@@ -23,6 +23,11 @@
 #define ACTIVATOR_LISTENER_ABBREVIATION @"com.cnc.Battery-Temperature.activator.abbreviation"
 #define ACTIVATOR_LISTENER_DECIMAL @"com.cnc.Battery-Temperature.activator.decimal"
 
+#define ICON_HOT @"BatteryTemperatureHot"
+#define ICON_WARM @"BatteryTemperatureWarm"
+#define ICON_COOL @"BatteryTemperatureCool"
+#define ICON_COLD @"BatteryTemperatureCold"
+
 typedef struct {
     char itemIsEnabled[25];
     char timeString[64];
