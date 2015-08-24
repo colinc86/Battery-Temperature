@@ -39,7 +39,6 @@ static NSString *lastBatteryDetailString = nil;
 
 @interface SBStatusBarStateAggregator
 - (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
-- (void)_updateBatteryItems;
 @end
 
 
@@ -139,10 +138,10 @@ static void checkDefaultSettings() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarServer; @class SBStatusBarStateAggregator; 
+@class SBStatusBarStateAggregator; @class SpringBoard; @class UIStatusBarServer; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 139 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
+#line 138 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 static void refreshStatusBarData() {
     SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
     [aggregator _setItem:8 enabled:NO];
@@ -299,7 +298,6 @@ static inline void CheckAndPostAlerts() {
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
-    loadSpringBoardSettings();
     
     
     char currentString[150];
@@ -357,7 +355,7 @@ static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_f15d1557() {
+static __attribute__((constructor)) void _logosLocalCtor_094e9b75() {
     if (_logos_static_class_lookup$SpringBoard()) {
         checkDefaultSettings();
         loadSettings();

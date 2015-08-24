@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55470B7F1B8BA9E400985606 /* Black_BatteryTemperature_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B791B8BA9E400985606 /* Black_BatteryTemperature_Color.png */; };
+		55470B801B8BA9E400985606 /* Black_BatteryTemperature_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B7A1B8BA9E400985606 /* Black_BatteryTemperature_Color@2x.png */; };
+		55470B811B8BA9E400985606 /* LockScreen_BatteryTemperature_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B7B1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color.png */; };
+		55470B821B8BA9E400985606 /* LockScreen_BatteryTemperature_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B7C1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color@2x.png */; };
+		55470B831B8BA9E400985606 /* White_BatteryTemperature_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B7D1B8BA9E400985606 /* White_BatteryTemperature_Color.png */; };
+		55470B841B8BA9E400985606 /* White_BatteryTemperature_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470B7E1B8BA9E400985606 /* White_BatteryTemperature_Color@2x.png */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
@@ -20,6 +26,12 @@
 		55167A741B7D5675005F24E5 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
 		55167A751B7D5675005F24E5 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
 		5530E7861B77749500BE1944 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		55470B791B8BA9E400985606 /* Black_BatteryTemperature_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperature_Color.png; path = Resources/Black_BatteryTemperature_Color.png; sourceTree = "<group>"; };
+		55470B7A1B8BA9E400985606 /* Black_BatteryTemperature_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperature_Color@2x.png"; path = "Resources/Black_BatteryTemperature_Color@2x.png"; sourceTree = "<group>"; };
+		55470B7B1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperature_Color.png; path = Resources/LockScreen_BatteryTemperature_Color.png; sourceTree = "<group>"; };
+		55470B7C1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperature_Color@2x.png"; path = "Resources/LockScreen_BatteryTemperature_Color@2x.png"; sourceTree = "<group>"; };
+		55470B7D1B8BA9E400985606 /* White_BatteryTemperature_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperature_Color.png; path = Resources/White_BatteryTemperature_Color.png; sourceTree = "<group>"; };
+		55470B7E1B8BA9E400985606 /* White_BatteryTemperature_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperature_Color@2x.png"; path = "Resources/White_BatteryTemperature_Color@2x.png"; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		556F853D1B775A7A00288568 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -52,6 +64,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		55470B781B8BA9CE00985606 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				55470B791B8BA9E400985606 /* Black_BatteryTemperature_Color.png */,
+				55470B7A1B8BA9E400985606 /* Black_BatteryTemperature_Color@2x.png */,
+				55470B7B1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color.png */,
+				55470B7C1B8BA9E400985606 /* LockScreen_BatteryTemperature_Color@2x.png */,
+				55470B7D1B8BA9E400985606 /* White_BatteryTemperature_Color.png */,
+				55470B7E1B8BA9E400985606 /* White_BatteryTemperature_Color@2x.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		556F852A1B775A7A00288568 = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +108,7 @@
 		556F853A1B775A7A00288568 /* Battery Temperature */ = {
 			isa = PBXGroup;
 			children = (
+				55470B781B8BA9CE00985606 /* Resources */,
 				556F85481B775A7A00288568 /* Battery_Temperature.xm */,
 				556F85491B775A7A00288568 /* Battery_Temperature.mm */,
 				55CA27EA1B881D740015A8ED /* BTActivatorListener.h */,
@@ -233,6 +259,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55470B831B8BA9E400985606 /* White_BatteryTemperature_Color.png in Resources */,
+				55470B7F1B8BA9E400985606 /* Black_BatteryTemperature_Color.png in Resources */,
+				55470B811B8BA9E400985606 /* LockScreen_BatteryTemperature_Color.png in Resources */,
+				55470B821B8BA9E400985606 /* LockScreen_BatteryTemperature_Color@2x.png in Resources */,
+				55470B801B8BA9E400985606 /* Black_BatteryTemperature_Color@2x.png in Resources */,
+				55470B841B8BA9E400985606 /* White_BatteryTemperature_Color@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
