@@ -1,6 +1,7 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
 #import "BTActivatorListener.h"
+#import "BTStatusItemManager.h"
 #import "Globals.h"
 
 #include <dlfcn.h>
@@ -15,7 +16,9 @@ static BOOL showPercent = false;
 static BOOL showAbbreviation = true;
 static BOOL showDecimal = true;
 static BOOL highTempAlerts = false;
+static BOOL highTempIcon = false;
 static BOOL lowTempAlerts = false;
+static BOOL lowTempIcon = false;
 static int unit = 0;
 
 // Local variables
@@ -81,6 +84,12 @@ static void loadSettings() {
         didShowL1A = false;
         didShowL2A = false;
     }
+    
+    CFPropertyListRef highTempIconRef = CFPreferencesCopyAppValue(CFSTR("highTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    highTempIcon = highTempIconRef ? [(id)CFBridgingRelease(highTempIconRef) boolValue] : NO;
+    
+    CFPropertyListRef lowTempIconRef = CFPreferencesCopyAppValue(CFSTR("lowTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    lowTempIcon = lowTempIconRef ? [(id)CFBridgingRelease(lowTempIconRef) boolValue] : NO;
 }
 
 static void checkDefaultSettings() {
@@ -132,28 +141,23 @@ static void checkDefaultSettings() {
         CFRelease(lowTempAlertsRef);
     }
     
-    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
-}
-
-static void refreshStatusBarData() {
-    SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
-    [aggregator _setItem:8 enabled:NO];
-    if (showPercent || enabled) {
-        [aggregator _setItem:8 enabled:YES];
+    CFPropertyListRef highTempIconRef = CFPreferencesCopyAppValue(CFSTR("highTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!highTempIconRef) {
+        CFPreferencesSetAppValue(CFSTR("highTempIcon"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(highTempIconRef);
     }
     
-    forcedUpdate = true;
-    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
-}
-
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSettings();
-    refreshStatusBarData();
-}
-
-static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    loadSpringBoardSettings();
-    refreshStatusBarData();
+    CFPropertyListRef lowTempIconRef = CFPreferencesCopyAppValue(CFSTR("lowTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!lowTempIconRef) {
+        CFPreferencesSetAppValue(CFSTR("lowTempIcon"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(lowTempIconRef);
+    }
+    
+    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
 }
 
 static inline NSNumber *GetBatteryTemperature() {
@@ -283,6 +287,40 @@ static inline void CheckAndPostAlerts() {
     }
 }
 
+static void RefreshStatusItems()
+{
+    BTStatusItemManager *manager = [BTStatusItemManager sharedManager];
+    manager.highTempEnabled = highTempIcon && enabled;
+    manager.lowTempEnabled = lowTempIcon && enabled;
+    [manager updateTemperature:GetBatteryTemperature()];
+}
+
+static void refreshStatusBarData() {
+    // Then the bar on/off
+    SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
+    [aggregator _setItem:8 enabled:NO];
+    if (showPercent || enabled) {
+        [aggregator _setItem:8 enabled:YES];
+    }
+    
+    // Refresh the status items
+    RefreshStatusItems();
+    
+    // Post new data to the data bar
+    forcedUpdate = true;
+    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+}
+
+static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    loadSettings();
+    refreshStatusBarData();
+}
+
+static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    loadSpringBoardSettings();
+    refreshStatusBarData();
+}
+
 
 
 
@@ -291,13 +329,12 @@ static inline void CheckAndPostAlerts() {
 %hook UIStatusBarServer
 
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2 {
-    
     // Get the battery detail string
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
     NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
     
-    // If this is a system update, then cache the percent string
+    // If this is a system update, then cache the percent string and check for alerts/icon changes
     if (!forcedUpdate) {
         if (lastBatteryDetailString != nil) {
             [lastBatteryDetailString release];
@@ -306,8 +343,9 @@ static inline void CheckAndPostAlerts() {
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    // Check for any alerts and post them if necessary
     CheckAndPostAlerts();
+    
+    RefreshStatusItems();
     
     if (enabled) {
         // Get the temperature string
