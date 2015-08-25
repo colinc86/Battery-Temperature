@@ -44,6 +44,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         _showDecimal = YES;
         _tempAlerts = NO;
         _statusBarAlerts = NO;
+        _alertVibrate = NO;
         _unit = 0;
         _rule = RuleShow;
     }
@@ -89,6 +90,9 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     
     CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
+    
+    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
+    self.alertVibrate = alertVibrateRef ? [(id)CFBridgingRelease(alertVibrateRef) boolValue] : NO;
 }
 
 - (BOOL)isTemperatureVisible {
@@ -224,6 +228,14 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     }
     else {
         CFRelease(statusBarAlertsRef);
+    }
+    
+    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!alertVibrateRef) {
+        CFPreferencesSetAppValue(CFSTR("alertVibrate"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(alertVibrateRef);
     }
     
     CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));
