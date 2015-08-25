@@ -1,12 +1,12 @@
 //
-//  BTStaticFunctions.m
+//  BTTemperatureCoordinator.m
 //  Battery Temperature
 //
 //  Created by Colin Campbell on 8/24/15.
 //
 //
 
-#import "BTStaticFunctions.h"
+#import "BTTemperatureCoordinator.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "BTPreferencesInterface.h"
@@ -15,14 +15,42 @@
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
-@implementation BTStaticFunctions
+@interface BTTemperatureCoordinator()
+@property (nonatomic, assign) BOOL didShowH1A;
+@property (nonatomic, assign) BOOL didShowH2A;
+@property (nonatomic, assign) BOOL didShowL1A;
+@property (nonatomic, assign) BOOL didShowL2A;
+@end
 
-static BOOL didShowH1A = NO;
-static BOOL didShowH2A = NO;
-static BOOL didShowL1A = NO;
-static BOOL didShowL2A = NO;
+@implementation BTTemperatureCoordinator
 
-+ (NSNumber *)getBatteryTemperature {
+#pragma mark - Class methods
+
++ (BTTemperatureCoordinator *)sharedCoordinator {
+    static BTTemperatureCoordinator *sharedCoordinator = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedCoordinator = [[self alloc] init];
+    });
+    return sharedCoordinator;
+}
+
+
+
+
+#pragma mark - Public instance methods
+
+- (id)init {
+    if (self = [super init]) {
+        _didShowH1A = false;
+        _didShowH2A = false;
+        _didShowL1A = false;
+        _didShowL2A = false;
+    }
+    return self;
+}
+
+- (NSNumber *)getBatteryTemperature {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
@@ -49,9 +77,9 @@ static BOOL didShowL2A = NO;
     return [temp autorelease];
 }
 
-+ (NSString *)getTemperatureString {
+- (NSString *)getTemperatureString {
     NSString *formattedString = @"N/A";
-    NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
+    NSNumber *rawTemperature = [self getBatteryTemperature];
     
     if (rawTemperature) {
         NSString *abbreviationString = @"";
@@ -99,15 +127,16 @@ static BOOL didShowL2A = NO;
     return formattedString;
 }
 
-+ (void)resetAlerts {
-    didShowH1A = NO;
-    didShowH2A = NO;
-    didShowL1A = NO;
-    didShowL2A = NO;
+- (void)resetAlerts {
+    self.didShowH1A = NO;
+    self.didShowH2A = NO;
+    self.didShowL1A = NO;
+    self.didShowL2A = NO;
 }
 
-+ (void)checkAlerts {
-    NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
+- (void)checkAlerts {
+    NSNumber *rawTemperature = [self getBatteryTemperature];
+    
     if (rawTemperature) {
         bool showAlert = false;
         float celsius = [rawTemperature intValue] / 100.0f;
@@ -117,39 +146,39 @@ static BOOL didShowL2A = NO;
         
         // Check for message to display
         if (celsius >= 45.0f) {
-            if (!didShowH2A && interface.tempAlerts) {
-                didShowH2A = true;
+            if (!self.didShowH2A && interface.tempAlerts) {
+                self.didShowH2A = true;
                 showAlert = true;
                 message = @"Battery temperature has reached 45℃ (113℉)!";
             }
         }
         else if (celsius >= 35.0f) {
-            if (!didShowH1A && interface.tempAlerts) {
-                didShowH1A = true;
+            if (!self.didShowH1A && interface.tempAlerts) {
+                self.didShowH1A = true;
                 showAlert = true;
                 message = @"Battery temperature has reached 35℃ (95℉).";
             }
         }
         else if (celsius <= -20.0f) {
-            if (!didShowL2A && interface.tempAlerts) {
-                didShowL2A = true;
+            if (!self.didShowL2A && interface.tempAlerts) {
+                self.didShowL2A = true;
                 showAlert = true;
                 message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
         else if (celsius <= 0.0f) {
-            if (!didShowL1A && interface.tempAlerts) {
-                didShowL2A = false;
-                didShowL1A = true;
+            if (!self.didShowL1A && interface.tempAlerts) {
+                self.didShowL2A = false;
+                self.didShowL1A = true;
                 showAlert = true;
                 message = @"Battery temperature has dropped to -20℃ (-4℉)!";
             }
         }
         else if ((celsius > 0.0f) && (celsius < 35.0f)) {
-            didShowL2A = false;
-            didShowL1A = false;
-            didShowH2A = false;
-            didShowH1A = false;
+            self.didShowL2A = false;
+            self.didShowL1A = false;
+            self.didShowH2A = false;
+            self.didShowH1A = false;
         }
         
         if (showAlert) {
@@ -158,10 +187,6 @@ static BOOL didShowL2A = NO;
             [alert release];
         }
     }
-}
-
-+ (BOOL)hasAlertShown {
-    return didShowH1A || didShowH2A || didShowL1A || didShowL2A;
 }
 
 @end

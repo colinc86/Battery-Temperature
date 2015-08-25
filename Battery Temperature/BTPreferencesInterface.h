@@ -39,7 +39,6 @@ typedef enum {
 - (void)startListeningForNotifications;
 - (void)loadSpringBoardSettings;
 - (void)loadSettings;
-- (BOOL)isTemperatureVisible;
 
 - (void)toggleEnabled;
 - (void)changeUnit;

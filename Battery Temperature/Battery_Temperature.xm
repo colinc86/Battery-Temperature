@@ -4,7 +4,7 @@
 #import "BTActivatorListener.h"
 #import "BTStatusItemManager.h"
 #import "BTPreferencesInterface.h"
-#import "BTStaticFunctions.h"
+#import "BTTemperatureCoordinator.h"
 
 #include <dlfcn.h>
 
@@ -100,12 +100,15 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
     }
     
     if (interface.enabled) {
-        [BTStaticFunctions checkAlerts];
+        [[BTTemperatureCoordinator sharedCoordinator] checkAlerts];
         [[BTStatusItemManager sharedManager] update];
     }
+    else {
+        [[BTStatusItemManager sharedManager] hideAll];
+    }
     
-    if (interface.enabled && [interface isTemperatureVisible]) {
-        NSString *temperatureString = [BTStaticFunctions getTemperatureString];
+    if (interface.enabled) {
+        NSString *temperatureString = [[BTTemperatureCoordinator sharedCoordinator] getTemperatureString];
         
         if (interface.showPercent) {
             temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];

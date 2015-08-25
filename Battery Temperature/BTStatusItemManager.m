@@ -7,7 +7,7 @@
 //
 
 #import "BTStatusItemManager.h"
-#import "BTStaticFunctions.h"
+#import "BTTemperatureCoordinator.h"
 #import "BTPreferencesInterface.h"
 #import "LSStatusBarItem.h"
 
@@ -37,7 +37,7 @@
 #pragma mark - Public instance methods
 
 - (void)update {
-    NSNumber *temperature = [BTStaticFunctions getBatteryTemperature];
+    NSNumber *temperature = [[BTTemperatureCoordinator sharedCoordinator] getBatteryTemperature];
     if (temperature) {
         BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
         
@@ -69,25 +69,23 @@
                 self.warmStatusItem.visible = NO;
             }
             else {
-                self.hotStatusItem.visible = NO;
-                self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
-                self.coldStatusItem.visible = NO;
+                [self hideAll];
             }
         }
         else {
-            self.hotStatusItem.visible = NO;
-            self.warmStatusItem.visible = NO;
-            self.coolStatusItem.visible = NO;
-            self.coldStatusItem.visible = NO;
+            [self hideAll];
         }
     }
     else {
-        self.hotStatusItem.visible = NO;
-        self.warmStatusItem.visible = NO;
-        self.coolStatusItem.visible = NO;
-        self.coldStatusItem.visible = NO;
+        [self hideAll];
     }
+}
+
+- (void)hideAll {
+    self.hotStatusItem.visible = NO;
+    self.warmStatusItem.visible = NO;
+    self.coolStatusItem.visible = NO;
+    self.coldStatusItem.visible = NO;
 }
 
 
