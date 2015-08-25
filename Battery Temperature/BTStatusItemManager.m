@@ -27,7 +27,7 @@
         if (statusBarAlerts && enabled) {
             float celsius = ([rawTemperature floatValue] / 100.0f);
             
-            if (celsius >= 45.0f) {
+            if (celsius >= HOT_CUTOFF) {
                 if (!self.hotStatusItem.visible && alertVibrate) {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 }
@@ -37,7 +37,7 @@
                 [self.coolStatusItem hide:YES];
                 [self.coldStatusItem hide:YES];
             }
-            else if (celsius >= 35.0f) {
+            else if (celsius >= WARM_CUTOFF) {
                 if (!self.warmStatusItem.visible && alertVibrate) {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 }
@@ -47,7 +47,7 @@
                 [self.coolStatusItem hide:YES];
                 [self.coldStatusItem hide:YES];
             }
-            else if (celsius <= -20.0f) {
+            else if (celsius <= COLD_CUTOFF) {
                 if (!self.coldStatusItem.visible && alertVibrate) {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 }
@@ -57,7 +57,7 @@
                 [self.coolStatusItem hide:YES];
                 [self.warmStatusItem hide:YES];
             }
-            else if (celsius <= 0.0f) {
+            else if (celsius <= COOL_CUTOFF) {
                 if (!self.coolStatusItem.visible && alertVibrate) {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 }

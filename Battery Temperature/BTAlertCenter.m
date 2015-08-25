@@ -38,14 +38,14 @@
         float celsius = [rawTemperature intValue] / 100.0f;
         NSString *message = @"";
         
-        if (celsius >= 45.0f) {
+        if (celsius >= HOT_CUTOFF) {
             if (!self.didShowHotAlert) {
                 self.didShowHotAlert = true;
                 showAlert = YES;
                 message = @"Battery temperature has reached 45℃ (113℉)!";
             }
         }
-        else if (celsius >= 35.0f) {
+        else if (celsius >= WARM_CUTOFF) {
             if (!self.didShowWarmAlert) {
                 self.didShowWarmAlert = true;
                 self.didShowHotAlert = false;
@@ -53,14 +53,14 @@
                 message = @"Battery temperature has reached 35℃ (95℉).";
             }
         }
-        else if (celsius <= -20.0f) {
+        else if (celsius <= COLD_CUTOFF) {
             if (!self.didShowColdAlert) {
                 self.didShowColdAlert = true;
                 showAlert = YES;
                 message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
-        else if (celsius <= 0.0f) {
+        else if (celsius <= COOL_CUTOFF) {
             if (!self.didShowCoolAlert) {
                 self.didShowColdAlert = false;
                 self.didShowCoolAlert = true;
@@ -68,7 +68,7 @@
                 message = @"Battery temperature has dropped to -20℃ (-4℉)!";
             }
         }
-        else if ((celsius > 0.0f) && (celsius < 35.0f)) {
+        else if ((celsius > COOL_CUTOFF) && (celsius < WARM_CUTOFF)) {
             [self resetAlerts];
         }
         
