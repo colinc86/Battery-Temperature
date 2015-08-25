@@ -60,6 +60,7 @@ typedef struct {
 
 static NSString *lastBatteryDetailString = @"";
 static BTAlertCenter *alertCenter = nil;
+static BOOL forcedUpdate = NO;
 
 static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
@@ -69,10 +70,10 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         [aggregator _setItem:8 enabled:YES];
     }
     
-    [alertCenter.itemManager updateWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && !alertCenter.didVibrate)];
+//    [alertCenter.itemManager updateWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && !alertCenter.didVibrate)];
     
     // Post new data to the data bar
-    interface.forcedUpdate = YES;
+    forcedUpdate = YES;
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
 
@@ -96,7 +97,7 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
     strcpy(currentString, arg1->batteryDetailString);
     NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
     
-    if (!interface.forcedUpdate) {
+    if (!forcedUpdate) {
         if (lastBatteryDetailString != nil) {
             [lastBatteryDetailString release];
             lastBatteryDetailString = nil;
@@ -104,9 +105,7 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    NSNumber *batteryTemperature = [BTStaticFunctions getBatteryTemperature];
-    [alertCenter checkAlertsWithTemperature:batteryTemperature enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate];
-    [alertCenter.itemManager updateWithTemperature:batteryTemperature enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && alertCenter.didVibrate)];
+    [alertCenter checkAlertsWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
     
     if (interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]]) {
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];
@@ -116,7 +115,7 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
         }
         
         strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
-    } else if (interface.forcedUpdate) {
+    } else if (forcedUpdate) {
         if (interface.showPercent) {
             strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
         }
@@ -126,7 +125,7 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
         }
     }
     
-    interface.forcedUpdate = false;
+    forcedUpdate = false;
     
     %orig(arg1, arg2);
 }

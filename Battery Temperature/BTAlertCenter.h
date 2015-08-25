@@ -16,7 +16,6 @@
     BOOL _didShowHotAlert;
     BOOL _didShowCoolAlert;
     BOOL _didShowColdAlert;
-    BOOL _didVibrate;
 }
 
 @property (nonatomic, retain) BTStatusItemManager *itemManager;
@@ -24,9 +23,8 @@
 @property (nonatomic, assign) BOOL didShowHotAlert;
 @property (nonatomic, assign) BOOL didShowCoolAlert;
 @property (nonatomic, assign) BOOL didShowColdAlert;
-@property (nonatomic, assign) BOOL didVibrate;
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate;
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate barAlertsEnabled:(BOOL)statusBarAlerts;
 - (void)resetAlerts;
 - (BOOL)hasAlertShown;
 

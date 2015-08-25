@@ -37,7 +37,6 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
 
 - (id)init {
     if (self = [super init]) {
-        _forcedUpdate = YES;
         _enabled = YES;
         _showPercent = NO;
         _showAbbreviation = YES;

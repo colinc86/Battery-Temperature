@@ -18,7 +18,6 @@
         _didShowCoolAlert = NO;
         _didShowHotAlert = NO;
         _didShowWarmAlert = NO;
-        _didVibrate = NO;
     }
     return self;
 }
@@ -30,8 +29,11 @@
     return _itemManager;
 }
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate {
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate barAlertsEnabled:(BOOL)statusBarAlerts {
     if (rawTemperature) {
+        //
+        // Check UIAlertView type alerts
+        //
         BOOL showAlert = NO;
         float celsius = [rawTemperature intValue] / 100.0f;
         NSString *message = @"";
@@ -70,6 +72,7 @@
             [self resetAlerts];
         }
         
+        BOOL didVibrate = NO;
         if (showAlert && enabled && tempAlerts) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
@@ -77,9 +80,14 @@
             
             if (alertVibrate) {
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                self.didVibrate = YES;
+                didVibrate = YES;
             }
         }
+        
+        //
+        // Check UIStatusBar type alerts
+        //
+        [self.itemManager updateWithTemperature:rawTemperature enabled:enabled barAlertsEnabled:statusBarAlerts alertVibrate:(alertVibrate && !didVibrate)];
     }
 }
 
@@ -88,7 +96,6 @@
     self.didShowCoolAlert = false;
     self.didShowHotAlert = false;
     self.didShowWarmAlert = false;
-    self.didVibrate = NO;
 }
 
 - (BOOL)hasAlertShown {

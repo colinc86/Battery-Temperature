@@ -26,7 +26,6 @@ typedef enum {
 } VisibilityRule;
 
 @interface BTPreferencesInterface : NSObject
-@property (nonatomic, assign) BOOL forcedUpdate;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) BOOL showPercent;
 @property (nonatomic, assign) BOOL showAbbreviation;
