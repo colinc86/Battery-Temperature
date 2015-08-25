@@ -17,6 +17,6 @@
 
 + (BTStatusItemManager *)sharedManager;
 - (void)update;
-- (void)hideAll;
+
 
 @end

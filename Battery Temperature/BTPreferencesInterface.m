@@ -8,7 +8,7 @@
 
 #import "BTPreferencesInterface.h"
 #import "BTStatusItemManager.h"
-#import "BTTemperatureCoordinator.h"
+#import "BTStaticFunctions.h"
 
 @interface BTPreferencesInterface()
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
@@ -83,11 +83,25 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
     if (!self.tempAlerts) {
-        [[BTTemperatureCoordinator sharedCoordinator] resetAlerts];
+        [BTStaticFunctions resetAlerts];
     }
     
     CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
+}
+
+- (BOOL)isTemperatureVisible {
+    BOOL visible = false;
+    if (self.rule == RuleShow) {
+        visible = true;
+    }
+    else if ((self.rule == RuleAlertShow) && [BTStaticFunctions hasAlertShown]) {
+        visible = true;
+    }
+    else if ((self.rule == RuleAlertHide) && ![BTStaticFunctions hasAlertShown]) {
+        visible = true;
+    }
+    return visible;
 }
 
 - (void)toggleEnabled {
