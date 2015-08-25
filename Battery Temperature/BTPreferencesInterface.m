@@ -45,6 +45,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         _tempAlerts = NO;
         _statusBarAlerts = NO;
         _unit = 0;
+        _rule = RuleShow;
     }
     return self;
 }
@@ -76,6 +77,9 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
     self.showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
     
+    CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));
+    self.rule = visibilityRuleRef ? [(id)CFBridgingRelease(visibilityRuleRef) intValue] : 0;
+    
     CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
     if (!self.tempAlerts) {
@@ -84,6 +88,20 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     
     CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
+}
+
+- (BOOL)isTemperatureVisible {
+    BOOL visible = false;
+    if (self.rule == RuleShow) {
+        visible = true;
+    }
+    else if ((self.rule == RuleAlertShow) && [BTStaticFunctions hasAlertShown]) {
+        visible = true;
+    }
+    else if ((self.rule == RuleAlertHide) && ![BTStaticFunctions hasAlertShown]) {
+        visible = true;
+    }
+    return visible;
 }
 
 - (void)toggleEnabled {
@@ -149,6 +167,24 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
 }
 
 - (void)checkDefaultSettings {
+    // Legacy support
+    CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    BOOL highTempAlert = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : YES;
+    if (highTempAlertsRef) {
+        CFPreferencesSetAppValue(CFSTR("highTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    BOOL lowTempAlert = lowTempAlertsRef ? [(id)CFBridgingRelease(lowTempAlertsRef) boolValue] : NO;
+    if (lowTempAlertsRef) {
+        CFPreferencesSetAppValue(CFSTR("lowTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
+    }
+    
+    if (highTempAlert || lowTempAlert) {
+        CFPreferencesSetAppValue(CFSTR("statusBarAlerts"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    // End legacy support
+    
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
     if (!enabledRef) {
         CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
@@ -181,36 +217,20 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         CFRelease(showDecimalRef);
     }
     
-    CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!highTempAlertsRef) {
-        CFPreferencesSetAppValue(CFSTR("highTempAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!statusBarAlertsRef) {
+        CFPreferencesSetAppValue(CFSTR("statusBarAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
     }
     else {
-        CFRelease(highTempAlertsRef);
+        CFRelease(statusBarAlertsRef);
     }
     
-    CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!lowTempAlertsRef) {
-        CFPreferencesSetAppValue(CFSTR("lowTempAlerts"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!visibilityRuleRef) {
+        CFPreferencesSetAppValue(CFSTR("visibilityRule"), (CFNumberRef)[NSNumber numberWithInt:0], CFSTR(PREFERENCES_FILE_NAME));
     }
     else {
-        CFRelease(lowTempAlertsRef);
-    }
-    
-    CFPropertyListRef highTempIconRef = CFPreferencesCopyAppValue(CFSTR("highTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!highTempIconRef) {
-        CFPreferencesSetAppValue(CFSTR("highTempIcon"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(highTempIconRef);
-    }
-    
-    CFPropertyListRef lowTempIconRef = CFPreferencesCopyAppValue(CFSTR("lowTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!lowTempIconRef) {
-        CFPreferencesSetAppValue(CFSTR("lowTempIcon"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(lowTempIconRef);
+        CFRelease(visibilityRuleRef);
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));

@@ -160,4 +160,8 @@ static BOOL didShowL2A = NO;
     }
 }
 
++ (BOOL)hasAlertShown {
+    return didShowH1A || didShowH2A || didShowL1A || didShowL2A;
+}
+
 @end

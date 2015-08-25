@@ -17,6 +17,13 @@
 
 #define UPDATE_STAUS_BAR_NOTIFICATION_NAME "com.cnc.Battery-Temperature.refreshStatusBar"
 
+typedef enum {
+    RuleShow,
+    RuleHide,
+    RuleAlertShow,
+    RuleAlertHide
+} VisibilityRule;
+
 @interface BTPreferencesInterface : NSObject
 @property (nonatomic, assign) BOOL forcedUpdate;
 @property (nonatomic, assign) BOOL enabled;
@@ -26,11 +33,13 @@
 @property (nonatomic, assign) BOOL tempAlerts;
 @property (nonatomic, assign) BOOL statusBarAlerts;
 @property (nonatomic, assign) int unit;
+@property (nonatomic, assign) VisibilityRule rule;
 
 + (BTPreferencesInterface *)sharedInterface;
 - (void)startListeningForNotifications;
 - (void)loadSpringBoardSettings;
 - (void)loadSettings;
+- (BOOL)isTemperatureVisible;
 
 - (void)toggleEnabled;
 - (void)changeUnit;

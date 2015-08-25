@@ -47,6 +47,36 @@
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
+			<string>visibilityRule</string>
+			<key>label</key>
+			<string>Visibility Rule</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>validTitles</key>
+			<array>
+				<string>Show</string>
+				<string>Hide</string>
+				<string>Show After Alert Temp</string>
+				<string>Hide After Alert Temp</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<string>3</string>
+			</array>
+			<key>default</key>
+			<integer>0</integer>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
 			<string>unit</string>
 			<key>label</key>
 			<string>Scale</string>

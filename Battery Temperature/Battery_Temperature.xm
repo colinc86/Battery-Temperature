@@ -99,11 +99,12 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    [BTStaticFunctions checkAlerts];
-    
-    [[BTStatusItemManager sharedManager] update];
-    
     if (interface.enabled) {
+        [BTStaticFunctions checkAlerts];
+        [[BTStatusItemManager sharedManager] update];
+    }
+    
+    if (interface.enabled && [interface isTemperatureVisible]) {
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];
         
         if (interface.showPercent) {
