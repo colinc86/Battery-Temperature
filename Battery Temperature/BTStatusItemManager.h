@@ -15,8 +15,6 @@
 
 @interface BTStatusItemManager : NSObject
 
-+ (BTStatusItemManager *)sharedManager;
-- (void)update;
-
+- (void)updateWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled barAlertsEnabled:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate;
 
 @end

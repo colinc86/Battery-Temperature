@@ -10,8 +10,5 @@
 
 + (NSNumber *)getBatteryTemperature;
 + (NSString *)getTemperatureString;
-+ (void)resetAlerts;
-+ (void)checkAlerts;
-+ (BOOL)hasAlertShown;
 
 @end

@@ -44,6 +44,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         _showDecimal = YES;
         _tempAlerts = NO;
         _statusBarAlerts = NO;
+        _alertVibrate = NO;
         _unit = 0;
         _rule = RuleShow;
     }
@@ -84,22 +85,25 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
     if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
-        [BTStaticFunctions resetAlerts];
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, NULL, true);
     }
     
     CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
+    
+    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
+    self.alertVibrate = alertVibrateRef ? [(id)CFBridgingRelease(alertVibrateRef) boolValue] : NO;
 }
 
-- (BOOL)isTemperatureVisible {
+- (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert {
     BOOL visible = false;
     if (self.rule == RuleShow) {
         visible = true;
     }
-    else if ((self.rule == RuleAlertShow) && [BTStaticFunctions hasAlertShown]) {
+    else if ((self.rule == RuleAlertShow) && shouldShowAlert) {
         visible = true;
     }
-    else if ((self.rule == RuleAlertHide) && ![BTStaticFunctions hasAlertShown]) {
+    else if ((self.rule == RuleAlertHide) && !shouldShowAlert) {
         visible = true;
     }
     return visible;
@@ -224,6 +228,14 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     }
     else {
         CFRelease(statusBarAlertsRef);
+    }
+    
+    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!alertVibrateRef) {
+        CFPreferencesSetAppValue(CFSTR("alertVibrate"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(alertVibrateRef);
     }
     
     CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));

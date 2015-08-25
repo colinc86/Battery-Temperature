@@ -6,9 +6,19 @@
 //
 //
 
-#import "LSStatusBarItem+BatteryTemperature.h"
+#import "LSStatusBarItem+VisibilityTimer.h"
 
-@implementation LSStatusBarItem (BatteryTemperature)
+@implementation LSStatusBarItem (VisibilityTimer)
+
+static NSTimer *_hideTimer = nil;
+
+- (NSTimer *)hideTimer {
+    return _hideTimer;
+}
+
+- (void)setHideTimer:(NSTimer *)hideTimer {
+    _hideTimer = hideTimer;
+}
 
 - (void)show {
     self.visible = YES;
@@ -19,7 +29,10 @@
 }
 
 - (void)hide:(BOOL)forced {
-    if (!self.hideTimer) {
+    if (forced) {
+        self.visible = NO;
+    }
+    else if (!self.hideTimer) {
         self.hideTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(hideTimerFired:) userInfo:nil repeats:NO];
         self.hideTimer.tolerance = HideTimerInterval;
     }
