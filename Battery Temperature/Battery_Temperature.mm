@@ -59,11 +59,11 @@ typedef struct {
 
 #pragma mark - Static variables/functions
 
-static NSString *lastBatteryDetailString = nil;
+static NSString *lastBatteryDetailString = @"";
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SBStatusBarStateAggregator; @class SpringBoard; @class UIStatusBarServer; 
+@class UIStatusBarServer; @class SpringBoard; @class SBStatusBarStateAggregator; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
 #line 63 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
@@ -106,10 +106,8 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    if (interface.enabled) {
-        [BTStaticFunctions checkAlerts];
-        [[BTStatusItemManager sharedManager] update];
-    }
+    [BTStaticFunctions checkAlerts];
+    [[BTStatusItemManager sharedManager] update];
     
     if (interface.enabled && [interface isTemperatureVisible]) {
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];
@@ -149,7 +147,7 @@ static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_79de844b() {
+static __attribute__((constructor)) void _logosLocalCtor_fe62b06b() {
     if (_logos_static_class_lookup$SpringBoard()) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         

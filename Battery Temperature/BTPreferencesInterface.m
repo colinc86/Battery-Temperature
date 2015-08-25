@@ -80,9 +80,10 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));
     self.rule = visibilityRuleRef ? [(id)CFBridgingRelease(visibilityRuleRef) intValue] : 0;
     
+    BOOL oldTempAlerts = self.tempAlerts;
     CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
-    if (!self.tempAlerts) {
+    if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
         [BTStaticFunctions resetAlerts];
     }
     
@@ -167,23 +168,23 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
 }
 
 - (void)checkDefaultSettings {
-    // Legacy support
+    //
+    // Legacy support (v1.2 -> v1.3)
+    //
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    BOOL highTempAlert = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : YES;
-    if (highTempAlertsRef) {
-        CFPreferencesSetAppValue(CFSTR("highTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
-    }
+    BOOL highTempAlert = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
     
     CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     BOOL lowTempAlert = lowTempAlertsRef ? [(id)CFBridgingRelease(lowTempAlertsRef) boolValue] : NO;
-    if (lowTempAlertsRef) {
-        CFPreferencesSetAppValue(CFSTR("lowTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
-    }
     
     if (highTempAlert || lowTempAlert) {
         CFPreferencesSetAppValue(CFSTR("statusBarAlerts"), (CFNumberRef)[NSNumber numberWithBool:YES], CFSTR(PREFERENCES_FILE_NAME));
+        CFPreferencesSetAppValue(CFSTR("highTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
+        CFPreferencesSetAppValue(CFSTR("lowTempAlerts"), NULL, CFSTR(PREFERENCES_FILE_NAME));
     }
+    //
     // End legacy support
+    //
     
     CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
     if (!enabledRef) {

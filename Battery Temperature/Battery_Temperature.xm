@@ -58,7 +58,7 @@ typedef struct {
 
 #pragma mark - Static variables/functions
 
-static NSString *lastBatteryDetailString = nil;
+static NSString *lastBatteryDetailString = @"";
 
 static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
@@ -99,10 +99,8 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    if (interface.enabled) {
-        [BTStaticFunctions checkAlerts];
-        [[BTStatusItemManager sharedManager] update];
-    }
+    [BTStaticFunctions checkAlerts];
+    [[BTStatusItemManager sharedManager] update];
     
     if (interface.enabled && [interface isTemperatureVisible]) {
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];

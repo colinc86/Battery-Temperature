@@ -41,7 +41,7 @@
     if (temperature) {
         BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
         
-        if (interface.statusBarAlerts) {
+        if (interface.statusBarAlerts && interface.enabled) {
             float celsius = ([temperature floatValue] / 100.0f);
             
             if (celsius >= 45.0f) {

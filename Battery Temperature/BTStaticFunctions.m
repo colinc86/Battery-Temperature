@@ -109,7 +109,7 @@ static BOOL didShowL2A = NO;
 + (void)checkAlerts {
     NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
     if (rawTemperature) {
-        bool showAlert = false;
+        BOOL showAlert = NO;
         float celsius = [rawTemperature intValue] / 100.0f;
         NSString *message = @"";
         
@@ -117,31 +117,31 @@ static BOOL didShowL2A = NO;
         
         // Check for message to display
         if (celsius >= 45.0f) {
-            if (!didShowH2A && interface.tempAlerts) {
+            if (!didShowH2A) {
                 didShowH2A = true;
-                showAlert = true;
+                showAlert = YES;
                 message = @"Battery temperature has reached 45℃ (113℉)!";
             }
         }
         else if (celsius >= 35.0f) {
-            if (!didShowH1A && interface.tempAlerts) {
+            if (!didShowH1A) {
                 didShowH1A = true;
-                showAlert = true;
+                showAlert = YES;
                 message = @"Battery temperature has reached 35℃ (95℉).";
             }
         }
         else if (celsius <= -20.0f) {
-            if (!didShowL2A && interface.tempAlerts) {
+            if (!didShowL2A) {
                 didShowL2A = true;
-                showAlert = true;
+                showAlert = YES;
                 message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
         else if (celsius <= 0.0f) {
-            if (!didShowL1A && interface.tempAlerts) {
+            if (!didShowL1A) {
                 didShowL2A = false;
                 didShowL1A = true;
-                showAlert = true;
+                showAlert = YES;
                 message = @"Battery temperature has dropped to -20℃ (-4℉)!";
             }
         }
@@ -152,7 +152,7 @@ static BOOL didShowL2A = NO;
             didShowH1A = false;
         }
         
-        if (showAlert) {
+        if (showAlert && interface.enabled && interface.tempAlerts) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             [alert release];
