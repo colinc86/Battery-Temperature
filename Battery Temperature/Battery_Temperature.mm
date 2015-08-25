@@ -4,7 +4,7 @@
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "BTStaticFunctions.h"
+#import "BTClassFunctions.h"
 #import "BTAlertCenter.h"
 
 #include <dlfcn.h>
@@ -65,9 +65,9 @@ static BOOL forcedUpdate = NO;
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class SBStatusBarStateAggregator; @class UIStatusBarServer; 
+@class UIStatusBarServer; @class SBStatusBarStateAggregator; @class SpringBoard; 
 static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 65 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
@@ -76,9 +76,6 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
     if (interface.showPercent || interface.enabled) {
         [aggregator _setItem:8 enabled:YES];
     }
-    
-
-    
     
     forcedUpdate = YES;
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
@@ -112,10 +109,10 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    [alertCenter checkAlertsWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
+    [alertCenter checkAlertsWithTemperature:[BTClassFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
     
     if (interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]]) {
-        NSString *temperatureString = [BTStaticFunctions getTemperatureString];
+        NSString *temperatureString = [BTClassFunctions getTemperatureString];
         
         if (interface.showPercent) {
             temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
@@ -152,7 +149,7 @@ static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_27b85f3b() {
+static __attribute__((constructor)) void _logosLocalCtor_79de844b() {
     if (_logos_static_class_lookup$SpringBoard()) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, resetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);

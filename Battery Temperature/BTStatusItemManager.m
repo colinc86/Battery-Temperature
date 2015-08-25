@@ -8,7 +8,6 @@
 
 #import <AudioToolbox/AudioServices.h>
 #import "BTStatusItemManager.h"
-#import "BTStaticFunctions.h"
 #import "BTPreferencesInterface.h"
 #import "LSStatusBarItem+VisibilityTimer.h"
 

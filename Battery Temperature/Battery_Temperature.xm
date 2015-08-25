@@ -3,7 +3,7 @@
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "BTStaticFunctions.h"
+#import "BTClassFunctions.h"
 #import "BTAlertCenter.h"
 
 #include <dlfcn.h>
@@ -70,9 +70,6 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         [aggregator _setItem:8 enabled:YES];
     }
     
-//    [alertCenter.itemManager updateWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && !alertCenter.didVibrate)];
-    
-    // Post new data to the data bar
     forcedUpdate = YES;
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
@@ -105,10 +102,10 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    [alertCenter checkAlertsWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
+    [alertCenter checkAlertsWithTemperature:[BTClassFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
     
     if (interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]]) {
-        NSString *temperatureString = [BTStaticFunctions getTemperatureString];
+        NSString *temperatureString = [BTClassFunctions getTemperatureString];
         
         if (interface.showPercent) {
             temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];

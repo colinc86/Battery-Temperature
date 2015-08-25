@@ -1,12 +1,12 @@
 //
-//  BTStaticFunctions.m
+//  BTClassFunctions.m
 //  Battery Temperature
 //
 //  Created by Colin Campbell on 8/24/15.
 //
 //
 
-#import "BTStaticFunctions.h"
+#import "BTClassFunctions.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "BTPreferencesInterface.h"
@@ -15,7 +15,7 @@
 #include <mach/port.h>
 #include <mach/kern_return.h>
 
-@implementation BTStaticFunctions
+@implementation BTClassFunctions
 
 + (NSNumber *)getBatteryTemperature {
     NSNumber *temp = nil;
@@ -46,7 +46,7 @@
 
 + (NSString *)getTemperatureString {
     NSString *formattedString = @"N/A";
-    NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
+    NSNumber *rawTemperature = [BTClassFunctions getBatteryTemperature];
     
     if (rawTemperature) {
         NSString *abbreviationString = @"";
