@@ -7,6 +7,8 @@
 //
 
 #import "BTStatusItemManager.h"
+#import "BTStaticFunctions.h"
+#import "BTPreferencesInterface.h"
 #import "LSStatusBarItem.h"
 #import "Globals.h"
 
@@ -35,20 +37,12 @@
 
 #pragma mark - Public instance methods
 
-- (id)init {
-    if (self = [super init]) {
-        [self performSelector:@selector(delayedInit) withObject:nil afterDelay:0.0];
-    }
-    return self;
-}
-
-- (void)delayedInit {
-    
-}
-
-- (void)updateTemperature:(NSNumber *)temperature {
+- (void)update {
+    NSNumber *temperature = [BTStaticFunctions getBatteryTemperature];
     if (temperature) {
-        if (self.highTempEnabled) {
+        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
+        
+        if (interface.highTempIcon) {
             float celsius = ([temperature floatValue] / 100.0f);
             
             if (celsius >= 45.0f) {
@@ -70,7 +64,7 @@
                 self.coldStatusItem.visible = NO;
             }
         }
-        else if (self.lowTempEnabled) {
+        else if (interface.lowTempIcon) {
             float celsius = ([temperature floatValue] / 100.0f);
             
             if (celsius <= -20.0f) {
@@ -105,14 +99,6 @@
 
 
 #pragma mark - Getter/setter methods
-
-- (void)setHighTempEnabled:(BOOL)highTempEnabled {
-    _highTempEnabled = highTempEnabled;
-}
-
-- (void)setLowTempEnabled:(BOOL)lowTempEnabled {
-    _lowTempEnabled = lowTempEnabled;
-}
 
 - (LSStatusBarItem *)hotStatusItem {
     if (!_hotStatusItem) {

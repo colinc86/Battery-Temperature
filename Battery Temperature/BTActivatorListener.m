@@ -8,6 +8,7 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 #import "BTActivatorListener.h"
+#import "BTPreferencesInterface.h"
 #import "Globals.h"
 
 #include <dlfcn.h>
@@ -89,39 +90,19 @@
 #pragma mark - Respond to events
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
-    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
     
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
-        CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
-        
-        BOOL enabled = enabledRef ? [(id)CFBridgingRelease(enabledRef) boolValue] : YES;
-        enabled = !enabled;
-        
-        CFPreferencesSetAppValue(CFSTR("enabled"), (CFNumberRef)[NSNumber numberWithBool:enabled], CFSTR(PREFERENCES_FILE_NAME));
+        [interface toggleEnabled];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
-        CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
-        
-        int unit = unitRef ? [(id)CFBridgingRelease(unitRef) intValue] : 0;
-        unit = (unit + 1) % 3;
-        
-        CFPreferencesSetAppValue(CFSTR("unit"), (CFNumberRef)[NSNumber numberWithInt:unit], CFSTR(PREFERENCES_FILE_NAME));
+        [interface changeUnit];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
-        
-        BOOL showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
-        showAbbreviation = !showAbbreviation;
-        
-        CFPreferencesSetAppValue(CFSTR("showAbbreviation"), (CFNumberRef)[NSNumber numberWithBool:showAbbreviation], CFSTR(PREFERENCES_FILE_NAME));
+        [interface toggleAbbreviation];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_DECIMAL]) {
-        CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
-        
-        BOOL showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
-        showDecimal = !showDecimal;
-        
-        CFPreferencesSetAppValue(CFSTR("showDecimal"), (CFNumberRef)[NSNumber numberWithBool:showDecimal], CFSTR(PREFERENCES_FILE_NAME));
+        [interface toggleDecimal];
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));

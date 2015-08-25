@@ -8,16 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BTStatusItemManager : NSObject {
-    BOOL _highTempEnabled;
-    BOOL _lowTempEnabled;
-}
+#define ICON_HOT @"BatteryTemperatureHot"
+#define ICON_WARM @"BatteryTemperatureWarm"
+#define ICON_COOL @"BatteryTemperatureCool"
+#define ICON_COLD @"BatteryTemperatureCold"
 
-@property(nonatomic, assign) BOOL highTempEnabled;
-@property(nonatomic, assign) BOOL lowTempEnabled;
+@interface BTStatusItemManager : NSObject
 
 + (BTStatusItemManager *)sharedManager;
-- (void)updateTemperature:(NSNumber *)temperature;
+- (void)update;
 
 
 @end

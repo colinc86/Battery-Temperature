@@ -9,25 +9,6 @@
 #ifndef Battery_Temperature_Globals_h
 #define Battery_Temperature_Globals_h
 
-#define SPRINGBOARD_FILE_NAME "com.apple.springboard"
-#define SPRINGBOARD_FILE_PATH @"/var/mobile/Library/Preferences/com.apple.springboard.plist"
-#define SPRINGBOARD_BATTERY_PERCENT_KEY "SBShowBatteryPercentage"
-#define SPRINGBOARD_NOTIFICATION_NAME "SBPreferencesChangedNotification"
-
-#define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
-#define PREFERENCES_FILE_PATH @"/var/mobile/Library/Preferences/com.cnc.Battery-Temperature.plist"
-#define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
-
-#define ACTIVATOR_LISTENER_ENABLED @"com.cnc.Battery-Temperature.activator.enabled"
-#define ACTIVATOR_LISTENER_UNIT @"com.cnc.Battery-Temperature.activator.unit"
-#define ACTIVATOR_LISTENER_ABBREVIATION @"com.cnc.Battery-Temperature.activator.abbreviation"
-#define ACTIVATOR_LISTENER_DECIMAL @"com.cnc.Battery-Temperature.activator.decimal"
-
-#define ICON_HOT @"BatteryTemperatureHot"
-#define ICON_WARM @"BatteryTemperatureWarm"
-#define ICON_COOL @"BatteryTemperatureCool"
-#define ICON_COLD @"BatteryTemperatureCold"
-
 typedef struct {
     char itemIsEnabled[25];
     char timeString[64];
