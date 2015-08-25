@@ -42,10 +42,8 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         _showPercent = NO;
         _showAbbreviation = YES;
         _showDecimal = YES;
-        _highTempAlerts = NO;
-        _highTempIcon = NO;
-        _lowTempAlerts = NO;
-        _lowTempIcon = NO;
+        _tempAlerts = NO;
+        _statusBarAlerts = NO;
         _unit = 0;
     }
     return self;
@@ -78,23 +76,14 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
     self.showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
     
-    CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    self.highTempAlerts = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
-    if (!self.highTempAlerts) {
-        [BTStaticFunctions resetHighAlerts];
+    CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
+    if (!self.tempAlerts) {
+        [BTStaticFunctions resetAlerts];
     }
     
-    CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    self.lowTempAlerts = lowTempAlertsRef ? [(id)CFBridgingRelease(lowTempAlertsRef) boolValue] : NO;
-    if (!self.lowTempAlerts) {
-        [BTStaticFunctions resetLowAlerts];
-    }
-    
-    CFPropertyListRef highTempIconRef = CFPreferencesCopyAppValue(CFSTR("highTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
-    self.highTempIcon = highTempIconRef ? [(id)CFBridgingRelease(highTempIconRef) boolValue] : NO;
-    
-    CFPropertyListRef lowTempIconRef = CFPreferencesCopyAppValue(CFSTR("lowTempIcon"), CFSTR(PREFERENCES_FILE_NAME));
-    self.lowTempIcon = lowTempIconRef ? [(id)CFBridgingRelease(lowTempIconRef) boolValue] : NO;
+    CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
+    self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
 }
 
 - (void)toggleEnabled {

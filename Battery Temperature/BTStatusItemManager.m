@@ -37,17 +37,11 @@
 #pragma mark - Public instance methods
 
 - (void)update {
-    NSLog(@"********************************************** UPDATING 1");
-    
     NSNumber *temperature = [BTStaticFunctions getBatteryTemperature];
     if (temperature) {
-        
-        NSLog(@"********************************************** UPDATING 2");
         BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
         
-        if (interface.highTempIcon) {
-            
-            NSLog(@"********************************************** UPDATING 3");
+        if (interface.statusBarAlerts) {
             float celsius = ([temperature floatValue] / 100.0f);
             
             if (celsius >= 45.0f) {
@@ -57,35 +51,22 @@
                 self.coldStatusItem.visible = NO;
             }
             else if (celsius >= 35.0f) {
-                
-                NSLog(@"********************************************** UPDATING 4");
-                
                 self.warmStatusItem.visible = YES;
                 self.hotStatusItem.visible = NO;
                 self.coolStatusItem.visible = NO;
                 self.coldStatusItem.visible = NO;
             }
-            else {
-                self.hotStatusItem.visible = NO;
-                self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
-                self.coldStatusItem.visible = NO;
-            }
-        }
-        else if (interface.lowTempIcon) {
-            float celsius = ([temperature floatValue] / 100.0f);
-            
-            if (celsius <= -20.0f) {
+            else if (celsius <= -20.0f) {
                 self.coldStatusItem.visible = YES;
                 self.hotStatusItem.visible = NO;
                 self.warmStatusItem.visible = NO;
                 self.coolStatusItem.visible = NO;
             }
             else if (celsius <= 0.0f) {
-                self.coldStatusItem.visible = YES;
+                self.coolStatusItem.visible = YES;
+                self.coldStatusItem.visible = NO;
                 self.hotStatusItem.visible = NO;
                 self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
             }
             else {
                 self.hotStatusItem.visible = NO;
@@ -101,6 +82,12 @@
             self.coldStatusItem.visible = NO;
         }
     }
+    else {
+        self.hotStatusItem.visible = NO;
+        self.warmStatusItem.visible = NO;
+        self.coolStatusItem.visible = NO;
+        self.coldStatusItem.visible = NO;
+    }
 }
 
 
@@ -110,7 +97,7 @@
 
 - (LSStatusBarItem *)hotStatusItem {
     if (!_hotStatusItem) {
-        _hotStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] alignment:StatusBarAlignmentRight];
+        _hotStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] stringByAppendingString:ICON_HOT] alignment:StatusBarAlignmentRight];
         _hotStatusItem.imageName = ICON_HOT;
         _hotStatusItem.visible = NO;
     }
@@ -119,7 +106,7 @@
 
 - (LSStatusBarItem *)warmStatusItem {
     if (!_warmStatusItem) {
-        _warmStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] alignment:StatusBarAlignmentRight];
+        _warmStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] stringByAppendingString:ICON_WARM] alignment:StatusBarAlignmentRight];
         _warmStatusItem.imageName = ICON_WARM;
         _warmStatusItem.visible = NO;
     }
@@ -128,7 +115,7 @@
 
 - (LSStatusBarItem *)coolStatusItem {
     if (!_coolStatusItem) {
-        _coolStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] alignment:StatusBarAlignmentRight];
+        _coolStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] stringByAppendingString:ICON_COOL] alignment:StatusBarAlignmentRight];
         _coolStatusItem.imageName = ICON_COOL;
         _coolStatusItem.visible = NO;
     }
@@ -137,7 +124,7 @@
 
 - (LSStatusBarItem *)coldStatusItem {
     if (!_coldStatusItem) {
-        _coldStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] alignment:StatusBarAlignmentRight];
+        _coldStatusItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:[[NSString stringWithUTF8String:PREFERENCES_FILE_NAME] stringByAppendingString:ICON_COLD] alignment:StatusBarAlignmentRight];
         _coldStatusItem.imageName = ICON_COLD;
         _coldStatusItem.visible = NO;
     }

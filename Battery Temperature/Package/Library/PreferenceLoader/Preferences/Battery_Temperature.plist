@@ -107,7 +107,7 @@
 			<key>footerText</key>
 			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
 Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).
-Alerts can be enabled even if battery temperature in the status bar is disabled.</string>
+Enabling status bar alerts will show a differently colored dot in the status bar for each alert level.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -117,9 +117,9 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
-			<string>highTempAlerts</string>
+			<string>tempAlerts</string>
 			<key>label</key>
-			<string>High Temperature</string>
+			<string>Temperature Alerts</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>
@@ -131,37 +131,9 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
-			<string>highTempIcon</string>
+			<string>statusBarAlerts</string>
 			<key>label</key>
-			<string>High Temperature Icon</string>
-			<key>PostNotification</key>
-			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.cnc.Battery-Temperature</string>
-			<key>key</key>
-			<string>lowTempAlerts</string>
-			<key>label</key>
-			<string>Low Temperature</string>
-			<key>PostNotification</key>
-			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.cnc.Battery-Temperature</string>
-			<key>key</key>
-			<string>lowTempIcon</string>
-			<key>label</key>
-			<string>Low Temperature Icon</string>
+			<string>Show In Status Bar</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>

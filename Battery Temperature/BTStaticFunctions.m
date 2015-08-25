@@ -99,12 +99,9 @@ static BOOL didShowL2A = NO;
     return formattedString;
 }
 
-+ (void)resetHighAlerts {
++ (void)resetAlerts {
     didShowH1A = NO;
     didShowH2A = NO;
-}
-
-+ (void)resetLowAlerts {
     didShowL1A = NO;
     didShowL2A = NO;
 }
@@ -120,28 +117,28 @@ static BOOL didShowL2A = NO;
         
         // Check for message to display
         if (celsius >= 45.0f) {
-            if (!didShowH2A && interface.highTempAlerts) {
+            if (!didShowH2A && interface.tempAlerts) {
                 didShowH2A = true;
                 showAlert = true;
                 message = @"Battery temperature has reached 45℃ (113℉)!";
             }
         }
         else if (celsius >= 35.0f) {
-            if (!didShowH1A && interface.highTempAlerts) {
+            if (!didShowH1A && interface.tempAlerts) {
                 didShowH1A = true;
                 showAlert = true;
                 message = @"Battery temperature has reached 35℃ (95℉).";
             }
         }
         else if (celsius <= -20.0f) {
-            if (!didShowL2A && interface.lowTempAlerts) {
+            if (!didShowL2A && interface.tempAlerts) {
                 didShowL2A = true;
                 showAlert = true;
                 message = @"Battery temperature has dropped to 0℃ (32℉)!";
             }
         }
         else if (celsius <= 0.0f) {
-            if (!didShowL1A && interface.lowTempAlerts) {
+            if (!didShowL1A && interface.tempAlerts) {
                 didShowL2A = false;
                 didShowL1A = true;
                 showAlert = true;

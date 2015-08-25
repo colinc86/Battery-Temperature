@@ -9,8 +9,6 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "Globals.h"
-
 #include <dlfcn.h>
 
 @interface BTActivatorListener()

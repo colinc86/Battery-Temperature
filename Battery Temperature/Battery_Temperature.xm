@@ -1,10 +1,10 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+
 #import "BTActivatorListener.h"
 #import "BTStatusItemManager.h"
 #import "BTPreferencesInterface.h"
 #import "BTStaticFunctions.h"
-#import "Globals.h"
 
 #include <dlfcn.h>
 
@@ -87,12 +87,10 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
     [interface loadSettings];
     [interface loadSpringBoardSettings];
     
-    // Get the battery detail string
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
     NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
     
-    // If this is a system update, then cache the percent string and check for alerts/icon changes
     if (!interface.forcedUpdate) {
         if (lastBatteryDetailString != nil) {
             [lastBatteryDetailString release];
@@ -106,20 +104,18 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
     [[BTStatusItemManager sharedManager] update];
     
     if (interface.enabled) {
-        // Get the temperature string
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];
         
         if (interface.showPercent) {
-            // Append the battery detail string if we're showing the percent
             temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
         }
         
         strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
     } else if (interface.forcedUpdate) {
-        if (interface.showPercent) { // If we manually disabled the tweak, and showing the battery detail string is enabled, then copy in the last updated detail string.
+        if (interface.showPercent) {
             strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
         }
-        else { // Othewise copy in a blank string
+        else {
             NSString *blankString = @"";
             strlcpy(arg1->batteryDetailString, [blankString UTF8String], sizeof(arg1->batteryDetailString));
         }
