@@ -82,15 +82,13 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef highTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("highTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.highTempAlerts = highTempAlertsRef ? [(id)CFBridgingRelease(highTempAlertsRef) boolValue] : NO;
     if (!self.highTempAlerts) {
-        //didShowH1A = false;
-        //didShowH2A = false;
+        [BTStaticFunctions resetHighAlerts];
     }
     
     CFPropertyListRef lowTempAlertsRef = CFPreferencesCopyAppValue(CFSTR("lowTempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.lowTempAlerts = lowTempAlertsRef ? [(id)CFBridgingRelease(lowTempAlertsRef) boolValue] : NO;
     if (!self.lowTempAlerts) {
-        //didShowL1A = false;
-        //didShowL2A = false;
+        [BTStaticFunctions resetLowAlerts];
     }
     
     CFPropertyListRef highTempIconRef = CFPreferencesCopyAppValue(CFSTR("highTempIcon"), CFSTR(PREFERENCES_FILE_NAME));

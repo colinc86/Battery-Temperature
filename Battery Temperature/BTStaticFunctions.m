@@ -17,6 +17,11 @@
 
 @implementation BTStaticFunctions
 
+static BOOL didShowH1A = NO;
+static BOOL didShowH2A = NO;
+static BOOL didShowL1A = NO;
+static BOOL didShowL2A = NO;
+
 + (NSNumber *)getBatteryTemperature {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
@@ -94,12 +99,17 @@
     return formattedString;
 }
 
-+ (void)checkAndPostAlerts {
-    static BOOL didShowH1A = false;
-    static BOOL didShowH2A = false;
-    static BOOL didShowL1A = false;
-    static BOOL didShowL2A = false;
-    
++ (void)resetHighAlerts {
+    didShowH1A = NO;
+    didShowH2A = NO;
+}
+
++ (void)resetLowAlerts {
+    didShowL1A = NO;
+    didShowL2A = NO;
+}
+
++ (void)checkAlerts {
     NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
     if (rawTemperature) {
         bool showAlert = false;

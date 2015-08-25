@@ -71,7 +71,7 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    [BTStaticFunctions checkAndPostAlerts];
+    [BTStaticFunctions checkAlerts];
     
     [[BTStatusItemManager sharedManager] update];
     
