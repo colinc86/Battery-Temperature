@@ -6,10 +6,11 @@
 //
 //
 
+#import <AudioToolbox/AudioServices.h>
 #import "BTStatusItemManager.h"
 #import "BTStaticFunctions.h"
 #import "BTPreferencesInterface.h"
-#import "LSStatusBarItem.h"
+#import "LSStatusBarItem+VisibilityTimer.h"
 
 @interface BTStatusItemManager()
 @property (nonatomic, retain) LSStatusBarItem *hotStatusItem;
@@ -20,73 +21,72 @@
 
 @implementation BTStatusItemManager
 
-#pragma mark - Class methods
-
-+ (BTStatusItemManager *)sharedManager {
-    static BTStatusItemManager *sharedManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedManager = [[self alloc] init];
-    });
-    return sharedManager;
-}
-
-
-
-
 #pragma mark - Public instance methods
 
-- (void)update {
-    NSNumber *temperature = [BTStaticFunctions getBatteryTemperature];
-    if (temperature) {
-        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-        
-        if (interface.statusBarAlerts && interface.enabled) {
-            float celsius = ([temperature floatValue] / 100.0f);
+- (void)updateWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled barAlertsEnabled:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate {
+    if (rawTemperature) {
+        if (statusBarAlerts && enabled) {
+            float celsius = ([rawTemperature floatValue] / 100.0f);
             
             if (celsius >= 45.0f) {
-                self.hotStatusItem.visible = YES;
-                self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
-                self.coldStatusItem.visible = NO;
+                if (!self.hotStatusItem.visible && alertVibrate) {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                }
+                
+                [self.hotStatusItem show];
+                [self.warmStatusItem hide:YES];
+                [self.coolStatusItem hide:YES];
+                [self.coldStatusItem hide:YES];
             }
             else if (celsius >= 35.0f) {
-                self.warmStatusItem.visible = YES;
-                self.hotStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
-                self.coldStatusItem.visible = NO;
+                if (!self.warmStatusItem.visible && alertVibrate) {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                }
+                
+                [self.warmStatusItem show];
+                [self.hotStatusItem hide:YES];
+                [self.coolStatusItem hide:YES];
+                [self.coldStatusItem hide:YES];
             }
             else if (celsius <= -20.0f) {
-                self.coldStatusItem.visible = YES;
-                self.hotStatusItem.visible = NO;
-                self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
+                if (!self.coldStatusItem.visible && alertVibrate) {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                }
+                
+                [self.coldStatusItem show];
+                [self.hotStatusItem hide:YES];
+                [self.coolStatusItem hide:YES];
+                [self.warmStatusItem hide:YES];
             }
             else if (celsius <= 0.0f) {
-                self.coolStatusItem.visible = YES;
-                self.coldStatusItem.visible = NO;
-                self.hotStatusItem.visible = NO;
-                self.warmStatusItem.visible = NO;
+                if (!self.coolStatusItem.visible && alertVibrate) {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                }
+                
+                [self.coolStatusItem show];
+                [self.hotStatusItem hide:YES];
+                [self.coldStatusItem hide:YES];
+                [self.warmStatusItem hide:YES];
             }
             else {
-                self.hotStatusItem.visible = NO;
-                self.warmStatusItem.visible = NO;
-                self.coolStatusItem.visible = NO;
-                self.coldStatusItem.visible = NO;
+                [self.coolStatusItem hide:NO];
+                [self.hotStatusItem hide:NO];
+                [self.coldStatusItem hide:NO];
+                [self.warmStatusItem hide:NO];
             }
         }
         else {
-            self.hotStatusItem.visible = NO;
-            self.warmStatusItem.visible = NO;
-            self.coolStatusItem.visible = NO;
-            self.coldStatusItem.visible = NO;
+            [self.coolStatusItem hide:YES];
+            [self.hotStatusItem hide:YES];
+            [self.coldStatusItem hide:YES];
+            [self.warmStatusItem hide:YES];
         }
     }
     else {
-        self.hotStatusItem.visible = NO;
-        self.warmStatusItem.visible = NO;
-        self.coolStatusItem.visible = NO;
-        self.coldStatusItem.visible = NO;
+        [self.coolStatusItem hide:YES];
+        [self.hotStatusItem hide:YES];
+        [self.coldStatusItem hide:YES];
+        [self.warmStatusItem hide:YES];
     }
 }
 

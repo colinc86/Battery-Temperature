@@ -17,11 +17,6 @@
 
 @implementation BTStaticFunctions
 
-static BOOL didShowH1A = NO;
-static BOOL didShowH2A = NO;
-static BOOL didShowL1A = NO;
-static BOOL didShowL2A = NO;
-
 + (NSNumber *)getBatteryTemperature {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
@@ -97,71 +92,6 @@ static BOOL didShowL2A = NO;
     }
     
     return formattedString;
-}
-
-+ (void)resetAlerts {
-    didShowH1A = NO;
-    didShowH2A = NO;
-    didShowL1A = NO;
-    didShowL2A = NO;
-}
-
-+ (void)checkAlerts {
-    NSNumber *rawTemperature = [BTStaticFunctions getBatteryTemperature];
-    if (rawTemperature) {
-        BOOL showAlert = NO;
-        float celsius = [rawTemperature intValue] / 100.0f;
-        NSString *message = @"";
-        
-        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-        
-        // Check for message to display
-        if (celsius >= 45.0f) {
-            if (!didShowH2A) {
-                didShowH2A = true;
-                showAlert = YES;
-                message = @"Battery temperature has reached 45℃ (113℉)!";
-            }
-        }
-        else if (celsius >= 35.0f) {
-            if (!didShowH1A) {
-                didShowH1A = true;
-                showAlert = YES;
-                message = @"Battery temperature has reached 35℃ (95℉).";
-            }
-        }
-        else if (celsius <= -20.0f) {
-            if (!didShowL2A) {
-                didShowL2A = true;
-                showAlert = YES;
-                message = @"Battery temperature has dropped to 0℃ (32℉)!";
-            }
-        }
-        else if (celsius <= 0.0f) {
-            if (!didShowL1A) {
-                didShowL2A = false;
-                didShowL1A = true;
-                showAlert = YES;
-                message = @"Battery temperature has dropped to -20℃ (-4℉)!";
-            }
-        }
-        else if ((celsius > 0.0f) && (celsius < 35.0f)) {
-            didShowL2A = false;
-            didShowL1A = false;
-            didShowH2A = false;
-            didShowH1A = false;
-        }
-        
-        if (showAlert && interface.enabled && interface.tempAlerts) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-            [alert show];
-            [alert release];
-        }
-    }
-}
-
-+ (BOOL)hasAlertShown {
-    return didShowH1A || didShowH2A || didShowL1A || didShowL2A;
 }
 
 @end

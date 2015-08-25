@@ -2,9 +2,9 @@
 #import <Foundation/Foundation.h>
 
 #import "BTActivatorListener.h"
-#import "BTStatusItemManager.h"
 #import "BTPreferencesInterface.h"
 #import "BTStaticFunctions.h"
+#import "BTAlertCenter.h"
 
 #include <dlfcn.h>
 
@@ -59,6 +59,7 @@ typedef struct {
 #pragma mark - Static variables/functions
 
 static NSString *lastBatteryDetailString = @"";
+static BTAlertCenter *alertCenter = nil;
 
 static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
@@ -68,11 +69,15 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         [aggregator _setItem:8 enabled:YES];
     }
     
-    [[BTStatusItemManager sharedManager] update];
+    [alertCenter.itemManager updateWithTemperature:[BTStaticFunctions getBatteryTemperature] enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && !alertCenter.didVibrate)];
     
     // Post new data to the data bar
     interface.forcedUpdate = YES;
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+}
+
+static void resetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    [alertCenter resetAlerts];
 }
 
 
@@ -99,10 +104,11 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
         lastBatteryDetailString = [batteryDetailString retain];
     }
     
-    [BTStaticFunctions checkAlerts];
-    [[BTStatusItemManager sharedManager] update];
+    NSNumber *batteryTemperature = [BTStaticFunctions getBatteryTemperature];
+    [alertCenter checkAlertsWithTemperature:batteryTemperature enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate];
+    [alertCenter.itemManager updateWithTemperature:batteryTemperature enabled:interface.enabled barAlertsEnabled:interface.statusBarAlerts alertVibrate:(interface.alertVibrate && alertCenter.didVibrate)];
     
-    if (interface.enabled && [interface isTemperatureVisible]) {
+    if (interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]]) {
         NSString *temperatureString = [BTStaticFunctions getTemperatureString];
         
         if (interface.showPercent) {
@@ -143,11 +149,13 @@ static void refreshStatusBarData(CFNotificationCenterRef center, void *observer,
 %ctor {
     if (%c(SpringBoard)) {
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, resetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
         [[BTPreferencesInterface sharedInterface] startListeningForNotifications];
         
-        void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+        alertCenter = [[BTAlertCenter alloc] init];
         
+        void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
         Class la = objc_getClass("LAActivator");
         if (la) {
             BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];

@@ -85,7 +85,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
     self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
     if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
-        [BTStaticFunctions resetAlerts];
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, NULL, true);
     }
     
     CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
@@ -95,15 +95,15 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     self.alertVibrate = alertVibrateRef ? [(id)CFBridgingRelease(alertVibrateRef) boolValue] : NO;
 }
 
-- (BOOL)isTemperatureVisible {
+- (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert {
     BOOL visible = false;
     if (self.rule == RuleShow) {
         visible = true;
     }
-    else if ((self.rule == RuleAlertShow) && [BTStaticFunctions hasAlertShown]) {
+    else if ((self.rule == RuleAlertShow) && shouldShowAlert) {
         visible = true;
     }
-    else if ((self.rule == RuleAlertHide) && ![BTStaticFunctions hasAlertShown]) {
+    else if ((self.rule == RuleAlertHide) && !shouldShowAlert) {
         visible = true;
     }
     return visible;
