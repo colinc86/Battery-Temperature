@@ -54,8 +54,8 @@
 			<string>PSListItemsController</string>
 			<key>validTitles</key>
 			<array>
-				<string>Show</string>
-				<string>Hide</string>
+				<string>Show Always</string>
+				<string>Hide Always</string>
 				<string>Show After Alert Temp</string>
 				<string>Hide After Alert Temp</string>
 			</array>
@@ -137,7 +137,7 @@
 			<key>footerText</key>
 			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
 Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).
-Enabling status bar alerts will show a differently colored dot in the status bar for each alert level.</string>
+Enabling status bar alerts will show a colored dot in the status bar for each alert level.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
