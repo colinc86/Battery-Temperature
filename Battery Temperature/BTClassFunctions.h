@@ -6,9 +6,13 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 @interface BTClassFunctions : NSObject 
 
 + (NSNumber *)getBatteryTemperature;
 + (NSString *)getTemperatureString;
++ (UIColor *)getBatteryColor;
 
 @end

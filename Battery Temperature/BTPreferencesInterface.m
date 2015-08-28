@@ -43,6 +43,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
         _tempAlerts = NO;
         _statusBarAlerts = NO;
         _alertVibrate = NO;
+        _colorizeIcon = NO;
         _unit = 0;
         _rule = RuleShow;
     }
@@ -91,6 +92,9 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     
     CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
     self.alertVibrate = alertVibrateRef ? [(id)CFBridgingRelease(alertVibrateRef) boolValue] : NO;
+    
+    CFPropertyListRef colorizeIconRef = CFPreferencesCopyAppValue(CFSTR("colorizeIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    self.colorizeIcon = colorizeIconRef ? [(id)CFBridgingRelease(colorizeIconRef) boolValue] : NO;
 }
 
 - (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert {
@@ -242,6 +246,14 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     }
     else {
         CFRelease(visibilityRuleRef);
+    }
+    
+    CFPropertyListRef colorizeIconRef = CFPreferencesCopyAppValue(CFSTR("colorizeIcon"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!colorizeIconRef) {
+        CFPreferencesSetAppValue(CFSTR("colorizeIcon"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(colorizeIconRef);
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));

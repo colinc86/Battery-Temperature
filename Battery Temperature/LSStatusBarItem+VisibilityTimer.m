@@ -26,13 +26,15 @@ static BOOL cancelledHide = NO;
     }
     else {
         if (!running) {
+            running = YES;
+            
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, HideTimerInterval * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 if (!cancelledHide) {
                     self.visible = NO;
                 }
-                else {
-                    cancelledHide = NO;
-                }
+                
+                cancelledHide = NO;
+                running = NO;
             });
         }
     }

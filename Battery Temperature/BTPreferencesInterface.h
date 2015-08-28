@@ -33,6 +33,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL tempAlerts;
 @property (nonatomic, assign) BOOL statusBarAlerts;
 @property (nonatomic, assign) BOOL alertVibrate;
+@property (nonatomic, assign) BOOL colorizeIcon;
 @property (nonatomic, assign) int unit;
 @property (nonatomic, assign) VisibilityRule rule;
 

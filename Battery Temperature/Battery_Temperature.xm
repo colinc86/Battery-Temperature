@@ -5,73 +5,52 @@
 #import "BTPreferencesInterface.h"
 #import "BTClassFunctions.h"
 #import "BTAlertCenter.h"
+#import "Headers.h"
 
 #include <dlfcn.h>
 
 
 
 
-#pragma mark - Status bar classes/types
-
-typedef struct {
-    char itemIsEnabled[25];
-    char timeString[64];
-    int gsmSignalStrengthRaw;
-    int gsmSignalStrengthBars;
-    char serviceString[100];
-    char serviceCrossfadeString[100];
-    char serviceImages[2][100];
-    char operatorDirectory[1024];
-    unsigned int serviceContentType;
-    int wifiSignalStrengthRaw;
-    int wifiSignalStrengthBars;
-    unsigned int dataNetworkType;
-    int batteryCapacity;
-    unsigned int batteryState;
-    char batteryDetailString[150];
-    int bluetoothBatteryCapacity;
-    int thermalColor;
-    unsigned int thermalSunlightMode:1;
-    unsigned int slowActivity:1;
-    unsigned int syncActivity:1;
-    char activityDisplayId[256];
-    unsigned int bluetoothConnected:1;
-    unsigned int displayRawGSMSignal:1;
-    unsigned int displayRawWifiSignal:1;
-    unsigned int locationIconType:1;
-    unsigned int quietModeInactive:1;
-    unsigned int tetheringConnectionCount;
-} CDStruct_4ec3be00;
-
-@interface UIStatusBarServer : NSObject
-+ (CDStruct_4ec3be00 *)getStatusBarData;
-+ (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
-@end
-
-@interface SBStatusBarStateAggregator
-+ (id)sharedInstance;
-- (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
-@end
-
-
-
-
 #pragma mark - Static variables/functions
 
+static UIStatusBarBatteryItemView *itemView = nil;
 static NSString *lastBatteryDetailString = @"";
 static BTAlertCenter *alertCenter = nil;
 static BOOL forcedUpdate = NO;
+static BOOL isCharging = NO;
 
 static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
-    [aggregator _setItem:8 enabled:NO];
-    if (interface.showPercent || interface.enabled) {
-        [aggregator _setItem:8 enabled:YES];
+    UIStatusBar *statusBar = (UIStatusBar *)[[UIApplication sharedApplication] statusBar];
+    if (statusBar) {
+        [statusBar setShowsOnlyCenterItems:YES];
+        [statusBar setShowsOnlyCenterItems:NO];
     }
     
-    forcedUpdate = YES;
-    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+    if (itemView) {
+        if (!itemView.allowsUpdates) {
+            [itemView setAllowsUpdates:YES];
+        }
+        
+        [itemView updateContentsAndWidth];
+    }
+    
+    if (%c(SpringBoard)) {
+        SBStatusBarStateAggregator *aggregator = [%c(SBStatusBarStateAggregator) sharedInstance];
+        [aggregator _updateBatteryItems];
+        [aggregator _setItem:7 enabled:NO];
+        [aggregator updateStatusBarItem:7];
+        [aggregator _setItem:8 enabled:NO];
+        [aggregator updateStatusBarItem:8];
+        
+        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
+        if (interface.showPercent || interface.enabled) {
+            [aggregator _setItem:8 enabled:YES];
+        }
+        
+        forcedUpdate = YES;
+        [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
+    }
 }
 
 static void resetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -89,6 +68,14 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
     BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
     [interface loadSettings];
     [interface loadSpringBoardSettings];
+    
+    unsigned int state = arg1->batteryState;
+    if (state == 1) {
+        isCharging = YES;
+    }
+    else {
+        isCharging = NO;
+    }
     
     char currentString[150];
     strcpy(currentString, arg1->batteryDetailString);
@@ -138,6 +125,54 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
     }
     
     return %orig(arg1, ((arg1 == 8) && interface.enabled) ? YES : arg2);
+}
+
+%end
+
+%hook UIStatusBarBatteryItemView
+
+- (_UILegibilityImageSet *)contentsImage
+{
+    if (itemView != self) {
+        [itemView release];
+        itemView = [self retain];
+    }
+    
+    _UILegibilityImageSet *original = %orig;
+    if ([BTPreferencesInterface sharedInterface].colorizeIcon && !isCharging) {
+        UIColor *color = [BTClassFunctions getBatteryColor];
+        original.image = [original.image _flatImageWithColor:color];
+    }
+        
+    return original;
+}
+
+%end
+
+%hook UIStatusBarNewUIForegroundStyleAttributes
+
+- (id)_batteryColorForCapacity:(double)arg1 lowCapacity:(double)arg2 charging:(bool)arg3
+{
+    UIColor *original = %orig(arg1, arg2, arg3);
+    if ([BTPreferencesInterface sharedInterface].colorizeIcon && !isCharging) {
+        original = [BTClassFunctions getBatteryColor];
+    }
+    
+    return original;
+}
+
+%end
+
+%hook UIStatusBarForegroundStyleAttributes
+
+- (id)_batteryColorForCapacity:(float)arg1 lowCapacity:(float)arg2 charging:(bool)arg3
+{
+    UIColor *original = %orig(arg1, arg2, arg3);
+    if ([BTPreferencesInterface sharedInterface].colorizeIcon && !isCharging) {
+        original = [BTClassFunctions getBatteryColor];
+    }
+    
+    return original;
 }
 
 %end

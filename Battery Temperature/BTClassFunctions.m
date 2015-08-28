@@ -7,9 +7,8 @@
 //
 
 #import "BTClassFunctions.h"
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "BTPreferencesInterface.h"
+#import "BTStatusItemManager.h"
 
 #include <dlfcn.h>
 #include <mach/port.h>
@@ -92,6 +91,20 @@
     }
     
     return formattedString;
+}
+
++ (UIColor *)getBatteryColor {
+    UIColor *batteryColor = nil;
+    NSNumber *temperature = [BTClassFunctions getBatteryTemperature];
+    if (temperature) {
+        float celsius = [temperature floatValue] / 100.0f;
+        float percent = (celsius - COLD_CUTOFF) / (HOT_CUTOFF - COLD_CUTOFF);
+        CGFloat red = 23.0f + (percent * 231.0f);
+        CGFloat green = 166 - (percent * 123.0f);
+        CGFloat blue = 255 - (percent * 227.0f);
+        batteryColor = [UIColor colorWithRed:(red / 255.0f) green:(green / 255.0f) blue:(blue / 255.0f) alpha:1.0f];
+    }
+    return batteryColor;
 }
 
 @end

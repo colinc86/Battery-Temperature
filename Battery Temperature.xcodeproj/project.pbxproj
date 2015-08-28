@@ -103,6 +103,7 @@
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
 		556F854D1B775A7A00288568 /* Battery_Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Battery_Temperature.plist; path = Package/Library/MobileSubstrate/DynamicLibraries/Battery_Temperature.plist; sourceTree = "<group>"; };
 		556F85531B775A9400288568 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
+		5574B3D61B8DBA240013820A /* Headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Headers.h; sourceTree = "<group>"; };
 		55CA27EA1B881D740015A8ED /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
 		55CA27EB1B881D740015A8ED /* BTActivatorListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTActivatorListener.m; sourceTree = "<group>"; };
 		55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -228,6 +229,7 @@
 				55470BF71B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h */,
 				55470BF81B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m */,
 				55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */,
+				5574B3D61B8DBA240013820A /* Headers.h */,
 				556F853B1B775A7A00288568 /* Package */,
 				556F853F1B775A7A00288568 /* Supporting Files */,
 			);
