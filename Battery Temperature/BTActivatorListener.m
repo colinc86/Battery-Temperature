@@ -13,7 +13,6 @@
 
 @interface BTActivatorListener()
 @property (nonatomic, copy) NSString *activatorListenerName;
-@property (nonatomic, retain) NSBundle *btBundle;
 
 - (UIImage *)iconForRect:(CGRect)rect scale:(CGFloat)scale;
 @end

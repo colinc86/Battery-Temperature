@@ -38,7 +38,6 @@ typedef struct {
 
 @interface UIStatusBar ()
 - (void)setShowsOnlyCenterItems:(BOOL)arg1;
-- (UIView *)snapshotViewAfterScreenUpdates:(BOOL)arg1;
 @end
 
 @interface UIStatusBarServer : NSObject
@@ -51,32 +50,4 @@ typedef struct {
 - (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
 - (void)_updateBatteryItems;
 - (void)updateStatusBarItem:(int)arg1;
-@end
-
-@interface _UILegibilityImageSet : NSObject {
-    UIImage *_image;
-    UIImage *_shadowImage;
-}
-@property (nonatomic, retain) UIImage *image;
-@end
-
-@interface UIStatusBarItemView : UIView {
-    BOOL _allowsUpdates;
-}
-@property (nonatomic) BOOL allowsUpdates;
-- (void)setAllowsUpdates:(BOOL)arg1;
-- (void)setLayerContentsImage:(id)arg1;
-- (float)updateContentsAndWidth;
-@end
-
-@interface UIStatusBarBatteryItemView : UIStatusBarItemView
-- (_UILegibilityImageSet *)contentsImage;
-@end
-
-@interface UIImage ()
-- (UIImage *)_flatImageWithColor:(UIColor *)color;
-@end
-
-@interface UIApplication ()
-- (UIStatusBar *)statusBar;
 @end
