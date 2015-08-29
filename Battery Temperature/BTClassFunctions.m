@@ -8,7 +8,7 @@
 
 #import "BTClassFunctions.h"
 #import "BTPreferencesInterface.h"
-#import "BTStatusItemManager.h"
+#import "BTAlertCenter.h"
 
 #include <dlfcn.h>
 #include <mach/port.h>

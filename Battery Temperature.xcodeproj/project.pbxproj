@@ -34,13 +34,9 @@
 		55470BE51B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD31B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png */; };
 		55470BE61B8BC99900985606 /* White_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD41B8BC99900985606 /* White_BatteryTemperatureHot_Color.png */; };
 		55470BE71B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD51B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png */; };
-		55470BEA1B8BDBF000985606 /* BTStatusItemManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BE81B8BDBF000985606 /* BTStatusItemManager.h */; };
-		55470BEB1B8BDBF000985606 /* BTStatusItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BE91B8BDBF000985606 /* BTStatusItemManager.m */; };
 		55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */; };
 		55470BEF1B8BE44A00985606 /* BTPreferencesInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */; };
 		55470BF11B8BEC8F00985606 /* BTClassFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BF01B8BEC8F00985606 /* BTClassFunctions.m */; };
-		55470BF91B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BF71B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h */; };
-		55470BFA1B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BF81B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m */; };
 		55470BFC1B8C20BC00985606 /* libstatusbar.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55470BFB1B8C20BC00985606 /* libstatusbar.dylib */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
@@ -83,14 +79,10 @@
 		55470BD31B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
 		55470BD41B8BC99900985606 /* White_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
 		55470BD51B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
-		55470BE81B8BDBF000985606 /* BTStatusItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTStatusItemManager.h; sourceTree = "<group>"; };
-		55470BE91B8BDBF000985606 /* BTStatusItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTStatusItemManager.m; sourceTree = "<group>"; };
 		55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPreferencesInterface.h; sourceTree = "<group>"; };
 		55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPreferencesInterface.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		55470BF01B8BEC8F00985606 /* BTClassFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTClassFunctions.m; sourceTree = "<group>"; };
 		55470BF21B8BF1CC00985606 /* BTClassFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTClassFunctions.h; sourceTree = "<group>"; };
-		55470BF71B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LSStatusBarItem+VisibilityTimer.h"; sourceTree = "<group>"; };
-		55470BF81B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LSStatusBarItem+VisibilityTimer.m"; sourceTree = "<group>"; };
 		55470BFB1B8C20BC00985606 /* libstatusbar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libstatusbar.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libstatusbar.dylib; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -224,10 +216,6 @@
 				55470BF01B8BEC8F00985606 /* BTClassFunctions.m */,
 				5525576B1B8D033700B52107 /* BTAlertCenter.h */,
 				5525576C1B8D033700B52107 /* BTAlertCenter.m */,
-				55470BE81B8BDBF000985606 /* BTStatusItemManager.h */,
-				55470BE91B8BDBF000985606 /* BTStatusItemManager.m */,
-				55470BF71B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h */,
-				55470BF81B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m */,
 				55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */,
 				5574B3D61B8DBA240013820A /* Headers.h */,
 				556F853B1B775A7A00288568 /* Package */,
@@ -315,9 +303,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */,
-				55470BF91B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.h in Headers */,
 				55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */,
-				55470BEA1B8BDBF000985606 /* BTStatusItemManager.h in Headers */,
 				5525576D1B8D033700B52107 /* BTAlertCenter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,11 +431,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55470BFA1B8C1CDE00985606 /* LSStatusBarItem+VisibilityTimer.m in Sources */,
 				55470BEF1B8BE44A00985606 /* BTPreferencesInterface.m in Sources */,
 				5525576E1B8D033700B52107 /* BTAlertCenter.m in Sources */,
 				556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */,
-				55470BEB1B8BDBF000985606 /* BTStatusItemManager.m in Sources */,
 				55470BF11B8BEC8F00985606 /* BTClassFunctions.m in Sources */,
 				55CA27ED1B881D740015A8ED /* BTActivatorListener.m in Sources */,
 			);

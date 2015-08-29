@@ -7,7 +7,6 @@
 //
 
 #import "BTPreferencesInterface.h"
-#import "BTStatusItemManager.h"
 
 @interface BTPreferencesInterface()
 static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);

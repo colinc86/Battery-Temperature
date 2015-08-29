@@ -8,21 +8,30 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "BTStatusItemManager.h"
 
-@interface BTAlertCenter : NSObject {
-    BTStatusItemManager *_itemManager;
-    BOOL _didShowWarmAlert;
-    BOOL _didShowHotAlert;
-    BOOL _didShowCoolAlert;
-    BOOL _didShowColdAlert;
-}
+#define HOT_CUTOFF 45.0f
+#define WARM_CUTOFF 35.0f
+#define COOL_CUTOFF 0.0f
+#define COLD_CUTOFF -20.0f
 
-@property (nonatomic, retain) BTStatusItemManager *itemManager;
-@property (nonatomic, assign) BOOL didShowWarmAlert;
-@property (nonatomic, assign) BOOL didShowHotAlert;
-@property (nonatomic, assign) BOOL didShowCoolAlert;
-@property (nonatomic, assign) BOOL didShowColdAlert;
+#define ICON_HOT @"BatteryTemperatureHot"
+#define ICON_WARM @"BatteryTemperatureWarm"
+#define ICON_COOL @"BatteryTemperatureCool"
+#define ICON_COLD @"BatteryTemperatureCold"
+
+#define STATUS_ICON_IDENTIFIER @"Battery Temperature Warning"
+
+#define HIDE_SHOW_TIMER_INTERVAL 1.0
+
+typedef enum {
+    None,
+    Hot,
+    Warm,
+    Cold,
+    Cool
+} TemperatureWarning;
+
+@interface BTAlertCenter : NSObject
 
 - (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate barAlertsEnabled:(BOOL)statusBarAlerts;
 - (void)resetAlerts;
