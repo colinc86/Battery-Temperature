@@ -8,14 +8,17 @@
 
 #import <AudioToolbox/AudioServices.h>
 #import "BTAlertCenter.h"
-#import "BTPreferencesInterface.h"
 #import "LSStatusBarItem.h"
 
 @interface BTAlertCenter ()
 @property (nonatomic, retain) LSStatusBarItem *statusItem;
+@property (nonatomic, retain) LSStatusBarItem *temperatureItem;
+
 @property (nonatomic, retain) NSTimer *hideTimer;
 @property (nonatomic, retain) NSTimer *showTimer;
+
 @property (nonatomic, assign) TemperatureWarning currentWarning;
+
 @property (nonatomic, assign) BOOL didShowWarmAlert;
 @property (nonatomic, assign) BOOL didShowHotAlert;
 @property (nonatomic, assign) BOOL didShowCoolAlert;
@@ -44,6 +47,11 @@
         _statusItem = nil;
     }
     
+    if (_temperatureItem) {
+        [_temperatureItem release];
+        _temperatureItem = nil;
+    }
+    
     [self terminateHideTimer];
     [self terminateShowTimer];
     
@@ -55,7 +63,23 @@
 
 #pragma mark - Public instance methods
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate barAlertsEnabled:(BOOL)statusBarAlerts {
+- (void)updateTemperatureItem:(BOOL)visible {
+    static double count = 0.0;
+    
+    if (visible) {
+        self.temperatureItem.visible = YES;
+    }
+    else {
+        self.temperatureItem.visible = NO;
+    }
+    
+    self.temperatureItem.imageName = [NSString stringWithFormat:@"BT_%f", count];
+    [self.temperatureItem update];
+    
+    count += 0.1;
+}
+
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate tempAlerts:(BOOL)tempAlerts {
     if (enabled) {
         if (rawTemperature) {
             BOOL showAlert = NO;
@@ -118,7 +142,6 @@
                 [self hideStatusWarningForced:NO];
             }
             
-            BOOL didVibrate = NO;
             if (showAlert) {
                 if (tempAlerts) {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
@@ -128,7 +151,6 @@
                 
                 if (alertVibrate) {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                    didVibrate = YES;
                 }
             }
         }
@@ -235,6 +257,16 @@
         [_statusItem setVisible:NO];
     }
     return _statusItem;
+}
+
+- (LSStatusBarItem *)temperatureItem {
+    if (!_temperatureItem) {
+        _temperatureItem = [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier:TEMPERATURE_ICON_IDENTIFIER alignment:StatusBarAlignmentRight];
+        [_temperatureItem setCustomViewClass:UIBatteryTemperatureCustomClassName];
+        [_temperatureItem setManualUpdate:YES];
+        [_temperatureItem setVisible:NO];
+    }
+    return _temperatureItem;
 }
 
 @end

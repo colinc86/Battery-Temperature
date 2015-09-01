@@ -20,6 +20,9 @@
 #define ICON_COLD @"BatteryTemperatureCold"
 
 #define STATUS_ICON_IDENTIFIER @"Battery Temperature Warning"
+#define TEMPERATURE_ICON_IDENTIFIER @"Battery Temperature"
+
+#define UIBatteryTemperatureCustomClassName @"UIStatusBarBatteryTemperatureItemView"
 
 #define HIDE_SHOW_TIMER_INTERVAL 1.0
 
@@ -33,7 +36,8 @@ typedef enum {
 
 @interface BTAlertCenter : NSObject
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled tempAlerts:(BOOL)tempAlerts alertVibrate:(BOOL)alertVibrate barAlertsEnabled:(BOOL)statusBarAlerts;
+- (void)updateTemperatureItem:(BOOL)visible;
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate tempAlerts:(BOOL)tempAlerts;
 - (void)resetAlerts;
 - (BOOL)hasAlertShown;
 

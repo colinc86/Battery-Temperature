@@ -4,7 +4,6 @@
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "BTClassFunctions.h"
 #import "BTAlertCenter.h"
 #import "Headers.h"
 
@@ -15,34 +14,98 @@
 
 #pragma mark - Static variables/functions
 
-static NSString *lastBatteryDetailString = @"";
 static BTAlertCenter *alertCenter = nil;
-static BOOL forcedUpdate = NO;
 
-#include <logos/logos.h>
-#include <substrate.h>
-@class SBStatusBarStateAggregator; @class UIStatusBarServer; @class SpringBoard; 
-static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); static BOOL (*_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$)(SBStatusBarStateAggregator*, SEL, int, BOOL); static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator*, SEL, int, BOOL); 
-static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SBStatusBarStateAggregator(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBStatusBarStateAggregator"); } return _klass; }static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 21 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
-static void refreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    SBStatusBarStateAggregator *aggregator = [_logos_static_class_lookup$SBStatusBarStateAggregator() sharedInstance];
-    [aggregator _updateBatteryItems];
-    [aggregator _setItem:7 enabled:NO];
-    [aggregator updateStatusBarItem:7];
-    [aggregator _setItem:8 enabled:NO];
-    [aggregator updateStatusBarItem:8];
+static NSNumber *GetBatteryTemperature() {
+    NSNumber *temp = nil;
+    void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    if (interface.showPercent || interface.enabled) {
-        [aggregator _setItem:8 enabled:YES];
+    if (IOKit) {
+        mach_port_t *kIOMasterPortDefault = (mach_port_t *)dlsym(IOKit, "kIOMasterPortDefault");
+        CFMutableDictionaryRef (*IOServiceMatching)(const char *name) = (CFMutableDictionaryRef (*)(const char *))dlsym(IOKit, "IOServiceMatching");
+        mach_port_t (*IOServiceGetMatchingService)(mach_port_t masterPort, CFDictionaryRef matching) = (mach_port_t (*)(mach_port_t, CFDictionaryRef))dlsym(IOKit, "IOServiceGetMatchingService");
+        CFTypeRef (*IORegistryEntryCreateCFProperty)(mach_port_t entry, CFStringRef key, CFAllocatorRef allocator, uint32_t options) = (CFTypeRef (*)(mach_port_t, CFStringRef, CFAllocatorRef, uint32_t))dlsym(IOKit, "IORegistryEntryCreateCFProperty");
+        kern_return_t (*IOObjectRelease)(mach_port_t object) = (kern_return_t (*)(mach_port_t))dlsym(IOKit, "IOObjectRelease");
+        
+        if (kIOMasterPortDefault && IOServiceGetMatchingService && IORegistryEntryCreateCFProperty && IOObjectRelease) {
+            mach_port_t powerSource = IOServiceGetMatchingService(*kIOMasterPortDefault, IOServiceMatching("IOPMPowerSource"));
+            
+            if (powerSource) {
+                CFTypeRef temperatureRef = IORegistryEntryCreateCFProperty(powerSource, CFSTR("Temperature"), kCFAllocatorDefault, 0);
+                temp = [[NSNumber alloc] initWithInt:[(__bridge NSNumber *)temperatureRef intValue]];
+                CFRelease(temperatureRef);
+            }
+        }
     }
     
-    forcedUpdate = YES;
+    dlclose(IOKit);
+    
+    return [temp autorelease];
+}
+
+static NSString *GetTemperatureString() {
+    NSString *formattedString = @"N/A";
+    NSNumber *rawTemperature = GetBatteryTemperature();
+    if (rawTemperature) {
+        NSString *abbreviationString = @"";
+        float celsius = [rawTemperature intValue] / 100.0f;
+        
+        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
+        
+        if (interface.unit == 1) {
+            if (interface.showAbbreviation) abbreviationString = @"℉";
+                
+                float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
+                
+                if (interface.showDecimal) {
+                    formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
+                }
+                else {
+                    formattedString = [NSString stringWithFormat:@"%0.f%@", fahrenheit, abbreviationString];
+                }
+        }
+        else if (interface.unit == 2) {
+            if (interface.showAbbreviation) abbreviationString = @" K";
+                
+                float kelvin = celsius + 273.15;
+                
+                if (interface.showDecimal) {
+                    formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
+                }
+                else {
+                    formattedString = [NSString stringWithFormat:@"%0.f%@", kelvin, abbreviationString];
+                }
+        }
+        else {
+            
+            if (interface.showAbbreviation) abbreviationString = @"℃";
+                
+                if (interface.showDecimal) {
+                    formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
+                }
+                else {
+                    formattedString = [NSString stringWithFormat:@"%0.f%@", celsius, abbreviationString];
+                }
+        }
+    }
+    
+    return formattedString;
+}
+
+static void PerformUpdates() {
+    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
+    [interface loadSettings];
+    
+    [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:interface.enabled statusBarAlerts:interface.statusBarAlerts alertVibrate:interface.alertVibrate tempAlerts:interface.tempAlerts];
+    [alertCenter updateTemperatureItem:(interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]])];
+}
+
+static void RefreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    PerformUpdates();
     [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
 }
 
-static void resetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+static void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     [alertCenter resetAlerts];
 }
 
@@ -51,73 +114,47 @@ static void resetAlerts(CFNotificationCenterRef center, void *observer, CFString
 
 #pragma mark - Hook methods
 
+#include <logos/logos.h>
+#include <substrate.h>
+@class UIStatusBarCustomItemView; @class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarServer; 
+static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
+static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
+#line 116 "/Users/colincampbell/Documents/Xcode/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+
+
+static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView* self, SEL _cmd) {
+    [[BTPreferencesInterface sharedInterface] loadSettings];
+    
+    NSString *temperatureString = GetTemperatureString();
+    UIImage *temperatureImage = [((UIStatusBarItemView *) self) imageWithText:temperatureString];
+    
+    if (!temperatureImage) {
+        temperatureImage = _logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(self, _cmd);
+    }
+    
+    return temperatureImage;
+}
+
+
+
 
 
 static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class self, SEL _cmd, CDStruct_4ec3be00 * arg1, int arg2) {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    [interface loadSettings];
-    [interface loadSpringBoardSettings];
-    
-    char currentString[150];
-    strcpy(currentString, arg1->batteryDetailString);
-    NSString *batteryDetailString = [NSString stringWithUTF8String:currentString];
-    
-    if (!forcedUpdate) {
-        if (lastBatteryDetailString != nil) {
-            [lastBatteryDetailString release];
-            lastBatteryDetailString = nil;
-        }
-        lastBatteryDetailString = [batteryDetailString retain];
-    }
-    
-    [alertCenter checkAlertsWithTemperature:[BTClassFunctions getBatteryTemperature] enabled:interface.enabled tempAlerts:interface.tempAlerts alertVibrate:interface.alertVibrate barAlertsEnabled:interface.statusBarAlerts];
-    
-    if (interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]]) {
-        NSString *temperatureString = [BTClassFunctions getTemperatureString];
-        
-        if (interface.showPercent) {
-            temperatureString = [temperatureString stringByAppendingFormat:@"  %@", lastBatteryDetailString];
-        }
-        
-        strlcpy(arg1->batteryDetailString, [temperatureString UTF8String], sizeof(arg1->batteryDetailString));
-    } else if (forcedUpdate) {
-        if (interface.showPercent) {
-            strlcpy(arg1->batteryDetailString, [lastBatteryDetailString UTF8String], sizeof(arg1->batteryDetailString));
-        }
-        else {
-            NSString *blankString = @"";
-            strlcpy(arg1->batteryDetailString, [blankString UTF8String], sizeof(arg1->batteryDetailString));
-        }
-    }
-    
-    forcedUpdate = false;
-    
+    PerformUpdates();
     _logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(self, _cmd, arg1, arg2);
 }
 
 
 
-
-
-static BOOL _logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(SBStatusBarStateAggregator* self, SEL _cmd, int arg1, BOOL arg2) {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    if (arg1 == 8) {
-        interface.showPercent = interface.enabled;
-    }
-    
-    return _logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$(self, _cmd, arg1, ((arg1 == 8) && interface.enabled) ? YES : arg2);
-}
-
-
-
-static __attribute__((constructor)) void _logosLocalCtor_cf446c74() {
+static __attribute__((constructor)) void _logosLocalCtor_fcb669a7() {
     if (_logos_static_class_lookup$SpringBoard()) {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, refreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, resetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, RefreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
         [[BTPreferencesInterface sharedInterface] startListeningForNotifications];
         
         alertCenter = [[BTAlertCenter alloc] init];
+        PerformUpdates();
         
         void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
         Class la = objc_getClass("LAActivator");
@@ -142,5 +179,5 @@ static __attribute__((constructor)) void _logosLocalCtor_cf446c74() {
         dlclose(LibActivator);
     }
     
-    {Class _logos_class$_ungrouped$UIStatusBarServer = objc_getClass("UIStatusBarServer"); Class _logos_metaclass$_ungrouped$UIStatusBarServer = object_getClass(_logos_class$_ungrouped$UIStatusBarServer); MSHookMessageEx(_logos_metaclass$_ungrouped$UIStatusBarServer, @selector(postStatusBarData:withActions:), (IMP)&_logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$, (IMP*)&_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$);Class _logos_class$_ungrouped$SBStatusBarStateAggregator = objc_getClass("SBStatusBarStateAggregator"); MSHookMessageEx(_logos_class$_ungrouped$SBStatusBarStateAggregator, @selector(_setItem:enabled:), (IMP)&_logos_method$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$, (IMP*)&_logos_orig$_ungrouped$SBStatusBarStateAggregator$_setItem$enabled$);}
+    {Class _logos_class$_ungrouped$UIStatusBarCustomItemView = objc_getClass("UIStatusBarCustomItemView"); { Class _logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView = objc_allocateClassPair(_logos_class$_ungrouped$UIStatusBarCustomItemView, "UIStatusBarBatteryTemperatureItemView", 0); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView, @selector(contentsImage), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage); objc_registerClassPair(_logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView); }Class _logos_class$_ungrouped$UIStatusBarServer = objc_getClass("UIStatusBarServer"); Class _logos_metaclass$_ungrouped$UIStatusBarServer = object_getClass(_logos_class$_ungrouped$UIStatusBarServer); MSHookMessageEx(_logos_metaclass$_ungrouped$UIStatusBarServer, @selector(postStatusBarData:withActions:), (IMP)&_logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$, (IMP*)&_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$);}
 }

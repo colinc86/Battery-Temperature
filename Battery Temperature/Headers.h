@@ -36,18 +36,12 @@ typedef struct {
     unsigned int tetheringConnectionCount;
 } CDStruct_4ec3be00;
 
-@interface UIStatusBar ()
-- (void)setShowsOnlyCenterItems:(BOOL)arg1;
-@end
-
 @interface UIStatusBarServer : NSObject
 + (CDStruct_4ec3be00 *)getStatusBarData;
 + (void)postStatusBarData:(CDStruct_4ec3be00 *)arg1 withActions:(int)arg2;
 @end
 
-@interface SBStatusBarStateAggregator
-+ (id)sharedInstance;
-- (BOOL)_setItem:(int)arg1 enabled:(BOOL)arg2;
-- (void)_updateBatteryItems;
-- (void)updateStatusBarItem:(int)arg1;
+@interface UIStatusBarItemView : UIView
+- (id)imageWithText:(id)arg1;
 @end
+

@@ -53,13 +53,6 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
 
 #pragma mark - Public instance methods
 
-- (void)loadSpringBoardSettings {
-    CFPreferencesAppSynchronize(CFSTR(SPRINGBOARD_FILE_NAME));
-    
-    CFPropertyListRef showPercentRef = CFPreferencesCopyAppValue(CFSTR(SPRINGBOARD_BATTERY_PERCENT_KEY), CFSTR(SPRINGBOARD_FILE_NAME));
-    self.showPercent = showPercentRef ? [(id)CFBridgingRelease(showPercentRef) boolValue] : NO;
-}
-
 - (void)loadSettings {
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     
@@ -149,12 +142,6 @@ static void preferencesChanged(CFNotificationCenterRef center, void *observer, C
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, NULL, true);
 }
 
-static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    [interface loadSpringBoardSettings];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, NULL, true);
-}
-
 
 
 
@@ -165,7 +152,6 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
     [self loadSettings];
     
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-    CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, springBoardPreferencesChanged, CFSTR(SPRINGBOARD_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
 
 - (void)checkDefaultSettings {

@@ -8,10 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define SPRINGBOARD_FILE_NAME "com.apple.springboard"
-#define SPRINGBOARD_BATTERY_PERCENT_KEY "SBShowBatteryPercentage"
-#define SPRINGBOARD_NOTIFICATION_NAME "SBPreferencesChangedNotification"
-
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
 
@@ -39,7 +35,6 @@ typedef enum {
 + (BTPreferencesInterface *)sharedInterface;
 
 - (void)startListeningForNotifications;
-- (void)loadSpringBoardSettings;
 - (void)loadSettings;
 - (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert;
 
