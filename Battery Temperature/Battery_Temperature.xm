@@ -11,11 +11,35 @@
 
 
 
-#pragma mark - Static variables/functions
+NSNumber *GetBatteryTemperature();
+NSString *GetTemperatureString();
+void PerformUpdates();
+void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
+void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
+static BTPreferencesInterface *preferencesInterface = nil;
 static BTAlertCenter *alertCenter = nil;
 
-static NSNumber *GetBatteryTemperature() {
+
+
+
+#pragma mark - Functions
+
+void PerformUpdates() {
+    [preferencesInterface loadSettings];
+    [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+    [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+}
+
+void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    [alertCenter resetAlerts];
+}
+
+void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    PerformUpdates();
+}
+
+NSNumber *GetBatteryTemperature() {
     NSNumber *temp = nil;
     void *IOKit = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_NOW);
     
@@ -42,33 +66,34 @@ static NSNumber *GetBatteryTemperature() {
     return [temp autorelease];
 }
 
-static NSString *GetTemperatureString() {
+NSString *GetTemperatureString() {
     NSString *formattedString = @"N/A";
     NSNumber *rawTemperature = GetBatteryTemperature();
+    
     if (rawTemperature) {
         NSString *abbreviationString = @"";
         float celsius = [rawTemperature intValue] / 100.0f;
-        
-        BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-        
-        if (interface.unit == 1) {
-            if (interface.showAbbreviation) abbreviationString = @"℉";
+
+        [preferencesInterface loadSettings];
+
+        if (preferencesInterface.unit == 1) {
+            if (preferencesInterface.showAbbreviation) abbreviationString = @"℉";
                 
                 float fahrenheit = (celsius * (9.0f / 5.0f)) + 32.0f;
                 
-                if (interface.showDecimal) {
+                if (preferencesInterface.showDecimal) {
                     formattedString = [NSString stringWithFormat:@"%0.1f%@", fahrenheit, abbreviationString];
                 }
                 else {
                     formattedString = [NSString stringWithFormat:@"%0.f%@", fahrenheit, abbreviationString];
                 }
         }
-        else if (interface.unit == 2) {
-            if (interface.showAbbreviation) abbreviationString = @" K";
+        else if (preferencesInterface.unit == 2) {
+            if (preferencesInterface.showAbbreviation) abbreviationString = @" K";
                 
                 float kelvin = celsius + 273.15;
                 
-                if (interface.showDecimal) {
+                if (preferencesInterface.showDecimal) {
                     formattedString = [NSString stringWithFormat:@"%0.1f%@", kelvin, abbreviationString];
                 }
                 else {
@@ -77,9 +102,9 @@ static NSString *GetTemperatureString() {
         }
         else {
             // Default to Celsius
-            if (interface.showAbbreviation) abbreviationString = @"℃";
+            if (preferencesInterface.showAbbreviation) abbreviationString = @"℃";
                 
-                if (interface.showDecimal) {
+                if (preferencesInterface.showDecimal) {
                     formattedString = [NSString stringWithFormat:@"%0.1f%@", celsius, abbreviationString];
                 }
                 else {
@@ -91,23 +116,6 @@ static NSString *GetTemperatureString() {
     return formattedString;
 }
 
-static void PerformUpdates() {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    [interface loadSettings];
-    
-    [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:interface.enabled statusBarAlerts:interface.statusBarAlerts alertVibrate:interface.alertVibrate tempAlerts:interface.tempAlerts];
-    [alertCenter updateTemperatureItem:(interface.enabled && [interface isTemperatureVisible:[alertCenter hasAlertShown]])];
-}
-
-static void RefreshStatusBarData(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    PerformUpdates();
-    [UIStatusBarServer postStatusBarData:[UIStatusBarServer getStatusBarData] withActions:0];
-}
-
-static void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    [alertCenter resetAlerts];
-}
-
 
 
 
@@ -116,7 +124,7 @@ static void ResetAlerts(CFNotificationCenterRef center, void *observer, CFString
 %subclass UIStatusBarBatteryTemperatureItemView : UIStatusBarCustomItemView
 
 - (id)contentsImage {
-    [[BTPreferencesInterface sharedInterface] loadSettings];
+    [preferencesInterface loadSettings];
     
     NSString *temperatureString = GetTemperatureString();
     UIImage *temperatureImage = [((UIStatusBarItemView *) self) imageWithText:temperatureString];
@@ -141,12 +149,14 @@ static void ResetAlerts(CFNotificationCenterRef center, void *observer, CFString
 
 %ctor {
     if (%c(SpringBoard)) {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, RefreshStatusBarData, CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
-        [[BTPreferencesInterface sharedInterface] startListeningForNotifications];
+        preferencesInterface = [[BTPreferencesInterface alloc] init];
+        [preferencesInterface checkDefaultSettings];
         
         alertCenter = [[BTAlertCenter alloc] init];
+        
         PerformUpdates();
         
         void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);

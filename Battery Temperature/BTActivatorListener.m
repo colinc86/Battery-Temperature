@@ -87,23 +87,25 @@
 #pragma mark - Respond to events
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
+    BTPreferencesInterface *preferencesInterface = [[BTPreferencesInterface alloc] init];
+    [preferencesInterface loadSettings];
     
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
-        [interface toggleEnabled];
+        [preferencesInterface toggleEnabled];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_UNIT]) {
-        [interface changeUnit];
+        [preferencesInterface changeUnit];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ABBREVIATION]) {
-        [interface toggleAbbreviation];
+        [preferencesInterface toggleAbbreviation];
     }
     else if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_DECIMAL]) {
-        [interface toggleDecimal];
+        [preferencesInterface toggleDecimal];
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, NULL, true);
+    [preferencesInterface release];
 }
 
 

@@ -8,28 +8,7 @@
 
 #import "BTPreferencesInterface.h"
 
-@interface BTPreferencesInterface()
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-- (void)startListeningForNotifications;
-- (void)checkDefaultSettings;
-@end
-
 @implementation BTPreferencesInterface
-
-#pragma mark - Class methods
-
-+ (BTPreferencesInterface *)sharedInterface {
-    static BTPreferencesInterface *sharedInterface = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInterface = [[self alloc] init];
-    });
-    return sharedInterface;
-}
-
-
-
 
 #pragma mark - Public instance methods
 
@@ -134,25 +113,7 @@ static void springBoardPreferencesChanged(CFNotificationCenterRef center, void *
 
 
 
-#pragma mark - Private static methods
-
-static void preferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    BTPreferencesInterface *interface = [BTPreferencesInterface sharedInterface];
-    [interface loadSettings];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(UPDATE_STAUS_BAR_NOTIFICATION_NAME), NULL, NULL, true);
-}
-
-
-
-
 #pragma mark - Private instance methods
-
-- (void)startListeningForNotifications {
-    [self checkDefaultSettings];
-    [self loadSettings];
-    
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, preferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-}
 
 - (void)checkDefaultSettings {
     //

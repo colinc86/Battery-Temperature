@@ -10,8 +10,6 @@
 
 #define PREFERENCES_FILE_NAME "com.cnc.Battery-Temperature"
 #define PREFERENCES_NOTIFICATION_NAME "com.cnc.Battery-Temperature-preferencesChanged"
-
-#define UPDATE_STAUS_BAR_NOTIFICATION_NAME "com.cnc.Battery-Temperature.refreshStatusBar"
 #define RESET_ALERTS_NOTIFICATION_NAME "com.cnc.Battery-Temperature.resetAlerts"
 
 typedef enum {
@@ -32,9 +30,7 @@ typedef enum {
 @property (nonatomic, assign) int unit;
 @property (nonatomic, assign) VisibilityRule rule;
 
-+ (BTPreferencesInterface *)sharedInterface;
-
-- (void)startListeningForNotifications;
+- (void)checkDefaultSettings;
 - (void)loadSettings;
 - (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert;
 
