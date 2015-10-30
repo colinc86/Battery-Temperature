@@ -7,6 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5525576D1B8D033700B52107 /* BTAlertCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5525576B1B8D033700B52107 /* BTAlertCenter.h */; };
+		5525576E1B8D033700B52107 /* BTAlertCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5525576C1B8D033700B52107 /* BTAlertCenter.m */; };
+		552557701B8D134D00B52107 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5525576F1B8D134D00B52107 /* AudioToolbox.framework */; };
+		55470BBE1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BB81B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png */; };
+		55470BBF1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BB91B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png */; };
+		55470BC01B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BBA1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png */; };
+		55470BC11B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BBB1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */; };
+		55470BC21B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BBC1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color.png */; };
+		55470BC31B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BBD1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color@2x.png */; };
+		55470BD61B8BC99900985606 /* Black_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC41B8BC99900985606 /* Black_BatteryTemperatureCold_Color.png */; };
+		55470BD71B8BC99900985606 /* Black_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC51B8BC99900985606 /* Black_BatteryTemperatureCold_Color@2x.png */; };
+		55470BD81B8BC99900985606 /* Black_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC61B8BC99900985606 /* Black_BatteryTemperatureCool_Color.png */; };
+		55470BD91B8BC99900985606 /* Black_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC71B8BC99900985606 /* Black_BatteryTemperatureCool_Color@2x.png */; };
+		55470BDA1B8BC99900985606 /* Black_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC81B8BC99900985606 /* Black_BatteryTemperatureHot_Color.png */; };
+		55470BDB1B8BC99900985606 /* Black_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BC91B8BC99900985606 /* Black_BatteryTemperatureHot_Color@2x.png */; };
+		55470BDC1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCA1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color.png */; };
+		55470BDD1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCB1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color@2x.png */; };
+		55470BDE1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCC1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color.png */; };
+		55470BDF1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCD1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color@2x.png */; };
+		55470BE01B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCE1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color.png */; };
+		55470BE11B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BCF1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color@2x.png */; };
+		55470BE21B8BC99900985606 /* White_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD01B8BC99900985606 /* White_BatteryTemperatureCold_Color.png */; };
+		55470BE31B8BC99900985606 /* White_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD11B8BC99900985606 /* White_BatteryTemperatureCold_Color@2x.png */; };
+		55470BE41B8BC99900985606 /* White_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD21B8BC99900985606 /* White_BatteryTemperatureCool_Color.png */; };
+		55470BE51B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD31B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png */; };
+		55470BE61B8BC99900985606 /* White_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD41B8BC99900985606 /* White_BatteryTemperatureHot_Color.png */; };
+		55470BE71B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BD51B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png */; };
+		55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */; };
+		55470BEF1B8BE44A00985606 /* BTPreferencesInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */; };
+		55470BFC1B8C20BC00985606 /* libstatusbar.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55470BFB1B8C20BC00985606 /* libstatusbar.dylib */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
 		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
@@ -19,7 +49,38 @@
 /* Begin PBXFileReference section */
 		55167A741B7D5675005F24E5 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
 		55167A751B7D5675005F24E5 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
+		5525576B1B8D033700B52107 /* BTAlertCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTAlertCenter.h; sourceTree = "<group>"; };
+		5525576C1B8D033700B52107 /* BTAlertCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTAlertCenter.m; sourceTree = "<group>"; };
+		5525576F1B8D134D00B52107 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5530E7861B77749500BE1944 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSStatusBarItem.h; sourceTree = "<group>"; };
+		55470BB81B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55470BB91B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55470BBA1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55470BBB1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55470BBC1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55470BBD1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55470BC41B8BC99900985606 /* Black_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55470BC51B8BC99900985606 /* Black_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55470BC61B8BC99900985606 /* Black_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55470BC71B8BC99900985606 /* Black_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55470BC81B8BC99900985606 /* Black_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55470BC91B8BC99900985606 /* Black_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55470BCA1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55470BCB1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55470BCC1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55470BCD1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55470BCE1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55470BCF1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55470BD01B8BC99900985606 /* White_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55470BD11B8BC99900985606 /* White_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55470BD21B8BC99900985606 /* White_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55470BD31B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55470BD41B8BC99900985606 /* White_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55470BD51B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPreferencesInterface.h; sourceTree = "<group>"; };
+		55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPreferencesInterface.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		55470BFB1B8C20BC00985606 /* libstatusbar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libstatusbar.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libstatusbar.dylib; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		556F853D1B775A7A00288568 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -31,7 +92,7 @@
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
 		556F854D1B775A7A00288568 /* Battery Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Battery Temperature.plist"; path = "Package/Library/MobileSubstrate/DynamicLibraries/Battery Temperature.plist"; sourceTree = "<group>"; };
 		556F85531B775A9400288568 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
-		55CA27E91B881CD00015A8ED /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		5574B3D61B8DBA240013820A /* Headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Headers.h; sourceTree = "<group>"; };
 		55CA27EA1B881D740015A8ED /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
 		55CA27EB1B881D740015A8ED /* BTActivatorListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTActivatorListener.m; sourceTree = "<group>"; };
 		55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -42,6 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				552557701B8D134D00B52107 /* AudioToolbox.framework in Frameworks */,
+				55470BFC1B8C20BC00985606 /* libstatusbar.dylib in Frameworks */,
 				55CA27FE1B883C6B0015A8ED /* CoreGraphics.framework in Frameworks */,
 				558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */,
 				556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */,
@@ -52,6 +115,61 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		55470B9B1B8BB77100985606 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				55470B9C1B8BB77D00985606 /* Library */,
+			);
+			name = System;
+			sourceTree = "<group>";
+		};
+		55470B9C1B8BB77D00985606 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				55470B9D1B8BB78500985606 /* Frameworks */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
+		55470B9D1B8BB78500985606 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				55470B9E1B8BB79700985606 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		55470B9E1B8BB79700985606 /* UIKit.framework */ = {
+			isa = PBXGroup;
+			children = (
+				55470BC41B8BC99900985606 /* Black_BatteryTemperatureCold_Color.png */,
+				55470BC51B8BC99900985606 /* Black_BatteryTemperatureCold_Color@2x.png */,
+				55470BC61B8BC99900985606 /* Black_BatteryTemperatureCool_Color.png */,
+				55470BC71B8BC99900985606 /* Black_BatteryTemperatureCool_Color@2x.png */,
+				55470BC81B8BC99900985606 /* Black_BatteryTemperatureHot_Color.png */,
+				55470BC91B8BC99900985606 /* Black_BatteryTemperatureHot_Color@2x.png */,
+				55470BCA1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color.png */,
+				55470BCB1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color@2x.png */,
+				55470BCC1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color.png */,
+				55470BCD1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color@2x.png */,
+				55470BCE1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color.png */,
+				55470BCF1B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color@2x.png */,
+				55470BD01B8BC99900985606 /* White_BatteryTemperatureCold_Color.png */,
+				55470BD11B8BC99900985606 /* White_BatteryTemperatureCold_Color@2x.png */,
+				55470BD21B8BC99900985606 /* White_BatteryTemperatureCool_Color.png */,
+				55470BD31B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png */,
+				55470BD41B8BC99900985606 /* White_BatteryTemperatureHot_Color.png */,
+				55470BD51B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png */,
+				55470BB81B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png */,
+				55470BB91B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png */,
+				55470BBA1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png */,
+				55470BBB1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */,
+				55470BBC1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color.png */,
+				55470BBD1B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color@2x.png */,
+			);
+			name = UIKit.framework;
+			sourceTree = "<group>";
+		};
 		556F852A1B775A7A00288568 = {
 			isa = PBXGroup;
 			children = (
@@ -72,6 +190,8 @@
 		556F85371B775A7A00288568 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5525576F1B8D134D00B52107 /* AudioToolbox.framework */,
+				55470BFB1B8C20BC00985606 /* libstatusbar.dylib */,
 				55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */,
 				5530E7861B77749500BE1944 /* UIKit.framework */,
 				556F85531B775A9400288568 /* libsubstrate.dylib */,
@@ -87,7 +207,12 @@
 				556F85491B775A7A00288568 /* Battery_Temperature.mm */,
 				55CA27EA1B881D740015A8ED /* BTActivatorListener.h */,
 				55CA27EB1B881D740015A8ED /* BTActivatorListener.m */,
-				55CA27E91B881CD00015A8ED /* Globals.h */,
+				55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */,
+				55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */,
+				5525576B1B8D033700B52107 /* BTAlertCenter.h */,
+				5525576C1B8D033700B52107 /* BTAlertCenter.m */,
+				55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */,
+				5574B3D61B8DBA240013820A /* Headers.h */,
 				556F853B1B775A7A00288568 /* Package */,
 				556F853F1B775A7A00288568 /* Supporting Files */,
 			);
@@ -97,6 +222,7 @@
 		556F853B1B775A7A00288568 /* Package */ = {
 			isa = PBXGroup;
 			children = (
+				55470B9B1B8BB77100985606 /* System */,
 				556F853C1B775A7A00288568 /* DEBIAN */,
 				556F85411B775A7A00288568 /* Library */,
 			);
@@ -171,7 +297,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */,
 				55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */,
+				5525576D1B8D033700B52107 /* BTAlertCenter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,7 +310,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 556F85501B775A7A00288568 /* Build configuration list for PBXNativeTarget "Battery Temperature" */;
 			buildPhases = (
-				556F852F1B775A7A00288568 /* ShellScript */,
+				556F852F1B775A7A00288568 /* Run Script */,
 				556F85301B775A7A00288568 /* Sources */,
 				556F85311B775A7A00288568 /* Frameworks */,
 				554F9F5B1B803EE4002FEFAC /* Resources */,
@@ -204,7 +332,7 @@
 		556F852B1B775A7A00288568 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0710;
 				TargetAttributes = {
 					556F85341B775A7A00288568 = {
 						CreatedOnToolsVersion = 6.4;
@@ -233,19 +361,44 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55470BBF1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55470BDC1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color.png in Resources */,
+				55470BC11B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55470BC31B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55470BE01B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color.png in Resources */,
+				55470BDD1B8BC99900985606 /* LockScreen_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55470BD71B8BC99900985606 /* Black_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55470BD61B8BC99900985606 /* Black_BatteryTemperatureCold_Color.png in Resources */,
+				55470BDF1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color@2x.png in Resources */,
+				55470BBE1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png in Resources */,
+				55470BE11B8BC99900985606 /* LockScreen_BatteryTemperatureHot_Color@2x.png in Resources */,
+				55470BE21B8BC99900985606 /* White_BatteryTemperatureCold_Color.png in Resources */,
+				55470BDE1B8BC99900985606 /* LockScreen_BatteryTemperatureCool_Color.png in Resources */,
+				55470BC21B8BC3BE00985606 /* White_BatteryTemperatureWarm_Color.png in Resources */,
+				55470BDB1B8BC99900985606 /* Black_BatteryTemperatureHot_Color@2x.png in Resources */,
+				55470BE61B8BC99900985606 /* White_BatteryTemperatureHot_Color.png in Resources */,
+				55470BE31B8BC99900985606 /* White_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55470BE41B8BC99900985606 /* White_BatteryTemperatureCool_Color.png in Resources */,
+				55470BDA1B8BC99900985606 /* Black_BatteryTemperatureHot_Color.png in Resources */,
+				55470BC01B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png in Resources */,
+				55470BD91B8BC99900985606 /* Black_BatteryTemperatureCool_Color@2x.png in Resources */,
+				55470BE51B8BC99900985606 /* White_BatteryTemperatureCool_Color@2x.png in Resources */,
+				55470BD81B8BC99900985606 /* Black_BatteryTemperatureCool_Color.png in Resources */,
+				55470BE71B8BC99900985606 /* White_BatteryTemperatureHot_Color@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		556F852F1B775A7A00288568 /* ShellScript */ = {
+		556F852F1B775A7A00288568 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,6 +426,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55470BEF1B8BE44A00985606 /* BTPreferencesInterface.m in Sources */,
+				5525576E1B8D033700B52107 /* BTAlertCenter.m in Sources */,
 				556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */,
 				55CA27ED1B881D740015A8ED /* BTActivatorListener.m in Sources */,
 			);
@@ -285,6 +440,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
@@ -304,10 +460,18 @@
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
 				iOSOpenDevPath = /opt/iOSOpenDev;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
 			};
 			name = Debug;
 		};
@@ -330,13 +494,26 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
 				iOSOpenDevPath = /opt/iOSOpenDev;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
 			};
 			name = Release;
 		};
 		556F85511B775A7A00288568 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -361,6 +538,12 @@
 		556F85521B775A7A00288568 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

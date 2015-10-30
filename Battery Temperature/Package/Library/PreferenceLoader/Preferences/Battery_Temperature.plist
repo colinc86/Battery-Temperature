@@ -38,6 +38,38 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
+			<key>label</key>
+			<string>General</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>visibilityRule</string>
+			<key>label</key>
+			<string>Visibility Rule</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>validTitles</key>
+			<array>
+				<string>Show Always</string>
+				<string>Hide Always</string>
+				<string>Show After Alert Temp</string>
+				<string>Hide After Alert Temp</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<string>3</string>
+			</array>
+			<key>default</key>
+			<integer>0</integer>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -105,7 +137,7 @@
 			<key>footerText</key>
 			<string>High temperature alerts at 35℃ (95℉) and 45℃ (113℉).
 Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).
-Alerts can be enabled even if battery temperature in the status bar is disabled.</string>
+Enabling status bar alerts will show a colored dot in the status bar for each alert level.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -115,9 +147,9 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
-			<string>highTempAlerts</string>
+			<string>tempAlerts</string>
 			<key>label</key>
-			<string>High Temperature</string>
+			<string>Temperature Alerts</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>
@@ -129,9 +161,23 @@ Alerts can be enabled even if battery temperature in the status bar is disabled.
 			<key>defaults</key>
 			<string>com.cnc.Battery-Temperature</string>
 			<key>key</key>
-			<string>lowTempAlerts</string>
+			<string>statusBarAlerts</string>
 			<key>label</key>
-			<string>Low Temperature</string>
+			<string>Show In Status Bar</string>
+			<key>PostNotification</key>
+			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>alertVibrate</string>
+			<key>label</key>
+			<string>Vibrate On Alert</string>
 			<key>PostNotification</key>
 			<string>com.cnc.Battery-Temperature-preferencesChanged</string>
 		</dict>
