@@ -90,7 +90,7 @@
 		556F85471B775A7A00288568 /* Battery Temperature-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Battery Temperature-Prefix.pch"; sourceTree = "<group>"; };
 		556F85481B775A7A00288568 /* Battery_Temperature.xm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.xm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
-		556F854D1B775A7A00288568 /* Battery_Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Battery_Temperature.plist; path = Package/Library/MobileSubstrate/DynamicLibraries/Battery_Temperature.plist; sourceTree = "<group>"; };
+		556F854D1B775A7A00288568 /* Battery Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Battery Temperature.plist"; path = "Package/Library/MobileSubstrate/DynamicLibraries/Battery Temperature.plist"; sourceTree = "<group>"; };
 		556F85531B775A9400288568 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
 		5574B3D61B8DBA240013820A /* Headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Headers.h; sourceTree = "<group>"; };
 		55CA27EA1B881D740015A8ED /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
@@ -285,7 +285,7 @@
 		556F854C1B775A7A00288568 /* DynamicLibraries */ = {
 			isa = PBXGroup;
 			children = (
-				556F854D1B775A7A00288568 /* Battery_Temperature.plist */,
+				556F854D1B775A7A00288568 /* Battery Temperature.plist */,
 			);
 			name = DynamicLibraries;
 			sourceTree = "<group>";
@@ -332,7 +332,7 @@
 		556F852B1B775A7A00288568 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0710;
 				TargetAttributes = {
 					556F85341B775A7A00288568 = {
 						CreatedOnToolsVersion = 6.4;
@@ -440,6 +440,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
@@ -459,6 +460,7 @@
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
@@ -506,6 +508,12 @@
 		556F85511B775A7A00288568 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -530,6 +538,12 @@
 		556F85521B775A7A00288568 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
