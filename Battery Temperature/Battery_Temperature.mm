@@ -28,12 +28,17 @@ static BTAlertCenter *alertCenter = nil;
 
 void PerformUpdates() {
     [preferencesInterface loadSettings];
-    [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
-    [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    
+    if (alertCenter != nil) {
+        [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+        [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    }
 }
 
 void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    [alertCenter resetAlerts];
+    if (alertCenter != nil) {
+        [alertCenter resetAlerts];
+    }
 }
 
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -75,8 +80,6 @@ NSString *GetTemperatureString() {
         NSString *abbreviationString = @"";
         float celsius = [rawTemperature intValue] / 100.0f;
 
-        [preferencesInterface loadSettings];
-
         if (preferencesInterface.unit == 1) {
             if (preferencesInterface.showAbbreviation) abbreviationString = @"℉";
                 
@@ -113,7 +116,7 @@ NSString *GetTemperatureString() {
                 }
         }
     }
-    
+        
     return formattedString;
 }
 
@@ -124,10 +127,10 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarCustomItemView; @class UIStatusBarServer; @class UIStatusBarBatteryTemperatureItemView; 
+@class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarServer; @class UIStatusBarCustomItemView; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 124 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 127 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView* self, SEL _cmd) {
@@ -154,13 +157,14 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_9f9f90ed() {
+static __attribute__((constructor)) void _logosLocalCtor_fecee87a() {
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    preferencesInterface = [[BTPreferencesInterface alloc] init];
+    
     if (_logos_static_class_lookup$SpringBoard()) {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         
-        preferencesInterface = [[BTPreferencesInterface alloc] init];
-        [preferencesInterface checkDefaultSettings];
         
         alertCenter = [[BTAlertCenter alloc] init];
         

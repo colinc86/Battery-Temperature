@@ -9,6 +9,7 @@
 #import <AudioToolbox/AudioServices.h>
 #import "BTAlertCenter.h"
 #import "LSStatusBarItem.h"
+#import "Headers.h"
 
 @interface BTAlertCenter ()
 @property (nonatomic, retain) LSStatusBarItem *statusItem;
@@ -144,9 +145,7 @@
             
             if (showAlert) {
                 if (tempAlerts) {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                    [alert show];
-                    [alert release];
+                    [self showAlertWithMessage:message];
                 }
                 
                 if (alertVibrate) {
@@ -178,6 +177,17 @@
 
 
 #pragma mark - Private methods
+
+- (void)showAlertWithMessage:(NSString *)message {
+    if (self.inSB) {
+    
+    }
+    else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alert show];
+        [alert release];
+    }
+}
 
 - (void)showStatusWarning:(TemperatureWarning)warning {
     [self terminateHideTimer];

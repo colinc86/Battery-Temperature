@@ -10,6 +10,8 @@
 		5525576D1B8D033700B52107 /* BTAlertCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5525576B1B8D033700B52107 /* BTAlertCenter.h */; };
 		5525576E1B8D033700B52107 /* BTAlertCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5525576C1B8D033700B52107 /* BTAlertCenter.m */; };
 		552557701B8D134D00B52107 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5525576F1B8D134D00B52107 /* AudioToolbox.framework */; };
+		55330A1E1BE426D900B8BFDF /* LSStatusBarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */; };
+		55330A1F1BE426F700B8BFDF /* Headers.h in Headers */ = {isa = PBXBuildFile; fileRef = 5574B3D61B8DBA240013820A /* Headers.h */; };
 		55470BBE1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BB81B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color.png */; };
 		55470BBF1B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BB91B8BC3BE00985606 /* Black_BatteryTemperatureWarm_Color@2x.png */; };
 		55470BC01B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55470BBA1B8BC3BE00985606 /* LockScreen_BatteryTemperatureWarm_Color.png */; };
@@ -83,7 +85,6 @@
 		55470BFB1B8C20BC00985606 /* libstatusbar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libstatusbar.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libstatusbar.dylib; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		556F853D1B775A7A00288568 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
 		556F853E1B775A7A00288568 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
 		556F85401B775A7A00288568 /* PackageVersion.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PackageVersion.plist; sourceTree = "<group>"; };
 		556F85441B775A7A00288568 /* Battery_Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Battery_Temperature.plist; path = Package/Library/PreferenceLoader/Preferences/Battery_Temperature.plist; sourceTree = "<group>"; };
@@ -232,7 +233,6 @@
 		556F853C1B775A7A00288568 /* DEBIAN */ = {
 			isa = PBXGroup;
 			children = (
-				556F853D1B775A7A00288568 /* control.txt */,
 				556F853E1B775A7A00288568 /* control */,
 			);
 			name = DEBIAN;
@@ -297,6 +297,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55330A1F1BE426F700B8BFDF /* Headers.h in Headers */,
+				55330A1E1BE426D900B8BFDF /* LSStatusBarItem.h in Headers */,
 				55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */,
 				55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */,
 				5525576D1B8D033700B52107 /* BTAlertCenter.h in Headers */,
@@ -332,7 +334,7 @@
 		556F852B1B775A7A00288568 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0720;
 				TargetAttributes = {
 					556F85341B775A7A00288568 = {
 						CreatedOnToolsVersion = 6.4;
@@ -439,6 +441,7 @@
 		556F854E1B775A7A00288568 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_TESTABILITY = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
@@ -461,6 +464,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "f36f52b0-3777-4e1b-95df-42bbed653079";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
@@ -478,6 +482,7 @@
 		556F854F1B775A7A00288568 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -491,6 +496,7 @@
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				PROVISIONING_PROFILE = "f36f52b0-3777-4e1b-95df-42bbed653079";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -508,12 +514,6 @@
 		556F85511B775A7A00288568 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					arm64,
-					armv7,
-					armv7s,
-				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -538,12 +538,6 @@
 		556F85521B775A7A00288568 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					arm64,
-					armv7,
-					armv7s,
-				);
 				CODE_SIGN_IDENTITY = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

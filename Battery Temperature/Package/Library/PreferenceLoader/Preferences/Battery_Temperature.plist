@@ -247,7 +247,7 @@ Enabling status bar alerts will show a colored dot in the status bar for each al
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>© 2015 Colin Campbell</string>
+			<string>© 2016 Colin Campbell</string>
 		</dict>
 	</array>
 	<key>title</key>

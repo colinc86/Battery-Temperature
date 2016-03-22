@@ -26,13 +26,18 @@ static BTAlertCenter *alertCenter = nil;
 #pragma mark - Functions
 
 void PerformUpdates() {
-    [preferencesInterface loadSettings];
-    [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
-    [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    [preferencesInterface updateSettings];
+    
+    if (alertCenter != nil) {
+        [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+        [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    }
 }
 
 void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    [alertCenter resetAlerts];
+    if (alertCenter != nil) {
+        [alertCenter resetAlerts];
+    }
 }
 
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -74,8 +79,6 @@ NSString *GetTemperatureString() {
         NSString *abbreviationString = @"";
         float celsius = [rawTemperature intValue] / 100.0f;
 
-        [preferencesInterface loadSettings];
-
         if (preferencesInterface.unit == 1) {
             if (preferencesInterface.showAbbreviation) abbreviationString = @"℉";
                 
@@ -112,7 +115,7 @@ NSString *GetTemperatureString() {
                 }
         }
     }
-    
+        
     return formattedString;
 }
 
@@ -148,14 +151,14 @@ NSString *GetTemperatureString() {
 %end
 
 %ctor {
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    preferencesInterface = [[BTPreferencesInterface alloc] init];
+    
     if (%c(SpringBoard)) {
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        
-        preferencesInterface = [[BTPreferencesInterface alloc] init];
-        [preferencesInterface checkDefaultSettings];
-        
         alertCenter = [[BTAlertCenter alloc] init];
+        alertCenter.inSB = YES;
         
         PerformUpdates();
         

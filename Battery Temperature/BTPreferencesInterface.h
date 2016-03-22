@@ -30,8 +30,7 @@ typedef enum {
 @property (nonatomic, assign) int unit;
 @property (nonatomic, assign) VisibilityRule rule;
 
-- (void)checkDefaultSettings;
-- (void)loadSettings;
+- (void)updateSettings;
 - (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert;
 
 - (void)toggleEnabled;

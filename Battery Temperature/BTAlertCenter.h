@@ -36,6 +36,8 @@ typedef enum {
 
 @interface BTAlertCenter : NSObject
 
+@property (nonatomic, assign) BOOL inSB;
+
 - (void)updateTemperatureItem:(BOOL)visible;
 - (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate tempAlerts:(BOOL)tempAlerts;
 - (void)resetAlerts;

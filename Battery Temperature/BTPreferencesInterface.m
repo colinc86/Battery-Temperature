@@ -8,6 +8,10 @@
 
 #import "BTPreferencesInterface.h"
 
+@interface BTPreferencesInterface()
+- (void)checkDefaultSettings;
+@end
+
 @implementation BTPreferencesInterface
 
 #pragma mark - Public instance methods
@@ -23,6 +27,8 @@
         _alertVibrate = NO;
         _unit = 0;
         _rule = RuleShow;
+        
+        [self checkDefaultSettings];
     }
     return self;
 }
@@ -32,36 +38,39 @@
 
 #pragma mark - Public instance methods
 
-- (void)loadSettings {
-    CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
+- (void)updateSettings {
+    // Retrieve preferences
+    NSDictionary *defaults = nil;
     
-    CFPropertyListRef enabledRef = CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR(PREFERENCES_FILE_NAME));
-    self.enabled = enabledRef ? [(id)CFBridgingRelease(enabledRef) boolValue] : YES;
-    
-    CFPropertyListRef unitRef = CFPreferencesCopyAppValue(CFSTR("unit"), CFSTR(PREFERENCES_FILE_NAME));
-    self.unit = unitRef ? [(id)CFBridgingRelease(unitRef) intValue] : 0;
-    
-    CFPropertyListRef showAbbreviationRef = CFPreferencesCopyAppValue(CFSTR("showAbbreviation"), CFSTR(PREFERENCES_FILE_NAME));
-    self.showAbbreviation = showAbbreviationRef ? [(id)CFBridgingRelease(showAbbreviationRef) boolValue] : YES;
-    
-    CFPropertyListRef showDecimalRef = CFPreferencesCopyAppValue(CFSTR("showDecimal"), CFSTR(PREFERENCES_FILE_NAME));
-    self.showDecimal = showDecimalRef ? [(id)CFBridgingRelease(showDecimalRef) boolValue] : YES;
-    
-    CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));
-    self.rule = visibilityRuleRef ? [(id)CFBridgingRelease(visibilityRuleRef) intValue] : 0;
-    
-    BOOL oldTempAlerts = self.tempAlerts;
-    CFPropertyListRef tempAlertsRef = CFPreferencesCopyAppValue(CFSTR("tempAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    self.tempAlerts = tempAlertsRef ? [(id)CFBridgingRelease(tempAlertsRef) boolValue] : NO;
-    if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, NULL, true);
+    if ([NSHomeDirectory() isEqualToString:@"/var/mobile"]) {
+        CFArrayRef keyList = CFPreferencesCopyKeyList(CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+        if(keyList) {
+            defaults = (NSDictionary *)CFPreferencesCopyMultiple(keyList, CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+            if(!defaults) defaults = [NSDictionary new];
+            CFRelease(keyList);
+        }
+    } else {
+        defaults = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/User/Library/Preferences/%@.plist", @PREFERENCES_FILE_NAME]];
     }
     
-    CFPropertyListRef statusBarAlertsRef = CFPreferencesCopyAppValue(CFSTR("statusBarAlerts"), CFSTR(PREFERENCES_FILE_NAME));
-    self.statusBarAlerts = statusBarAlertsRef ? [(id)CFBridgingRelease(statusBarAlertsRef) boolValue] : NO;
-    
-    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
-    self.alertVibrate = alertVibrateRef ? [(id)CFBridgingRelease(alertVibrateRef) boolValue] : NO;
+    if (defaults != nil) {
+        self.enabled = [(NSNumber *)[defaults objectForKey:@"enabled"] boolValue];
+        self.unit = [(NSNumber *)[defaults objectForKey:@"unit"] intValue];
+        self.showAbbreviation = [(NSNumber *)[defaults objectForKey:@"showAbbreviation"] boolValue];
+        self.showDecimal = [(NSNumber *)[defaults objectForKey:@"showDecimal"] boolValue];
+        self.rule = [(NSNumber *)[defaults objectForKey:@"visibilityRule"] intValue];
+        
+        BOOL oldTempAlerts = self.tempAlerts;
+        self.tempAlerts = [(NSNumber *)[defaults objectForKey:@"tempAlerts"] boolValue];
+        if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, NULL, true);
+        }
+        
+        self.statusBarAlerts = [(NSNumber *)[defaults objectForKey:@"statusBarAlerts"] boolValue];
+        self.alertVibrate = [(NSNumber *)[defaults objectForKey:@"alertVibrate"] boolValue];
+        
+        [defaults release];
+    }
 }
 
 - (BOOL)isTemperatureVisible:(BOOL)shouldShowAlert {
