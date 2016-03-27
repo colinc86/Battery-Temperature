@@ -3,7 +3,7 @@
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "BTAlertCenter.h"
+#import "BTStatusItemController.h"
 #import "Headers.h"
 
 #include <dlfcn.h>
@@ -18,7 +18,7 @@ void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef nam
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
 static BTPreferencesInterface *preferencesInterface = nil;
-static BTAlertCenter *alertCenter = nil;
+static BTStatusItemController *itemController = nil;
 
 
 
@@ -28,15 +28,15 @@ static BTAlertCenter *alertCenter = nil;
 void PerformUpdates() {
     [preferencesInterface updateSettings];
     
-    if (alertCenter != nil) {
-        [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
-        [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    if (itemController != nil) {
+        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController hasAlertShown]])];
     }
 }
 
 void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    if (alertCenter != nil) {
-        [alertCenter resetAlerts];
+    if (itemController != nil) {
+        [itemController resetAlerts];
     }
 }
 
@@ -157,8 +157,8 @@ NSString *GetTemperatureString() {
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (%c(SpringBoard)) {
-        alertCenter = [[BTAlertCenter alloc] init];
-        alertCenter.inSB = YES;
+        itemController = [[BTStatusItemController alloc] init];
+        itemController.inSB = YES;
         
         PerformUpdates();
         
@@ -181,6 +181,7 @@ NSString *GetTemperatureString() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
+        
         dlclose(LibActivator);
     }
     

@@ -1,5 +1,5 @@
 //
-//  BTAlertCenter.h
+//  BTStatusItemController.h
 //  Battery Temperature
 //
 //  Created by Colin Campbell on 8/25/15.
@@ -34,7 +34,7 @@ typedef enum {
     Cool
 } TemperatureWarning;
 
-@interface BTAlertCenter : NSObject
+@interface BTStatusItemController : NSObject
 
 @property (nonatomic, assign) BOOL inSB;
 

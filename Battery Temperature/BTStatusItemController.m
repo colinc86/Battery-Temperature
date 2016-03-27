@@ -1,5 +1,5 @@
 //
-//  BTAlertCenter.m
+//  BTStatusItemController.m
 //  Battery Temperature
 //
 //  Created by Colin Campbell on 8/25/15.
@@ -7,11 +7,11 @@
 //
 
 #import <AudioToolbox/AudioServices.h>
-#import "BTAlertCenter.h"
+#import "BTStatusItemController.h"
 #import "LSStatusBarItem.h"
 #import "Headers.h"
 
-@interface BTAlertCenter ()
+@interface BTStatusItemController ()
 @property (nonatomic, retain) LSStatusBarItem *statusItem;
 @property (nonatomic, retain) LSStatusBarItem *temperatureItem;
 
@@ -33,7 +33,7 @@
 - (void)terminateShowTimer;
 @end
 
-@implementation BTAlertCenter
+@implementation BTStatusItemController
 
 - (id)init {
     if (self = [super init]) {

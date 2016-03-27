@@ -4,7 +4,7 @@
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#import "BTAlertCenter.h"
+#import "BTStatusItemController.h"
 #import "Headers.h"
 
 #include <dlfcn.h>
@@ -19,7 +19,7 @@ void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef nam
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
 static BTPreferencesInterface *preferencesInterface = nil;
-static BTAlertCenter *alertCenter = nil;
+static BTStatusItemController *itemController = nil;
 
 
 
@@ -29,15 +29,15 @@ static BTAlertCenter *alertCenter = nil;
 void PerformUpdates() {
     [preferencesInterface updateSettings];
     
-    if (alertCenter != nil) {
-        [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
-        [alertCenter updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[alertCenter hasAlertShown]])];
+    if (itemController != nil) {
+        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController hasAlertShown]])];
     }
 }
 
 void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    if (alertCenter != nil) {
-        [alertCenter resetAlerts];
+    if (itemController != nil) {
+        [itemController resetAlerts];
     }
 }
 
@@ -127,7 +127,7 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIStatusBarServer; @class SpringBoard; @class UIStatusBarCustomItemView; @class UIStatusBarBatteryTemperatureItemView; 
+@class SpringBoard; @class UIStatusBarServer; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarCustomItemView; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 127 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
@@ -164,8 +164,8 @@ static __attribute__((constructor)) void _logosLocalCtor_fecee87a() {
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (_logos_static_class_lookup$SpringBoard()) {
-        alertCenter = [[BTAlertCenter alloc] init];
-        alertCenter.inSB = YES;
+        itemController = [[BTStatusItemController alloc] init];
+        itemController.inSB = YES;
         
         PerformUpdates();
         
@@ -188,6 +188,7 @@ static __attribute__((constructor)) void _logosLocalCtor_fecee87a() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
+        
         dlclose(LibActivator);
     }
     
