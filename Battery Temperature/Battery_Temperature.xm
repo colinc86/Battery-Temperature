@@ -127,7 +127,7 @@ NSString *GetTemperatureString() {
 %subclass UIStatusBarBatteryTemperatureItemView : UIStatusBarCustomItemView
 
 - (id)contentsImage {
-    [preferencesInterface loadSettings];
+    [preferencesInterface updateSettings];
     
     NSString *temperatureString = GetTemperatureString();
     UIImage *temperatureImage = [((UIStatusBarItemView *) self) imageWithText:temperatureString];

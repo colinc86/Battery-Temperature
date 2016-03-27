@@ -88,7 +88,7 @@
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
     BTPreferencesInterface *preferencesInterface = [[BTPreferencesInterface alloc] init];
-    [preferencesInterface loadSettings];
+    [preferencesInterface updateSettings];
     
     if ([self.activatorListenerName isEqualToString:ACTIVATOR_LISTENER_ENABLED]) {
         [preferencesInterface toggleEnabled];

@@ -27,7 +27,7 @@ static BTAlertCenter *alertCenter = nil;
 #pragma mark - Functions
 
 void PerformUpdates() {
-    [preferencesInterface loadSettings];
+    [preferencesInterface updateSettings];
     
     if (alertCenter != nil) {
         [alertCenter checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
@@ -127,14 +127,14 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarServer; @class UIStatusBarCustomItemView; 
+@class UIStatusBarServer; @class SpringBoard; @class UIStatusBarCustomItemView; @class UIStatusBarBatteryTemperatureItemView; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 127 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView* self, SEL _cmd) {
-    [preferencesInterface loadSettings];
+    [preferencesInterface updateSettings];
     
     NSString *temperatureString = GetTemperatureString();
     UIImage *temperatureImage = [((UIStatusBarItemView *) self) imageWithText:temperatureString];
@@ -164,9 +164,8 @@ static __attribute__((constructor)) void _logosLocalCtor_fecee87a() {
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (_logos_static_class_lookup$SpringBoard()) {
-        
-        
         alertCenter = [[BTAlertCenter alloc] init];
+        alertCenter.inSB = YES;
         
         PerformUpdates();
         
