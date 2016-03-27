@@ -24,7 +24,6 @@
         _showDecimal = YES;
         _tempAlerts = NO;
         _statusBarAlerts = NO;
-        _alertVibrate = NO;
         _unit = 0;
         _rule = RuleShow;
         
@@ -67,7 +66,6 @@
         }
         
         self.statusBarAlerts = [(NSNumber *)[defaults objectForKey:@"statusBarAlerts"] boolValue];
-        self.alertVibrate = [(NSNumber *)[defaults objectForKey:@"alertVibrate"] boolValue];
         
         [defaults release];
     }
@@ -181,14 +179,6 @@
     }
     else {
         CFRelease(statusBarAlertsRef);
-    }
-    
-    CFPropertyListRef alertVibrateRef = CFPreferencesCopyAppValue(CFSTR("alertVibrate"), CFSTR(PREFERENCES_FILE_NAME));
-    if (!alertVibrateRef) {
-        CFPreferencesSetAppValue(CFSTR("alertVibrate"), (CFNumberRef)[NSNumber numberWithBool:NO], CFSTR(PREFERENCES_FILE_NAME));
-    }
-    else {
-        CFRelease(alertVibrateRef);
     }
     
     CFPropertyListRef visibilityRuleRef = CFPreferencesCopyAppValue(CFSTR("visibilityRule"), CFSTR(PREFERENCES_FILE_NAME));

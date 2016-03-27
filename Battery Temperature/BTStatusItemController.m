@@ -80,12 +80,10 @@
     count += 0.1;
 }
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate tempAlerts:(BOOL)tempAlerts {
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts tempAlerts:(BOOL)tempAlerts {
     if (enabled) {
         if (rawTemperature) {
-            BOOL showAlert = NO;
             float celsius = [rawTemperature intValue] / 100.0f;
-            NSString *message = @"";
             
             if (celsius >= HOT_CUTOFF) {
                 if (!self.didShowHotAlert) {
@@ -93,8 +91,6 @@
                     self.didShowWarmAlert = true;
                     self.didShowColdAlert = false;
                     self.didShowColdAlert = false;
-                    showAlert = YES;
-                    message = @"Battery temperature has reached 45℃ (113℉)!";
                 }
                 
                 if (statusBarAlerts) [self showStatusWarning:Hot];
@@ -106,8 +102,6 @@
                     self.didShowWarmAlert = true;
                     self.didShowColdAlert = false;
                     self.didShowColdAlert = false;
-                    showAlert = YES;
-                    message = @"Battery temperature has reached 35℃ (95℉).";
                 }
                 
                 if (statusBarAlerts) [self showStatusWarning:Warm];
@@ -119,8 +113,6 @@
                     self.didShowWarmAlert = false;
                     self.didShowColdAlert = true;
                     self.didShowCoolAlert = true;
-                    showAlert = YES;
-                    message = @"Battery temperature has dropped to 0℃ (32℉)!";
                 }
                 
                 if (statusBarAlerts) [self showStatusWarning:Cold];
@@ -132,8 +124,6 @@
                     self.didShowWarmAlert = false;
                     self.didShowColdAlert = false;
                     self.didShowCoolAlert = true;
-                    showAlert = YES;
-                    message = @"Battery temperature has dropped to -20℃ (-4℉)!";
                 }
                 
                 if (statusBarAlerts) [self showStatusWarning:Cool];
@@ -141,16 +131,6 @@
             }
             else if ((celsius > COOL_CUTOFF) && (celsius < WARM_CUTOFF)) {
                 [self hideStatusWarningForced:NO];
-            }
-            
-            if (showAlert) {
-                if (tempAlerts) {
-                    [self showAlertWithMessage:message];
-                }
-                
-                if (alertVibrate) {
-                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                }
             }
         }
         else {
@@ -177,17 +157,6 @@
 
 
 #pragma mark - Private methods
-
-- (void)showAlertWithMessage:(NSString *)message {
-    if (self.inSB) {
-    
-    }
-    else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Battery Temperature" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-        [alert release];
-    }
-}
 
 - (void)showStatusWarning:(TemperatureWarning)warning {
     [self terminateHideTimer];

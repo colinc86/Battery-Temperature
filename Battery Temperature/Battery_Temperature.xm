@@ -29,7 +29,7 @@ void PerformUpdates() {
     [preferencesInterface updateSettings];
     
     if (itemController != nil) {
-        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts alertVibrate:preferencesInterface.alertVibrate tempAlerts:preferencesInterface.tempAlerts];
+        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts tempAlerts:preferencesInterface.tempAlerts];
         [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController hasAlertShown]])];
     }
 }

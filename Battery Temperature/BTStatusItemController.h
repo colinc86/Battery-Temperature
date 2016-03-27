@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 #define HOT_CUTOFF 45.0f
-#define WARM_CUTOFF 35.0f
+#define WARM_CUTOFF 26.67f // 35.0f
 #define COOL_CUTOFF 0.0f
 #define COLD_CUTOFF -20.0f
 
@@ -39,7 +39,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL inSB;
 
 - (void)updateTemperatureItem:(BOOL)visible;
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts alertVibrate:(BOOL)alertVibrate tempAlerts:(BOOL)tempAlerts;
+- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts tempAlerts:(BOOL)tempAlerts;
 - (void)resetAlerts;
 - (BOOL)hasAlertShown;
 
