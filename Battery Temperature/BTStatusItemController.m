@@ -20,11 +20,6 @@
 
 @property (nonatomic, assign) TemperatureWarning currentWarning;
 
-@property (nonatomic, assign) BOOL didShowWarmAlert;
-@property (nonatomic, assign) BOOL didShowHotAlert;
-@property (nonatomic, assign) BOOL didShowCoolAlert;
-@property (nonatomic, assign) BOOL didShowColdAlert;
-
 - (void)showStatusWarning:(TemperatureWarning)warning;
 - (void)hideStatusWarningForced:(BOOL)forced;
 - (void)showTimerFired:(NSTimer *)timer;
@@ -80,61 +75,28 @@
     count += 0.1;
 }
 
-- (void)checkAlertsWithTemperature:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts tempAlerts:(BOOL)tempAlerts {
-    if (enabled) {
-        if (rawTemperature) {
-            float celsius = [rawTemperature intValue] / 100.0f;
-            
-            if (celsius >= HOT_CUTOFF) {
-                if (!self.didShowHotAlert) {
-                    self.didShowHotAlert = true;
-                    self.didShowWarmAlert = true;
-                    self.didShowColdAlert = false;
-                    self.didShowColdAlert = false;
-                }
-                
-                if (statusBarAlerts) [self showStatusWarning:Hot];
-                else [self hideStatusWarningForced:YES];
-            }
-            else if (celsius >= WARM_CUTOFF) {
-                if (!self.didShowWarmAlert) {
-                    self.didShowHotAlert = false;
-                    self.didShowWarmAlert = true;
-                    self.didShowColdAlert = false;
-                    self.didShowColdAlert = false;
-                }
-                
-                if (statusBarAlerts) [self showStatusWarning:Warm];
-                else [self hideStatusWarningForced:YES];
-            }
-            else if (celsius <= COLD_CUTOFF) {
-                if (!self.didShowColdAlert) {
-                    self.didShowHotAlert = false;
-                    self.didShowWarmAlert = false;
-                    self.didShowColdAlert = true;
-                    self.didShowCoolAlert = true;
-                }
-                
-                if (statusBarAlerts) [self showStatusWarning:Cold];
-                else [self hideStatusWarningForced:YES];
-            }
-            else if (celsius <= COOL_CUTOFF) {
-                if (!self.didShowCoolAlert) {
-                    self.didShowHotAlert = false;
-                    self.didShowWarmAlert = false;
-                    self.didShowColdAlert = false;
-                    self.didShowCoolAlert = true;
-                }
-                
-                if (statusBarAlerts) [self showStatusWarning:Cool];
-                else [self hideStatusWarningForced:YES];
-            }
-            else if ((celsius > COOL_CUTOFF) && (celsius < WARM_CUTOFF)) {
-                [self hideStatusWarningForced:NO];
-            }
+- (void)updateAlertItem:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts {
+    if (enabled && rawTemperature != nil) {
+        float celsius = [rawTemperature intValue] / 100.0f;
+        
+        if (celsius >= HOT_CUTOFF) {
+            if (statusBarAlerts) [self showStatusWarning:Hot];
+            else [self hideStatusWarningForced:YES];
         }
-        else {
-            [self hideStatusWarningForced:YES];
+        else if (celsius >= WARM_CUTOFF) {
+            if (statusBarAlerts) [self showStatusWarning:Warm];
+            else [self hideStatusWarningForced:YES];
+        }
+        else if (celsius <= COLD_CUTOFF) {
+            if (statusBarAlerts) [self showStatusWarning:Cold];
+            else [self hideStatusWarningForced:YES];
+        }
+        else if (celsius <= COOL_CUTOFF) {
+            if (statusBarAlerts) [self showStatusWarning:Cool];
+            else [self hideStatusWarningForced:YES];
+        }
+        else if ((celsius > COOL_CUTOFF) && (celsius < WARM_CUTOFF)) {
+            [self hideStatusWarningForced:NO];
         }
     }
     else {
@@ -142,15 +104,8 @@
     }
 }
 
-- (void)resetAlerts {
-    self.didShowColdAlert = false;
-    self.didShowCoolAlert = false;
-    self.didShowHotAlert = false;
-    self.didShowWarmAlert = false;
-}
-
-- (BOOL)hasAlertShown {
-    return self.didShowWarmAlert || self.didShowHotAlert || self.didShowCoolAlert || self.didShowColdAlert;
+- (BOOL)isAlertActive {
+    return self.currentWarning != None;
 }
 
 
@@ -213,7 +168,6 @@
 - (void)hideTimerFired:(NSTimer *)timer {
     [self.statusItem setVisible:NO];
     [self.statusItem update];
-    [self resetAlerts];
 }
 
 - (void)terminateHideTimer {

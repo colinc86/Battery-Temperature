@@ -14,7 +14,6 @@
 NSNumber *GetBatteryTemperature();
 NSString *GetTemperatureString();
 void PerformUpdates();
-void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
 static BTPreferencesInterface *preferencesInterface = nil;
@@ -29,14 +28,8 @@ void PerformUpdates() {
     [preferencesInterface updateSettings];
     
     if (itemController != nil) {
-        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts tempAlerts:preferencesInterface.tempAlerts];
-        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController hasAlertShown]])];
-    }
-}
-
-void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    if (itemController != nil) {
-        [itemController resetAlerts];
+        [itemController updateAlertItem:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts];
+        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController isAlertActive]])];
     }
 }
 
@@ -151,14 +144,12 @@ NSString *GetTemperatureString() {
 %end
 
 %ctor {
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (%c(SpringBoard)) {
         itemController = [[BTStatusItemController alloc] init];
-        itemController.inSB = YES;
         
         PerformUpdates();
         

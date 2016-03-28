@@ -15,7 +15,6 @@
 NSNumber *GetBatteryTemperature();
 NSString *GetTemperatureString();
 void PerformUpdates();
-void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void PreferencesChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
 static BTPreferencesInterface *preferencesInterface = nil;
@@ -30,14 +29,8 @@ void PerformUpdates() {
     [preferencesInterface updateSettings];
     
     if (itemController != nil) {
-        [itemController checkAlertsWithTemperature:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts tempAlerts:preferencesInterface.tempAlerts];
-        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController hasAlertShown]])];
-    }
-}
-
-void ResetAlerts(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    if (itemController != nil) {
-        [itemController resetAlerts];
+        [itemController updateAlertItem:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts];
+        [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController isAlertActive]])];
     }
 }
 
@@ -127,10 +120,10 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarCustomItemView; @class UIStatusBarServer; 
+@class UIStatusBarServer; @class UIStatusBarCustomItemView; @class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 127 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 120 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView* self, SEL _cmd) {
@@ -157,15 +150,13 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_fecee87a() {
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, ResetAlerts, CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+static __attribute__((constructor)) void _logosLocalCtor_4de51287() {
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (_logos_static_class_lookup$SpringBoard()) {
         itemController = [[BTStatusItemController alloc] init];
-        itemController.inSB = YES;
         
         PerformUpdates();
         

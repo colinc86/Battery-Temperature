@@ -22,7 +22,6 @@
         _showPercent = NO;
         _showAbbreviation = YES;
         _showDecimal = YES;
-        _tempAlerts = NO;
         _statusBarAlerts = NO;
         _unit = 0;
         _rule = RuleShow;
@@ -58,13 +57,6 @@
         self.showAbbreviation = [(NSNumber *)[defaults objectForKey:@"showAbbreviation"] boolValue];
         self.showDecimal = [(NSNumber *)[defaults objectForKey:@"showDecimal"] boolValue];
         self.rule = [(NSNumber *)[defaults objectForKey:@"visibilityRule"] intValue];
-        
-        BOOL oldTempAlerts = self.tempAlerts;
-        self.tempAlerts = [(NSNumber *)[defaults objectForKey:@"tempAlerts"] boolValue];
-        if ((oldTempAlerts != self.tempAlerts) && !oldTempAlerts) {
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(RESET_ALERTS_NOTIFICATION_NAME), NULL, NULL, true);
-        }
-        
         self.statusBarAlerts = [(NSNumber *)[defaults objectForKey:@"statusBarAlerts"] boolValue];
         
         [defaults release];
