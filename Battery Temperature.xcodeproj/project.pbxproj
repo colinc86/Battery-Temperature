@@ -13,10 +13,8 @@
 		55330A1E1BE426D900B8BFDF /* LSStatusBarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */; };
 		55470BEE1B8BE44A00985606 /* BTPreferencesInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */; };
 		55470BEF1B8BE44A00985606 /* BTPreferencesInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */; };
-		55470BFC1B8C20BC00985606 /* libstatusbar.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55470BFB1B8C20BC00985606 /* libstatusbar.dylib */; };
 		556F85391B775A7A00288568 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85381B775A7A00288568 /* Foundation.framework */; };
 		556F854A1B775A7A00288568 /* Battery_Temperature.mm in Sources */ = {isa = PBXBuildFile; fileRef = 556F85491B775A7A00288568 /* Battery_Temperature.mm */; };
-		556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 556F85531B775A9400288568 /* libsubstrate.dylib */; };
 		558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5530E7861B77749500BE1944 /* UIKit.framework */; };
 		55CA27EC1B881D740015A8ED /* BTActivatorListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 55CA27EA1B881D740015A8ED /* BTActivatorListener.h */; };
 		55CA27ED1B881D740015A8ED /* BTActivatorListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CA27EB1B881D740015A8ED /* BTActivatorListener.m */; };
@@ -60,6 +58,8 @@
 		55D0DBCF1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAB1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png */; };
 		55D0DBD01CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAC1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png */; };
 		55D0DBD11CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAD1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png */; };
+		55D0DBD41CA8C0690012CE44 /* libstatusbar.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D0DBD21CA8C0690012CE44 /* libstatusbar.dylib */; };
+		55D0DBD51CA8C0690012CE44 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D0DBD31CA8C0690012CE44 /* libsubstrate.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,7 +70,6 @@
 		55470BAB1B8BB9BE00985606 /* LSStatusBarItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSStatusBarItem.h; sourceTree = "<group>"; };
 		55470BEC1B8BE44A00985606 /* BTPreferencesInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPreferencesInterface.h; sourceTree = "<group>"; };
 		55470BED1B8BE44A00985606 /* BTPreferencesInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPreferencesInterface.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		55470BFB1B8C20BC00985606 /* libstatusbar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libstatusbar.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libstatusbar.dylib; sourceTree = "<group>"; };
 		556F85351B775A7A00288568 /* Battery Temperature.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "Battery Temperature.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		556F85381B775A7A00288568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		556F853E1B775A7A00288568 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
@@ -80,7 +79,6 @@
 		556F85481B775A7A00288568 /* Battery_Temperature.xm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.xm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		556F85491B775A7A00288568 /* Battery_Temperature.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Battery_Temperature.mm; sourceTree = "<group>"; };
 		556F854D1B775A7A00288568 /* Battery Temperature.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Battery Temperature.plist"; path = "Package/Library/MobileSubstrate/DynamicLibraries/Battery Temperature.plist"; sourceTree = "<group>"; };
-		556F85531B775A9400288568 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
 		55CA27EA1B881D740015A8ED /* BTActivatorListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTActivatorListener.h; sourceTree = "<group>"; };
 		55CA27EB1B881D740015A8ED /* BTActivatorListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTActivatorListener.m; sourceTree = "<group>"; };
 		55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -123,6 +121,8 @@
 		55D0DBAB1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
 		55D0DBAC1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
 		55D0DBAD1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureWarm_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DBD21CA8C0690012CE44 /* libstatusbar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libstatusbar.dylib; path = ../../../../../../../opt/iOSOpenDev/lib/libstatusbar.dylib; sourceTree = "<group>"; };
+		55D0DBD31CA8C0690012CE44 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsubstrate.dylib; path = ../../../../../../../opt/iOSOpenDev/lib/libsubstrate.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,11 +131,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				552557701B8D134D00B52107 /* AudioToolbox.framework in Frameworks */,
-				55470BFC1B8C20BC00985606 /* libstatusbar.dylib in Frameworks */,
 				55CA27FE1B883C6B0015A8ED /* CoreGraphics.framework in Frameworks */,
 				558B445A1B7EA625005B379E /* UIKit.framework in Frameworks */,
-				556F85541B775A9400288568 /* libsubstrate.dylib in Frameworks */,
 				556F85391B775A7A00288568 /* Foundation.framework in Frameworks */,
+				55D0DBD41CA8C0690012CE44 /* libstatusbar.dylib in Frameworks */,
+				55D0DBD51CA8C0690012CE44 /* libsubstrate.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,11 +229,11 @@
 		556F85371B775A7A00288568 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55D0DBD21CA8C0690012CE44 /* libstatusbar.dylib */,
+				55D0DBD31CA8C0690012CE44 /* libsubstrate.dylib */,
 				5525576F1B8D134D00B52107 /* AudioToolbox.framework */,
-				55470BFB1B8C20BC00985606 /* libstatusbar.dylib */,
 				55CA27FD1B883C6B0015A8ED /* CoreGraphics.framework */,
 				5530E7861B77749500BE1944 /* UIKit.framework */,
-				556F85531B775A9400288568 /* libsubstrate.dylib */,
 				556F85381B775A7A00288568 /* Foundation.framework */,
 			);
 			name = Frameworks;
