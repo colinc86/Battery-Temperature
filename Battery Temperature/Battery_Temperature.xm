@@ -1,12 +1,11 @@
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+#include <dlfcn.h>
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
 #import "BTStatusItemController.h"
 #import "Headers.h"
-
-#include <dlfcn.h>
 
 
 

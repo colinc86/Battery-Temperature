@@ -1,13 +1,12 @@
 #line 1 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 #import <SpringBoard/SpringBoard.h>
 #import <Foundation/Foundation.h>
+#include <dlfcn.h>
 
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
 #import "BTStatusItemController.h"
 #import "Headers.h"
-
-#include <dlfcn.h>
 
 
 
@@ -120,10 +119,10 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIStatusBarServer; @class UIStatusBarCustomItemView; @class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; 
+@class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarServer; @class UIStatusBarCustomItemView; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
-#line 120 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
+#line 119 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
 
 
 static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView* self, SEL _cmd) {
@@ -150,7 +149,7 @@ static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$wi
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_4de51287() {
+static __attribute__((constructor)) void _logosLocalCtor_79de844b() {
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PreferencesChanged, CFSTR(PREFERENCES_NOTIFICATION_NAME), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     
     preferencesInterface = [[BTPreferencesInterface alloc] init];

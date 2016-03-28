@@ -9,7 +9,6 @@
 #import <AudioToolbox/AudioServices.h>
 #import "BTStatusItemController.h"
 #import "LSStatusBarItem.h"
-#import "Headers.h"
 
 @interface BTStatusItemController ()
 @property (nonatomic, retain) LSStatusBarItem *statusItem;

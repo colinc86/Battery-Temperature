@@ -7,9 +7,10 @@
 //
 
 #import <CoreGraphics/CoreGraphics.h>
+#include <dlfcn.h>
+
 #import "BTActivatorListener.h"
 #import "BTPreferencesInterface.h"
-#include <dlfcn.h>
 
 @interface BTActivatorListener()
 @property (nonatomic, copy) NSString *activatorListenerName;

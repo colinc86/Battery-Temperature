@@ -39,6 +39,7 @@
 - (void)updateSettings {
     // Retrieve preferences
     NSDictionary *defaults = nil;
+    BOOL releaseDefaults = true;
     
     if ([NSHomeDirectory() isEqualToString:@"/var/mobile"]) {
         CFArrayRef keyList = CFPreferencesCopyKeyList(CFSTR(PREFERENCES_FILE_NAME), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
@@ -49,6 +50,7 @@
         }
     } else {
         defaults = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/User/Library/Preferences/%@.plist", @PREFERENCES_FILE_NAME]];
+        releaseDefaults = false;
     }
     
     if (defaults != nil) {
@@ -59,7 +61,7 @@
         self.rule = [(NSNumber *)[defaults objectForKey:@"visibilityRule"] intValue];
         self.statusBarAlerts = [(NSNumber *)[defaults objectForKey:@"statusBarAlerts"] boolValue];
         
-        [defaults release];
+        if (releaseDefaults) [defaults release];
     }
 }
 
