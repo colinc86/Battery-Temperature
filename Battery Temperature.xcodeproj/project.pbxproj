@@ -24,6 +24,42 @@
 		55D0DB871CA8B4480012CE44 /* Battery_TemperatureIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB841CA8B4480012CE44 /* Battery_TemperatureIcon.png */; };
 		55D0DB881CA8B4480012CE44 /* Battery_TemperatureIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB851CA8B4480012CE44 /* Battery_TemperatureIcon@2x.png */; };
 		55D0DB891CA8B4480012CE44 /* Battery_TemperatureIcon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB861CA8B4480012CE44 /* Battery_TemperatureIcon@3x.png */; };
+		55D0DBAE1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8A1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color.png */; };
+		55D0DBAF1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8B1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@2x.png */; };
+		55D0DBB01CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8C1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@3x.png */; };
+		55D0DBB11CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8D1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color.png */; };
+		55D0DBB21CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8E1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@2x.png */; };
+		55D0DBB31CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB8F1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@3x.png */; };
+		55D0DBB41CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB901CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color.png */; };
+		55D0DBB51CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB911CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@2x.png */; };
+		55D0DBB61CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB921CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@3x.png */; };
+		55D0DBB71CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB931CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color.png */; };
+		55D0DBB81CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB941CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@2x.png */; };
+		55D0DBB91CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB951CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@3x.png */; };
+		55D0DBBA1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB961CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color.png */; };
+		55D0DBBB1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB971CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@2x.png */; };
+		55D0DBBC1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB981CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@3x.png */; };
+		55D0DBBD1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB991CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color.png */; };
+		55D0DBBE1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9A1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@2x.png */; };
+		55D0DBBF1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9B1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@3x.png */; };
+		55D0DBC01CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9C1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color.png */; };
+		55D0DBC11CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9D1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@2x.png */; };
+		55D0DBC21CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9E1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@3x.png */; };
+		55D0DBC31CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DB9F1CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color.png */; };
+		55D0DBC41CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA01CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */; };
+		55D0DBC51CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA11CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@3x.png */; };
+		55D0DBC61CA8BD870012CE44 /* White_BatteryTemperatureCold_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA21CA8BD870012CE44 /* White_BatteryTemperatureCold_Color.png */; };
+		55D0DBC71CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA31CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@2x.png */; };
+		55D0DBC81CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA41CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@3x.png */; };
+		55D0DBC91CA8BD870012CE44 /* White_BatteryTemperatureCool_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA51CA8BD870012CE44 /* White_BatteryTemperatureCool_Color.png */; };
+		55D0DBCA1CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA61CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@2x.png */; };
+		55D0DBCB1CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA71CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@3x.png */; };
+		55D0DBCC1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA81CA8BD870012CE44 /* White_BatteryTemperatureHot_Color.png */; };
+		55D0DBCD1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBA91CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@2x.png */; };
+		55D0DBCE1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAA1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@3x.png */; };
+		55D0DBCF1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAB1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png */; };
+		55D0DBD01CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAC1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png */; };
+		55D0DBD11CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 55D0DBAD1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +87,42 @@
 		55D0DB841CA8B4480012CE44 /* Battery_TemperatureIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Battery_TemperatureIcon.png; path = Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon.png; sourceTree = "<group>"; };
 		55D0DB851CA8B4480012CE44 /* Battery_TemperatureIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@2x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@2x.png"; sourceTree = "<group>"; };
 		55D0DB861CA8B4480012CE44 /* Battery_TemperatureIcon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Battery_TemperatureIcon@3x.png"; path = "Package/Library/PreferenceLoader/Preferences/Battery_TemperatureIcon@3x.png"; sourceTree = "<group>"; };
+		55D0DB8A1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55D0DB8B1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB8C1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCold_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCold_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB8D1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55D0DB8E1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB8F1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureCool_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureCool_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB901CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55D0DB911CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB921CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureHot_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureHot_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB931CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Black_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55D0DB941CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB951CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Black_BatteryTemperatureWarm_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/Black_BatteryTemperatureWarm_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB961CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55D0DB971CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB981CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCold_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCold_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB991CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55D0DB9A1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB9B1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureCool_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureCool_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB9C1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55D0DB9D1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DB9E1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureHot_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureHot_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DB9F1CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LockScreen_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55D0DBA01CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DBA11CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "LockScreen_BatteryTemperatureWarm_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/LockScreen_BatteryTemperatureWarm_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DBA21CA8BD870012CE44 /* White_BatteryTemperatureCold_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureCold_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCold_Color.png; sourceTree = "<group>"; };
+		55D0DBA31CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCold_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCold_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DBA41CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCold_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCold_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DBA51CA8BD870012CE44 /* White_BatteryTemperatureCool_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureCool_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color.png; sourceTree = "<group>"; };
+		55D0DBA61CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCool_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DBA71CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureCool_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureCool_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DBA81CA8BD870012CE44 /* White_BatteryTemperatureHot_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureHot_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color.png; sourceTree = "<group>"; };
+		55D0DBA91CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureHot_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DBAA1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureHot_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureHot_Color@3x.png"; sourceTree = "<group>"; };
+		55D0DBAB1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = White_BatteryTemperatureWarm_Color.png; path = Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color.png; sourceTree = "<group>"; };
+		55D0DBAC1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureWarm_Color@2x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color@2x.png"; sourceTree = "<group>"; };
+		55D0DBAD1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "White_BatteryTemperatureWarm_Color@3x.png"; path = "Package/System/Library/Frameworks/UIKit.framework/White_BatteryTemperatureWarm_Color@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +169,42 @@
 		55470B9E1B8BB79700985606 /* UIKit.framework */ = {
 			isa = PBXGroup;
 			children = (
+				55D0DB8A1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color.png */,
+				55D0DB8B1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@2x.png */,
+				55D0DB8C1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@3x.png */,
+				55D0DB8D1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color.png */,
+				55D0DB8E1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@2x.png */,
+				55D0DB8F1CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@3x.png */,
+				55D0DB901CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color.png */,
+				55D0DB911CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@2x.png */,
+				55D0DB921CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@3x.png */,
+				55D0DB931CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color.png */,
+				55D0DB941CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@2x.png */,
+				55D0DB951CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@3x.png */,
+				55D0DB961CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color.png */,
+				55D0DB971CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@2x.png */,
+				55D0DB981CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@3x.png */,
+				55D0DB991CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color.png */,
+				55D0DB9A1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@2x.png */,
+				55D0DB9B1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@3x.png */,
+				55D0DB9C1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color.png */,
+				55D0DB9D1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@2x.png */,
+				55D0DB9E1CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@3x.png */,
+				55D0DB9F1CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color.png */,
+				55D0DBA01CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@2x.png */,
+				55D0DBA11CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@3x.png */,
+				55D0DBA21CA8BD870012CE44 /* White_BatteryTemperatureCold_Color.png */,
+				55D0DBA31CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@2x.png */,
+				55D0DBA41CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@3x.png */,
+				55D0DBA51CA8BD870012CE44 /* White_BatteryTemperatureCool_Color.png */,
+				55D0DBA61CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@2x.png */,
+				55D0DBA71CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@3x.png */,
+				55D0DBA81CA8BD870012CE44 /* White_BatteryTemperatureHot_Color.png */,
+				55D0DBA91CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@2x.png */,
+				55D0DBAA1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@3x.png */,
+				55D0DBAB1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png */,
+				55D0DBAC1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png */,
+				55D0DBAD1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png */,
 			);
 			name = UIKit.framework;
 			sourceTree = "<group>";
@@ -292,9 +400,45 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55D0DBBD1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color.png in Resources */,
+				55D0DBB81CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55D0DBBB1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55D0DBBE1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@2x.png in Resources */,
+				55D0DBB01CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@3x.png in Resources */,
 				55D0DB891CA8B4480012CE44 /* Battery_TemperatureIcon@3x.png in Resources */,
 				55D0DB871CA8B4480012CE44 /* Battery_TemperatureIcon.png in Resources */,
+				55D0DBB11CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color.png in Resources */,
+				55D0DBC11CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@2x.png in Resources */,
+				55D0DBC31CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color.png in Resources */,
+				55D0DBB91CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color@3x.png in Resources */,
+				55D0DBC01CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color.png in Resources */,
+				55D0DBCD1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@2x.png in Resources */,
+				55D0DBBC1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color@3x.png in Resources */,
+				55D0DBD11CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@3x.png in Resources */,
+				55D0DBB71CA8BD870012CE44 /* Black_BatteryTemperatureWarm_Color.png in Resources */,
+				55D0DBC21CA8BD870012CE44 /* LockScreen_BatteryTemperatureHot_Color@3x.png in Resources */,
+				55D0DBB61CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@3x.png in Resources */,
+				55D0DBC91CA8BD870012CE44 /* White_BatteryTemperatureCool_Color.png in Resources */,
+				55D0DBB41CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color.png in Resources */,
+				55D0DBC51CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@3x.png in Resources */,
+				55D0DBC61CA8BD870012CE44 /* White_BatteryTemperatureCold_Color.png in Resources */,
+				55D0DBC71CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55D0DBC81CA8BD870012CE44 /* White_BatteryTemperatureCold_Color@3x.png in Resources */,
+				55D0DBB31CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@3x.png in Resources */,
+				55D0DBAF1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color@2x.png in Resources */,
+				55D0DBCF1CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color.png in Resources */,
+				55D0DBB51CA8BD870012CE44 /* Black_BatteryTemperatureHot_Color@2x.png in Resources */,
+				55D0DBCB1CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@3x.png in Resources */,
+				55D0DBD01CA8BD870012CE44 /* White_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55D0DBAE1CA8BD870012CE44 /* Black_BatteryTemperatureCold_Color.png in Resources */,
+				55D0DBCA1CA8BD870012CE44 /* White_BatteryTemperatureCool_Color@2x.png in Resources */,
+				55D0DBCC1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color.png in Resources */,
+				55D0DBC41CA8BD870012CE44 /* LockScreen_BatteryTemperatureWarm_Color@2x.png in Resources */,
+				55D0DBBF1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCool_Color@3x.png in Resources */,
+				55D0DBCE1CA8BD870012CE44 /* White_BatteryTemperatureHot_Color@3x.png in Resources */,
+				55D0DBB21CA8BD870012CE44 /* Black_BatteryTemperatureCool_Color@2x.png in Resources */,
 				55D0DB881CA8B4480012CE44 /* Battery_TemperatureIcon@2x.png in Resources */,
+				55D0DBBA1CA8BD870012CE44 /* LockScreen_BatteryTemperatureCold_Color.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
