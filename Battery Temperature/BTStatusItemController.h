@@ -36,6 +36,6 @@ typedef enum {
 
 @interface BTStatusItemController : NSObject
 - (void)updateTemperatureItem:(BOOL)visible;
-- (void)updateAlertItem:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts;
+- (void)updateAlertItem:(BOOL)visible temperature:(NSNumber *)rawTemperature;
 - (BOOL)isAlertActive;
 @end

@@ -28,7 +28,7 @@ void PerformUpdates() {
     [preferencesInterface updateSettings];
     
     if (itemController != nil) {
-        [itemController updateAlertItem:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts];
+        [itemController updateAlertItem:(preferencesInterface.enabled && preferencesInterface.statusBarAlerts) temperature:GetBatteryTemperature()];
         [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController isAlertActive]])];
     }
 }
@@ -119,7 +119,7 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class SpringBoard; @class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarServer; @class UIStatusBarCustomItemView; 
+@class UIStatusBarBatteryTemperatureItemView; @class UIStatusBarCustomItemView; @class UIStatusBarServer; @class SpringBoard; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 119 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"

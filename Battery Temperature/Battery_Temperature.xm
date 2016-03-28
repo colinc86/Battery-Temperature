@@ -27,7 +27,7 @@ void PerformUpdates() {
     [preferencesInterface updateSettings];
     
     if (itemController != nil) {
-        [itemController updateAlertItem:GetBatteryTemperature() enabled:preferencesInterface.enabled statusBarAlerts:preferencesInterface.statusBarAlerts];
+        [itemController updateAlertItem:(preferencesInterface.enabled && preferencesInterface.statusBarAlerts) temperature:GetBatteryTemperature()];
         [itemController updateTemperatureItem:(preferencesInterface.enabled && [preferencesInterface isTemperatureVisible:[itemController isAlertActive]])];
     }
 }

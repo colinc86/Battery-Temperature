@@ -74,25 +74,21 @@
     count += 0.1;
 }
 
-- (void)updateAlertItem:(NSNumber *)rawTemperature enabled:(BOOL)enabled statusBarAlerts:(BOOL)statusBarAlerts {
-    if (enabled && rawTemperature != nil) {
+- (void)updateAlertItem:(BOOL)visible temperature:(NSNumber *)rawTemperature {
+    if (visible && rawTemperature != nil) {
         float celsius = [rawTemperature intValue] / 100.0f;
         
         if (celsius >= HOT_CUTOFF) {
-            if (statusBarAlerts) [self showStatusWarning:Hot];
-            else [self hideStatusWarningForced:YES];
+            [self showStatusWarning:Hot];
         }
         else if (celsius >= WARM_CUTOFF) {
-            if (statusBarAlerts) [self showStatusWarning:Warm];
-            else [self hideStatusWarningForced:YES];
+            [self showStatusWarning:Warm];
         }
         else if (celsius <= COLD_CUTOFF) {
-            if (statusBarAlerts) [self showStatusWarning:Cold];
-            else [self hideStatusWarningForced:YES];
+            [self showStatusWarning:Cold];
         }
         else if (celsius <= COOL_CUTOFF) {
-            if (statusBarAlerts) [self showStatusWarning:Cool];
-            else [self hideStatusWarningForced:YES];
+            [self showStatusWarning:Cool];
         }
         else if ((celsius > COOL_CUTOFF) && (celsius < WARM_CUTOFF)) {
             [self hideStatusWarningForced:NO];
