@@ -189,13 +189,24 @@ NSString *GetTemperatureString() {
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (%c(SpringBoard)) {
-        itemController = [[BTStatusItemController alloc] init];
+    	void *Libstatusbar = dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_LAZY);
+    	Class ls = objc_getClass("LSStatusBarItem");
+    	if (ls) {
+            [preferencesInterface setHasLibstatusbar:YES];
+    		itemController = [[BTStatusItemController alloc] initWithLibrary:Libstatusbar];
+    	}
+        else {
+            dlclose(Libstatusbar);
+            [preferencesInterface setHasLibstatusbar:NO];
+        }
         
         PerformUpdates();
         
-        void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+        void *Libactivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
         Class la = objc_getClass("LAActivator");
         if (la) {
+            [preferencesInterface setHasLibactivator:YES];
+            
             BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
             [[la sharedInstance] registerListener:enabledListener forName:ACTIVATOR_LISTENER_ENABLED];
             [enabledListener release];
@@ -212,8 +223,11 @@ NSString *GetTemperatureString() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
+        else {
+            [preferencesInterface setHasLibactivator:NO];
+        }
         
-        dlclose(LibActivator);
+        dlclose(Libactivator);
     }
     
     %init;

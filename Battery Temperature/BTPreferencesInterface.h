@@ -35,4 +35,7 @@ typedef enum {
 - (void)toggleAbbreviation;
 - (void)toggleDecimal;
 
+- (void)setHasLibstatusbar:(BOOL)flag;
+- (void)setHasLibactivator:(BOOL)flag;
+
 @end

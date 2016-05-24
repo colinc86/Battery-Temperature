@@ -160,7 +160,7 @@ NSString *GetTemperatureString() {
 
 #include <logos/logos.h>
 #include <substrate.h>
-@class UIStatusBarServer; @class SpringBoard; @class UIStatusBarCustomItemView; @class UIStatusBarBatteryTemperatureItemView; 
+@class UIStatusBarBatteryTemperatureItemView; @class SpringBoard; @class UIStatusBarCustomItemView; @class UIStatusBarServer; 
 static id (*_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage)(UIStatusBarBatteryTemperatureItemView*, SEL); static id _logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage(UIStatusBarBatteryTemperatureItemView*, SEL); static void (*_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$)(Class, SEL, CDStruct_4ec3be00 *, int); static void _logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$(Class, SEL, CDStruct_4ec3be00 *, int); 
 static __inline__ __attribute__((always_inline)) Class _logos_static_class_lookup$SpringBoard(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SpringBoard"); } return _klass; }
 #line 160 "/Users/colincampbell/Documents/Xcode/Jailbreak/JailbreakProjects/Battery-Temperature/Battery Temperature/Battery_Temperature.xm"
@@ -196,13 +196,24 @@ static __attribute__((constructor)) void _logosLocalCtor_6b26e8e0() {
     preferencesInterface = [[BTPreferencesInterface alloc] init];
     
     if (_logos_static_class_lookup$SpringBoard()) {
-        itemController = [[BTStatusItemController alloc] init];
+    	void *Libstatusbar = dlopen("/Library/MobileSubstrate/DynamicLibraries/libstatusbar.dylib", RTLD_LAZY);
+    	Class ls = objc_getClass("LSStatusBarItem");
+    	if (ls) {
+            [preferencesInterface setHasLibstatusbar:YES];
+    		itemController = [[BTStatusItemController alloc] initWithLibrary:Libstatusbar];
+    	}
+        else {
+            dlclose(Libstatusbar);
+            [preferencesInterface setHasLibstatusbar:NO];
+        }
         
         PerformUpdates();
         
-        void *LibActivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+        void *Libactivator = dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
         Class la = objc_getClass("LAActivator");
         if (la) {
+            [preferencesInterface setHasLibactivator:YES];
+            
             BTActivatorListener *enabledListener = [[BTActivatorListener alloc] initWithListenerName:ACTIVATOR_LISTENER_ENABLED];
             [[la sharedInstance] registerListener:enabledListener forName:ACTIVATOR_LISTENER_ENABLED];
             [enabledListener release];
@@ -219,8 +230,11 @@ static __attribute__((constructor)) void _logosLocalCtor_6b26e8e0() {
             [[la sharedInstance] registerListener:decimalListener forName:ACTIVATOR_LISTENER_DECIMAL];
             [decimalListener release];
         }
+        else {
+            [preferencesInterface setHasLibactivator:NO];
+        }
         
-        dlclose(LibActivator);
+        dlclose(Libactivator);
     }
     
     {Class _logos_class$_ungrouped$UIStatusBarCustomItemView = objc_getClass("UIStatusBarCustomItemView"); { Class _logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView = objc_allocateClassPair(_logos_class$_ungrouped$UIStatusBarCustomItemView, "UIStatusBarBatteryTemperatureItemView", 0); MSHookMessageEx(_logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView, @selector(contentsImage), (IMP)&_logos_method$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage, (IMP*)&_logos_orig$_ungrouped$UIStatusBarBatteryTemperatureItemView$contentsImage); objc_registerClassPair(_logos_class$_ungrouped$UIStatusBarBatteryTemperatureItemView); }Class _logos_class$_ungrouped$UIStatusBarServer = objc_getClass("UIStatusBarServer"); Class _logos_metaclass$_ungrouped$UIStatusBarServer = object_getClass(_logos_class$_ungrouped$UIStatusBarServer); MSHookMessageEx(_logos_metaclass$_ungrouped$UIStatusBarServer, @selector(postStatusBarData:withActions:), (IMP)&_logos_meta_method$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$, (IMP*)&_logos_meta_orig$_ungrouped$UIStatusBarServer$postStatusBarData$withActions$);}

@@ -9,6 +9,8 @@
 #import <AudioToolbox/AudioServices.h>
 #import "BTStatusItemController.h"
 #import "LSStatusBarItem.h"
+#import <dlfcn.h>
+#import <objc/runtime.h>
 
 @interface BTStatusItemController ()
 @property (nonatomic, retain) LSStatusBarItem *statusItem;
@@ -29,9 +31,12 @@
 
 @implementation BTStatusItemController
 
-- (id)init {
+void *libStatusbar;
+
+- (id)initWithLibrary:(void *)lib {
     if (self = [super init]) {
         _currentWarning = None;
+        libStatusbar = lib;
     }
     return self;
 }
@@ -46,6 +51,8 @@
         [_temperatureItem release];
         _temperatureItem = nil;
     }
+    
+    dlclose(libStatusbar);
     
     [self terminateHideTimer];
     [self terminateShowTimer];

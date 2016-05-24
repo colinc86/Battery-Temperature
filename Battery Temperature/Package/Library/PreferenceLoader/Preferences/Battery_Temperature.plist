@@ -147,6 +147,36 @@ Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).</string>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Dependencies</string>
+			<key>isStaticText</key>
+			<true/>
+			<key>footerText</key>
+			<string>*Battery Temperature does not require libactivator to function, but does require its use for the section below.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Libstatusbar</string>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>hasLibstatusbarDescription</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Libactivator*</string>
+			<key>defaults</key>
+			<string>com.cnc.Battery-Temperature</string>
+			<key>key</key>
+			<string>hasLibactivatorDescription</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
 			<key>label</key>
@@ -199,12 +229,6 @@ Low temperature alerts at 0℃ (32℉) and -20℃ (-4℉).</string>
 			<string>LibActivator</string>
 			<key>activatorListener</key>
 			<string>com.cnc.Battery-Temperature.activator.decimal</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>isStaticText</key>
-			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>

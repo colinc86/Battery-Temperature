@@ -111,6 +111,16 @@
     CFPreferencesSetAppValue(CFSTR("showDecimal"), (CFNumberRef)[NSNumber numberWithBool:showDecimal], CFSTR(PREFERENCES_FILE_NAME));
 }
 
+- (void)setHasLibstatusbar:(BOOL)flag {
+    NSString *description = flag ? @"Installed" : @"Not Installed";
+    CFPreferencesSetAppValue(CFSTR("hasLibstatusbarDescription"), (CFStringRef)description, CFSTR(PREFERENCES_FILE_NAME));
+}
+
+- (void)setHasLibactivator:(BOOL)flag {
+    NSString *description = flag ? @"Installed" : @"Not Installed";
+    CFPreferencesSetAppValue(CFSTR("hasLibactivatorDescription"), (CFStringRef)description, CFSTR(PREFERENCES_FILE_NAME));
+}
+
 
 
 
@@ -181,6 +191,22 @@
     }
     else {
         CFRelease(visibilityRuleRef);
+    }
+    
+    CFPropertyListRef libstatusbarStatusRef = CFPreferencesCopyAppValue(CFSTR("hasLibstatusbarDescription"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!libstatusbarStatusRef) {
+        CFPreferencesSetAppValue(CFSTR("hasLibstatusbarDescription"), (CFStringRef)@"Not Installed", CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(libstatusbarStatusRef);
+    }
+    
+    CFPropertyListRef libactivatorStatusRef = CFPreferencesCopyAppValue(CFSTR("hasLibactivatorDescription"), CFSTR(PREFERENCES_FILE_NAME));
+    if (!libactivatorStatusRef) {
+        CFPreferencesSetAppValue(CFSTR("hasLibactivatorDescription"), (CFStringRef)@"Not Installed", CFSTR(PREFERENCES_FILE_NAME));
+    }
+    else {
+        CFRelease(libactivatorStatusRef);
     }
     
     CFPreferencesAppSynchronize(CFSTR(PREFERENCES_FILE_NAME));
